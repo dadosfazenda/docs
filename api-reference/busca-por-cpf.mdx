@@ -1,23 +1,16 @@
 ---
 title: "Busca por CPF/CNPJ"
-api: "GET /cpf-car/{ni}"
+api: "GET /cpf-car/{cpf_cnpj}"
 description: "Busca propriedades rurais (CAR) vinculadas a um CPF ou CNPJ"
 ---
 
 ## Descricao
 
-A partir de um CPF ou CNPJ, esta rota consulta o Serpro/INCRA para identificar todos os imoveis rurais vinculados ao documento.
-Para cada imovel encontrado, tenta localizar o CAR (Cadastro Ambiental Rural) correspondente na base interna,
-e enriquece com dados do demonstrativo ambiental.
+A partir de um CPF ou CNPJ, esta rota identifica todos os imoveis rurais vinculados ao documento consultando bases publicas oficiais.
+Para cada imovel encontrado, busca o CAR (Cadastro Ambiental Rural) correspondente e enriquece com dados do demonstrativo ambiental,
+incluindo informacoes sobre reserva legal, APP, vegetacao nativa e sobreposicoes.
 
-### Fluxo interno
-
-1. **Serpro CCIR** — busca codigos de imovel INCRA pelo CPF/CNPJ
-2. **Match SIGEF** — tenta vincular via geometria georreferenciada (mais preciso)
-3. **Match SNCR** — fallback por municipio + area (quando nao ha SIGEF)
-4. **Demonstrativo** — para cada CAR encontrado, busca dados ambientais detalhados
-
-<ParamField path="ni" type="string" required>
+<ParamField path="cpf_cnpj" type="string" required>
   CPF (11 digitos) ou CNPJ (14 digitos). Aceita com ou sem formatacao (pontos, tracos, barras).
 
   Exemplos: `12345678901`, `123.456.789-01`, `12345678000199`
@@ -68,10 +61,10 @@ e enriquece com dados do demonstrativo ambiental.
         </ResponseField>
 
         <ResponseField name="match_method" type="string">
-          Metodo usado para vincular ao CAR. Valores possiveis:
-          - `sigef` — match via geometria SIGEF (alta confianca)
-          - `matricula` — match via matricula do cartorio (media confianca)
-          - `sncr` — match via municipio + area SNCR (menor confianca)
+          Indica o nivel de confianca da vinculacao ao CAR:
+          - `sigef` — vinculado por geometria georreferenciada (alta confianca)
+          - `matricula` — vinculado por registro de cartorio (media confianca)
+          - `sncr` — vinculado por localizacao e area (menor confianca)
           - `nenhum` — nao foi possivel vincular a um CAR
         </ResponseField>
 

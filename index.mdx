@@ -5,42 +5,39 @@ description: "API de dados rurais do Brasil - consulte propriedades, CARs e dado
 
 # DadosFazenda Data API
 
-A DadosFazenda Data API permite consultar dados de propriedades rurais brasileiras de forma unificada, cruzando informacoes de diversas fontes oficiais.
+A DadosFazenda Data API permite consultar dados de propriedades rurais brasileiras de forma unificada, cruzando informacoes de diversas bases publicas oficiais.
 
 ## O que voce pode fazer
 
 <CardGroup cols={2}>
   <Card title="Busca por CPF/CNPJ" icon="magnifying-glass" href="/api-reference/busca-por-cpf">
-    A partir de um CPF ou CNPJ, descubra todas as propriedades rurais vinculadas, com dados do INCRA, CAR e demonstrativo ambiental.
+    A partir de um CPF ou CNPJ, descubra todas as propriedades rurais vinculadas, com dados cadastrais, CAR e demonstrativo ambiental.
   </Card>
   <Card title="Mais endpoints em breve" icon="rocket">
     Estamos expandindo a API com novas consultas de dados rurais.
   </Card>
 </CardGroup>
 
-## Fontes de dados
+## Dados retornados
 
-A API cruza automaticamente informacoes de:
+A API retorna informacoes consolidadas de cada propriedade rural:
 
-| Fonte | Dados |
-|-------|-------|
-| **Serpro / INCRA** | Imoveis rurais vinculados ao CPF/CNPJ, dados do CCIR (area, titulares, classificacao fundiaria) |
-| **SIGEF** | Parcelas georreferenciadas certificadas pelo INCRA |
-| **SNCR** | Sistema Nacional de Cadastro Rural |
-| **CAR** | Cadastro Ambiental Rural (codigo, municipio, status, area) |
-| **Demonstrativo CAR** | Reserva legal, APP, vegetacao nativa, uso consolidado, sobreposicoes |
+| Categoria | Dados |
+|-----------|-------|
+| **Imovel Rural** | Denominacao, municipio, UF, area total, classificacao fundiaria, titulares |
+| **CCIR** | Numero, situacao, data de vencimento, modulos fiscais |
+| **CAR** | Codigo, status, tipo, condicao de analise |
+| **Demonstrativo Ambiental** | Reserva legal, APP, vegetacao nativa, uso consolidado, areas de uso restrito, sobreposicoes |
 
 ## Como funciona
 
 ```mermaid
 flowchart LR
-    A[CPF/CNPJ] --> B[Serpro CCIR]
-    B --> C[Imoveis INCRA]
-    C --> D{Match interno}
-    D -->|SIGEF| E[Geometria]
-    D -->|SNCR| F[Municipio + Area]
-    E --> G[CAR]
-    F --> G
-    G --> H[Demonstrativo]
-    H --> I[Resposta unificada]
+    A[CPF/CNPJ] --> B[Bases Publicas]
+    B --> C[Imoveis Rurais]
+    C --> D[CAR]
+    D --> E[Demonstrativo Ambiental]
+    E --> F[Resposta Unificada]
 ```
+
+A API consulta bases publicas oficiais, identifica os imoveis rurais vinculados ao documento, localiza o Cadastro Ambiental Rural (CAR) correspondente e retorna os dados ambientais detalhados em uma unica resposta.
