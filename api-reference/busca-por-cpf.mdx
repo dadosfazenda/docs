@@ -61,11 +61,7 @@ incluindo informacoes sobre reserva legal, APP, vegetacao nativa e sobreposicoes
         </ResponseField>
 
         <ResponseField name="match_method" type="string">
-          Indica o nivel de confianca da vinculacao ao CAR:
-          - `sigef` — vinculado por geometria georreferenciada (alta confianca)
-          - `matricula` — vinculado por registro de cartorio (media confianca)
-          - `sncr` — vinculado por localizacao e area (menor confianca)
-          - `nenhum` — nao foi possivel vincular a um CAR
+          Nivel de confianca da vinculacao ao CAR: `alto`, `medio`, `baixo` ou `nenhum`.
         </ResponseField>
 
         <ResponseField name="ccir" type="object">
@@ -170,25 +166,6 @@ incluindo informacoes sobre reserva legal, APP, vegetacao nativa e sobreposicoes
 
             <ResponseField name="condicao" type="string">
               Condicao de analise (ex: `Aguardando analise`, `Analisado`).
-            </ResponseField>
-
-            <ResponseField name="match" type="object">
-              Detalhes da qualidade do match espacial.
-
-              <Expandable title="match">
-                <ResponseField name="tipo" type="string">
-                  Tipo do match: `total`, `principal`, `parcial` ou `borda`.
-                </ResponseField>
-                <ResponseField name="area_intersecao_m2" type="number">
-                  Area de intersecao em metros quadrados.
-                </ResponseField>
-                <ResponseField name="percentual_sobre_car" type="number">
-                  Percentual da area do CAR coberta pela intersecao.
-                </ResponseField>
-                <ResponseField name="percentual_sobre_imovel" type="number">
-                  Percentual da area do imovel coberta pela intersecao.
-                </ResponseField>
-              </Expandable>
             </ResponseField>
 
             <ResponseField name="demonstrativo" type="object">
@@ -359,7 +336,7 @@ data.propriedades.forEach((prop) => {
         "municipio": "BOM JARDIM DE GOIAS",
         "uf": "GO",
         "area_total_ha": 877.93,
-        "match_method": "sigef",
+        "match_method": "alto",
         "ccir": {
           "denominacao": "Fazenda Esperanca",
           "classificacao_fundiaria": "GRANDE PROPRIEDADE",
@@ -389,12 +366,6 @@ data.propriedades.forEach((prop) => {
           "status": "AT",
           "tipo": "IRU",
           "condicao": "Aguardando analise",
-          "match": {
-            "tipo": "total",
-            "area_intersecao_m2": 8783660.89,
-            "percentual_sobre_car": 99.8,
-            "percentual_sobre_imovel": 99.5
-          },
           "demonstrativo": {
             "cabecalho": {
               "codigo": "GO-5203401-617CD0C0367A49CD809862F382945511",
