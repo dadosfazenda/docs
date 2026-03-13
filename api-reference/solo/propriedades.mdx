@@ -1,0 +1,77 @@
+---
+title: "Propriedades do Solo"
+api: "GET /soil/properties"
+description: "Dados de solo (argila, areia, pH, carbono, etc.) para uma coordenada"
+---
+
+## Descricao
+
+Retorna propriedades fisico-quimicas do solo para um ponto geografico em diversas profundidades.
+
+**Fonte**: SoilGrids 2.0 (ISRIC)
+**Resolucao**: 250 metros | **Cobertura**: Global
+
+<ParamField query="latitude" type="number" required>Latitude (-90 a 90).</ParamField>
+<ParamField query="longitude" type="number" required>Longitude (-180 a 180).</ParamField>
+
+<ParamField query="properties" type="string[]">
+  Propriedades desejadas. Valores possiveis:
+
+  | Valor | Descricao | Unidade |
+  |-------|-----------|---------|
+  | `clay` | Teor de argila | % |
+  | `sand` | Teor de areia | % |
+  | `silt` | Teor de silte | % |
+  | `phh2o` | pH em agua | - |
+  | `soc` | Carbono organico do solo | g/kg |
+  | `cec` | Capacidade de troca cationica | cmol(c)/kg |
+  | `nitrogen` | Nitrogenio total | g/kg |
+  | `bdod` | Densidade aparente | kg/dm3 |
+  | `cfvo` | Fragmentos grossos | % |
+  | `ocd` | Densidade de carbono organico | kg/m3 |
+  | `ocs` | Estoque de carbono organico | kg/m2 |
+
+  Default: propriedades principais para agricultura.
+</ParamField>
+
+<ParamField query="depths" type="string[]">
+  Profundidades desejadas: `0-5cm`, `5-15cm`, `15-30cm`, `0-30cm`, `30-60cm`, `60-100cm`, `100-200cm`. Default: todas.
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="properties" type="object">
+      Objeto onde cada chave e uma propriedade solicitada contendo valores por profundidade.
+
+      Exemplo:
+      ```json
+      {
+        "clay": {"0-5cm": 25.5, "5-15cm": 24.8, "15-30cm": 26.1},
+        "phh2o": {"0-5cm": 5.2, "5-15cm": 5.1}
+      }
+      ```
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://data-api.dadosfazenda.com.br/soil/properties?latitude=-15.79&longitude=-47.88&properties=clay&properties=phh2o" \
+  -H "Authorization: Bearer SEU_TOKEN"
+```
+
+```python Python
+import httpx
+
+response = httpx.get(
+    "https://data-api.dadosfazenda.com.br/soil/properties",
+    params={"latitude": -15.79, "longitude": -47.88},
+    headers={"Authorization": "Bearer SEU_TOKEN"}
+)
+props = response.json()["data"]["properties"]
+print(f"Argila 0-30cm: {props['clay']['0-30cm']}%")
+print(f"pH 0-30cm: {props['phh2o']['0-30cm']}")
+```
+</RequestExample>

@@ -1,0 +1,38 @@
+---
+title: "Dados Ambientais por SNCI"
+api: "GET /ambiental/snci/{num_certif}"
+description: "Dados ambientais de um certificado SNCI via MapBiomas"
+---
+
+## Descricao
+
+Busca CARs intersectantes a um certificado SNCI, seleciona o principal e consulta o MapBiomas.
+
+<Note>
+  Este endpoint e publico e **nao requer autenticacao**.
+</Note>
+
+<ParamField path="num_certif" type="string" required>
+  Numero do certificado SNCI.
+</ParamField>
+
+## Response
+
+Mesma estrutura de `GET /ambiental/car/{codigo_car}`, com campos adicionais:
+
+<ResponseField name="data.snci_info" type="object">
+  <Expandable title="snci_info">
+    <ResponseField name="num_certif" type="string">Numero do certificado SNCI.</ResponseField>
+    <ResponseField name="total_cars_intersectantes" type="integer">Total de CARs intersectantes.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="data.car_utilizado" type="string">
+  Codigo do CAR utilizado para a consulta.
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://data-api.dadosfazenda.com.br/ambiental/snci/123456789"
+```
+</RequestExample>

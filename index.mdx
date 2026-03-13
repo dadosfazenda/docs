@@ -1,19 +1,77 @@
 ---
 title: "DadosFazenda Data API"
-description: "API de dados rurais do Brasil"
+description: "API de dados rurais do Brasil - propriedades, clima, solo, vegetacao e dados ambientais"
 ---
 
 # DadosFazenda Data API
 
-Bem-vindo a documentacao da DadosFazenda Data API.
+A DadosFazenda Data API permite consultar dados de propriedades rurais brasileiras de forma unificada, cruzando informacoes de diversas fontes oficiais.
 
 ## Endpoints disponiveis
 
 <CardGroup cols={2}>
   <Card title="Busca por CPF/CNPJ" icon="magnifying-glass" href="/api-reference/busca-por-cpf">
-    Consulte propriedades rurais vinculadas a um CPF ou CNPJ.
+    Descubra todas as propriedades rurais vinculadas a um documento.
   </Card>
-  <Card title="Mais endpoints em breve" icon="rocket">
-    Estamos expandindo a API com novas consultas.
+  <Card title="Propriedades Rurais (CAR)" icon="map" href="/api-reference/car/busca-local">
+    Busque CARs por codigo, coordenada ou imovel. Cruzamento automatico com SIGEF e SNCI.
+  </Card>
+  <Card title="Dados Climaticos" icon="cloud-sun" href="/api-reference/weather/precipitacao">
+    Precipitacao, temperatura e clima atual. Historico desde 1940.
+  </Card>
+  <Card title="Commodities" icon="chart-line" href="/api-reference/commodities/precos">
+    Precos de commodities agricolas atualizados diariamente (fonte CNA).
+  </Card>
+  <Card title="Analise de Solo" icon="seedling" href="/api-reference/solo/propriedades">
+    Propriedades fisico-quimicas do solo em resolucao de 250m.
+  </Card>
+  <Card title="Delineamento de Talhoes" icon="draw-polygon" href="/api-reference/delineamento/talhoes">
+    Deteccao automatica de talhoes por IA via imagens de satelite.
+  </Card>
+  <Card title="Vegetacao (NDVI)" icon="leaf" href="/api-reference/ndvi/serie-temporal">
+    Serie temporal do indice de vegetacao em resolucao de 10m.
+  </Card>
+  <Card title="Dados Ambientais" icon="tree" href="/api-reference/ambiental/por-car">
+    Alertas de desmatamento, embargos IBAMA, reserva legal e APP via MapBiomas.
   </Card>
 </CardGroup>
+
+## Fontes de dados
+
+| Fonte | Dados |
+|-------|-------|
+| **SICAR / CAR** | Cadastro Ambiental Rural (geometria, status, demonstrativo ambiental) |
+| **Serpro / CCIR** | Imoveis rurais vinculados ao CPF/CNPJ, titulares, classificacao fundiaria |
+| **MapBiomas Alerta** | Desmatamento, embargos, areas protegidas |
+| **Open-Meteo** | Clima historico e atual (ERA5 reanalysis) |
+| **SoilGrids (ISRIC)** | Propriedades do solo em alta resolucao |
+| **Sentinel-2** | Imagens de satelite e NDVI |
+| **OneSoil** | Delineamento de talhoes por IA |
+| **CNA Brasil** | Precos de commodities agricolas |
+
+## Formato de resposta
+
+```json Sucesso
+{
+  "success": true,
+  "message": "Descricao do resultado",
+  "data": { ... }
+}
+```
+
+```json Erro
+{
+  "success": false,
+  "message": "Descricao do erro",
+  "data": null
+}
+```
+
+| Codigo | Significado |
+|--------|-------------|
+| `400` | Parametros invalidos |
+| `401` | Token ausente ou invalido |
+| `403` | API key desativada |
+| `404` | Recurso nao encontrado |
+| `429` | Limite mensal de requests atingido |
+| `502` | Erro em API externa |

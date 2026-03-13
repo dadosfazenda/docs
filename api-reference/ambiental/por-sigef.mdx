@@ -1,0 +1,38 @@
+---
+title: "Dados Ambientais por SIGEF"
+api: "GET /ambiental/sigef/{parcela_codigo}"
+description: "Dados ambientais de uma parcela SIGEF via MapBiomas"
+---
+
+## Descricao
+
+Busca CARs intersectantes a uma parcela SIGEF, seleciona o principal e consulta o MapBiomas para retornar dados ambientais completos.
+
+<Note>
+  Este endpoint e publico e **nao requer autenticacao**.
+</Note>
+
+<ParamField path="parcela_codigo" type="string" required>
+  Codigo da parcela SIGEF (UUID).
+</ParamField>
+
+## Response
+
+Mesma estrutura de `GET /ambiental/car/{codigo_car}`, com campos adicionais:
+
+<ResponseField name="data.sigef_info" type="object">
+  <Expandable title="sigef_info">
+    <ResponseField name="parcela_codigo" type="string">Codigo da parcela SIGEF.</ResponseField>
+    <ResponseField name="total_cars_intersectantes" type="integer">Total de CARs intersectantes.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="data.car_utilizado" type="string">
+  Codigo do CAR utilizado para a consulta MapBiomas.
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://data-api.dadosfazenda.com.br/ambiental/sigef/a1b2c3d4-e5f6-7890"
+```
+</RequestExample>

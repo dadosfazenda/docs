@@ -1,0 +1,62 @@
+---
+title: "Info do CAR"
+api: "GET /car/{codigo_car}/info"
+description: "Dados basicos do CAR com preview anonimizado do SIGEF"
+---
+
+## Descricao
+
+Retorna dados basicos do CAR com preview do SIGEF principal (dados anonimizados, sem identificacao do proprietario). Ideal para verificar se existe cruzamento antes de fazer uma consulta completa.
+
+<ParamField path="codigo_car" type="string" required>
+  Codigo do CAR.
+</ParamField>
+
+<ParamField query="min_sobreposicao" type="number" default={10.0}>
+  Percentual minimo de sobreposicao (0 a 100).
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="dados_car" type="object">
+      Dados basicos do CAR (codigo, municipio, estado, area, status).
+    </ResponseField>
+
+    <ResponseField name="dados_imovel" type="object">
+      SIGEF anonimizado (sem nome do proprietario). `null` se nao encontrado.
+    </ResponseField>
+
+    <ResponseField name="dados_snci" type="object">
+      SNCI anonimizado. `null` se nao encontrado.
+    </ResponseField>
+
+    <ResponseField name="tem_sigef" type="boolean">
+      Indica se foi encontrado SIGEF correspondente.
+    </ResponseField>
+
+    <ResponseField name="tem_snci" type="boolean">
+      Indica se foi encontrado SNCI correspondente.
+    </ResponseField>
+
+    <ResponseField name="sobreposicao" type="object">
+      Metricas de sobreposicao. `null` se nao ha match.
+    </ResponseField>
+
+    <ResponseField name="from_cache" type="boolean">
+      Se veio do cache.
+    </ResponseField>
+
+    <ResponseField name="from_local_db" type="boolean">
+      Se veio do banco local.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://data-api.dadosfazenda.com.br/car/GO-5203401-617CD0C0367A49CD/info" \
+  -H "Authorization: Bearer SEU_TOKEN"
+```
+</RequestExample>

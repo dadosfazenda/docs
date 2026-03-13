@@ -1,0 +1,37 @@
+---
+title: "Precos de Commodities"
+api: "GET /prices/"
+description: "Precos mais recentes de commodities agricolas (fonte: CNA Brasil)"
+---
+
+## Descricao
+
+Retorna os precos mais recentes de commodities agricolas do Brasil.
+
+**Fonte**: CNA Brasil (cnabrasil.org.br)
+**Atualizacao**: Diaria
+
+<ParamField query="produto" type="string">
+  Filtrar por produto (ex: `SOJA`, `MILHO`, `ARROZ`, `CAFE`, `ALGODAO`).
+</ParamField>
+
+<ParamField query="uf" type="string">
+  Filtrar por estado (ex: `SP`, `MT`, `GO`, `PR`).
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="prices" type="array">
+      Array de cotacoes com `produto`, `uf`, `preco`, `data` e campos especificos por commodity.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://data-api.dadosfazenda.com.br/prices/?produto=SOJA&uf=MT" \
+  -H "Authorization: Bearer SEU_TOKEN"
+```
+</RequestExample>

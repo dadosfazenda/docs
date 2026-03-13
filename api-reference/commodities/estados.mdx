@@ -1,0 +1,30 @@
+---
+title: "Estados Disponiveis"
+api: "GET /prices/states"
+description: "Lista de UFs com cotacoes disponiveis"
+---
+
+## Descricao
+
+Retorna os estados (UFs) que possuem cotacoes disponiveis, opcionalmente filtrado por produto.
+
+<ParamField query="produto" type="string">
+  Filtrar estados por produto especifico.
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="states" type="array">
+      Array de strings com codigos de UF (ex: `SP`, `MT`, `GO`).
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://data-api.dadosfazenda.com.br/prices/states?produto=SOJA" \
+  -H "Authorization: Bearer SEU_TOKEN"
+```
+</RequestExample>

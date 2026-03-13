@@ -1,0 +1,38 @@
+---
+title: "Precipitacao por CAR"
+api: "GET /weather/precipitation/car/{codigo_car}"
+description: "Precipitacao diaria para uma fazenda a partir do codigo CAR"
+---
+
+## Descricao
+
+Retorna dados de precipitacao para o centroide de um CAR cadastrado no banco local.
+
+<ParamField path="codigo_car" type="string" required>Codigo do CAR.</ParamField>
+<ParamField query="start_date" type="string" required>Data inicio `YYYY-MM-DD`.</ParamField>
+<ParamField query="end_date" type="string" required>Data fim `YYYY-MM-DD`.</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="dates" type="array">Datas.</ResponseField>
+    <ResponseField name="precipitation" type="array">Precipitacao em mm.</ResponseField>
+    <ResponseField name="car" type="object">
+      <Expandable title="car">
+        <ResponseField name="codigo" type="string">Codigo do CAR.</ResponseField>
+        <ResponseField name="municipio" type="string">Municipio.</ResponseField>
+        <ResponseField name="estado" type="string">UF.</ResponseField>
+        <ResponseField name="area_ha" type="number">Area em hectares.</ResponseField>
+        <ResponseField name="centroid" type="object">`latitude`, `longitude`</ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://data-api.dadosfazenda.com.br/weather/precipitation/car/GO-5203401-617CD0C0?start_date=2024-01-01&end_date=2024-01-31" \
+  -H "Authorization: Bearer SEU_TOKEN"
+```
+</RequestExample>

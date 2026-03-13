@@ -5,17 +5,51 @@ description: "Como autenticar suas requests na DadosFazenda Data API"
 
 # Autenticacao
 
-Todas as requests a API requerem um token Bearer no header `Authorization`.
+Todas as requests a API requerem uma **API key** no header `Authorization` no formato Bearer.
 
 ```bash
-curl -X GET "https://data-api.dadosfazenda.com.br/cpf-car/12345678901" \
-  -H "Authorization: Bearer SEU_TOKEN"
+curl -X GET "https://data-api.dadosfazenda.com.br/car/local/SP-35458..." \
+  -H "Authorization: Bearer df_sua_api_key_aqui"
 ```
 
-## Obtendo seu token
+## Obtendo sua API key
 
-Entre em contato com a equipe DadosFazenda para obter suas credenciais de acesso.
+API keys sao geradas pela equipe DadosFazenda atraves do painel administrativo. Cada key esta vinculada a um contrato e possui:
+
+- **Nome identificador** — para facilitar o gerenciamento
+- **Limite mensal de requests** — contagem automatica com reset no inicio de cada mes
+- **Status ativo/inativo** — pode ser desativada a qualquer momento
 
 <Note>
-  Tokens tem validade. Se receber um erro `401 Unauthorized`, solicite um novo token.
+  A API key completa e exibida **apenas uma vez** no momento da criacao. Armazene-a com seguranca.
 </Note>
+
+## Limites de uso
+
+Cada API key tem um limite mensal de requests. Ao atingir o limite:
+
+```json
+{
+  "detail": "Limite mensal de 1000 requests atingido. Reseta no proximo mes."
+}
+```
+
+## Endpoints publicos
+
+Os seguintes endpoints **nao requerem autenticacao**:
+
+| Endpoint | Descricao |
+|----------|-----------|
+| `GET /health` | Health check |
+| `GET /ambiental/car/{codigo_car}` | Dados ambientais por CAR |
+| `GET /ambiental/sigef/{parcela_codigo}` | Dados ambientais por SIGEF |
+| `GET /ambiental/snci/{num_certif}` | Dados ambientais por SNCI |
+
+## Erros de autenticacao
+
+| Codigo | Mensagem | Causa |
+|--------|----------|-------|
+| `401` | Token ausente | Header `Authorization` nao enviado |
+| `401` | API key invalida | Key nao existe no sistema |
+| `403` | API key desativada | Key foi desativada pelo admin |
+| `429` | Limite mensal atingido | Cota mensal excedida |

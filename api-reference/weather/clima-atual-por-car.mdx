@@ -1,0 +1,33 @@
+---
+title: "Clima Atual por CAR"
+api: "GET /weather/current/car/{codigo_car}"
+description: "Clima atual para uma fazenda a partir do codigo CAR"
+---
+
+## Descricao
+
+Retorna condicoes climaticas atuais para o centroide de um CAR.
+
+<ParamField path="codigo_car" type="string" required>Codigo do CAR.</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="temperature" type="number">Temperatura em Celsius.</ResponseField>
+    <ResponseField name="weather_code" type="integer">Codigo WMO.</ResponseField>
+    <ResponseField name="wind_speed" type="number">Vento em km/h.</ResponseField>
+    <ResponseField name="wind_direction" type="integer">Direcao do vento em graus.</ResponseField>
+    <ResponseField name="relative_humidity" type="integer">Umidade relativa %.</ResponseField>
+    <ResponseField name="car" type="object">
+      `codigo`, `municipio`, `estado`, `area_ha`, `centroid`
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://data-api.dadosfazenda.com.br/weather/current/car/GO-5203401-617CD0C0" \
+  -H "Authorization: Bearer SEU_TOKEN"
+```
+</RequestExample>

@@ -1,0 +1,42 @@
+---
+title: "Busca CAR por Imovel"
+api: "GET /car/search/property/{codigo_imovel}"
+description: "Busca CARs a partir do codigo do imovel (SNCR/SIGEF)"
+---
+
+## Descricao
+
+Busca CARs que intersectam um imovel SIGEF ou SNCI a partir do seu codigo de registro.
+
+<ParamField path="codigo_imovel" type="string" required>
+  Codigo do imovel (SNCR ou SIGEF).
+</ParamField>
+
+<ParamField query="min_sobreposicao" type="number" default={10.0}>
+  Percentual minimo de sobreposicao (0 a 100).
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="dados_imovel" type="object">
+      Dados do imovel (SIGEF ou SNCI) sem geometria.
+    </ResponseField>
+
+    <ResponseField name="cars" type="array">
+      Lista de CARs que intersectam o imovel.
+    </ResponseField>
+
+    <ResponseField name="total_cars" type="integer">
+      Total de CARs encontrados.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://data-api.dadosfazenda.com.br/car/search/property/433133781" \
+  -H "Authorization: Bearer SEU_TOKEN"
+```
+</RequestExample>

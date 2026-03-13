@@ -1,0 +1,26 @@
+---
+title: "Produtos Disponiveis"
+api: "GET /prices/products"
+description: "Lista de produtos (commodities) disponiveis para consulta"
+---
+
+## Descricao
+
+Retorna a lista de todos os produtos agricolas disponiveis na base de precos.
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="products" type="array">
+      Array de strings com nomes dos produtos (ex: `SOJA`, `MILHO`, `CAFE`).
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://data-api.dadosfazenda.com.br/prices/products" \
+  -H "Authorization: Bearer SEU_TOKEN"
+```
+</RequestExample>

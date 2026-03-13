@@ -1,0 +1,31 @@
+---
+title: "Solo por CAR"
+api: "GET /soil/properties/car/{codigo_car}"
+description: "Dados de solo para uma fazenda a partir do codigo CAR"
+---
+
+## Descricao
+
+Retorna propriedades do solo para o centroide de um CAR cadastrado.
+
+<ParamField path="codigo_car" type="string" required>Codigo do CAR.</ParamField>
+<ParamField query="properties" type="string[]">Propriedades desejadas (ver endpoint `/soil/properties`).</ParamField>
+<ParamField query="depths" type="string[]">Profundidades desejadas.</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="properties" type="object">Propriedades do solo por profundidade.</ResponseField>
+    <ResponseField name="car" type="object">
+      `codigo`, `municipio`, `estado`, `area_ha`, `centroid`
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://data-api.dadosfazenda.com.br/soil/properties/car/GO-5203401-617CD0C0" \
+  -H "Authorization: Bearer SEU_TOKEN"
+```
+</RequestExample>
