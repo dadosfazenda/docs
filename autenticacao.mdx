@@ -1,0 +1,21 @@
+---
+title: "Autenticacao"
+description: "Como autenticar suas requests na DadosFazenda Data API"
+---
+
+# Autenticacao
+
+Todas as requests a API requerem um token Bearer no header `Authorization`.
+
+```bash
+curl -X GET "https://data-api.dadosfazenda.com.br/cpf-car/12345678901" \
+  -H "Authorization: Bearer SEU_TOKEN"
+```
+
+## Obtendo seu token
+
+Entre em contato com a equipe DadosFazenda para obter suas credenciais de acesso.
+
+<Note>
+  Tokens tem validade. Se receber um erro `401 Unauthorized`, solicite um novo token.
+</Note>
