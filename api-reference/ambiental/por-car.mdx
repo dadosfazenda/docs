@@ -1,5 +1,5 @@
 ---
-title: "Dados Ambientais por CAR"
+title: "Alertas Ambientais por CAR"
 api: "GET /ambiental/car/{codigo_car}"
 description: "Alertas de desmatamento, embargos IBAMA, reserva legal e APP via MapBiomas"
 ---
@@ -8,14 +8,12 @@ description: "Alertas de desmatamento, embargos IBAMA, reserva legal e APP via M
 
 Retorna dados ambientais completos de um imovel rural consultando a API MapBiomas Alerta v2. Inclui alertas de desmatamento, embargos, sobreposicoes com areas protegidas e imagens de satelite antes/depois.
 
+As imagens de satelite dos alertas sao cacheadas em nosso servidor e entregues via URLs assinadas com validade de **1 hora**.
+
 **Fonte**: MapBiomas Alerta (plataforma.alerta.mapbiomas.org)
 
-<Note>
-  Este endpoint e publico e **nao requer autenticacao**.
-</Note>
-
 <ParamField path="codigo_car" type="string" required>
-  Codigo do CAR.
+  Codigo do CAR. Exemplo: `MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17`
 </ParamField>
 
 ## Response
@@ -23,87 +21,125 @@ Retorna dados ambientais completos de um imovel rural consultando a API MapBioma
 <ResponseField name="data" type="object">
   <Expandable title="data">
     <ResponseField name="imovel" type="object">
+      Dados do imovel rural.
+
       <Expandable title="imovel">
-        <ResponseField name="area" type="number">Area total em hectares.</ResponseField>
-        <ResponseField name="tipo" type="string">Tipo do imovel.</ResponseField>
+        <ResponseField name="codigo_car" type="string">Codigo do CAR.</ResponseField>
+        <ResponseField name="tipo" type="string">Tipo do imovel (ex: `Imovel Rural`, `Assentamento`).</ResponseField>
         <ResponseField name="estado" type="string">UF.</ResponseField>
-        <ResponseField name="bbox" type="array">Bounding box `[minLng, minLat, maxLng, maxLat]`.</ResponseField>
-        <ResponseField name="versao_car" type="string">Versao do CAR.</ResponseField>
+        <ResponseField name="area_ha" type="number">Area total em hectares.</ResponseField>
+        <ResponseField name="bounding_box" type="array">Bounding box `[minLng, minLat, maxLng, maxLat]`.</ResponseField>
+        <ResponseField name="versao" type="string">Versao do CAR.</ResponseField>
+        <ResponseField name="ativo" type="boolean">Se o imovel esta ativo.</ResponseField>
       </Expandable>
     </ResponseField>
 
     <ResponseField name="resumo_ambiental" type="object">
+      Resumo dos dados ambientais.
+
       <Expandable title="resumo">
-        <ResponseField name="total_alertas" type="integer">Total de alertas de desmatamento.</ResponseField>
-        <ResponseField name="area_desmatada_ha" type="number">Area total desmatada em hectares.</ResponseField>
-        <ResponseField name="area_embargada_ha" type="number">Area embargada pelo IBAMA em hectares.</ResponseField>
-        <ResponseField name="total_sobreposicoes" type="integer">Total de sobreposicoes com areas protegidas.</ResponseField>
+        <ResponseField name="total_alertas_desmatamento" type="integer">Total de alertas de desmatamento.</ResponseField>
+        <ResponseField name="area_total_desmatada_ha" type="number">Area total desmatada em hectares.</ResponseField>
+        <ResponseField name="possui_embargo" type="boolean">Se possui embargo do IBAMA.</ResponseField>
+        <ResponseField name="sobreposicao_unidade_conservacao" type="boolean">Se ha sobreposicao com UC.</ResponseField>
+        <ResponseField name="sobreposicao_terra_indigena" type="boolean">Se ha sobreposicao com TI.</ResponseField>
       </Expandable>
     </ResponseField>
 
     <ResponseField name="alertas_desmatamento" type="array">
+      Lista detalhada de alertas de desmatamento.
+
       <Expandable title="alerta">
+        <ResponseField name="codigo_alerta" type="string">Codigo unico do alerta.</ResponseField>
         <ResponseField name="area_ha" type="number">Area do alerta em hectares.</ResponseField>
-        <ResponseField name="data" type="string">Data do alerta.</ResponseField>
-        <ResponseField name="fonte" type="string">Fonte do alerta (ex: DETER, PRODES).</ResponseField>
-        <ResponseField name="classe" type="string">Classe de uso do solo.</ResponseField>
-        <ResponseField name="velocidade" type="string">Categoria de velocidade do desmatamento.</ResponseField>
+        <ResponseField name="detectado_em" type="string">Data de deteccao.</ResponseField>
+        <ResponseField name="publicado_em" type="string">Data de publicacao.</ResponseField>
+        <ResponseField name="status" type="string">Status do alerta.</ResponseField>
+        <ResponseField name="fontes" type="array">Fontes do alerta (ex: `DETER`, `PRODES`).</ResponseField>
+        <ResponseField name="classes_desmatamento" type="array">Classes de uso do solo.</ResponseField>
+        <ResponseField name="velocidade_desmatamento_dias" type="number">Dias para o desmatamento ocorrer.</ResponseField>
+
+        <ResponseField name="embargos" type="object">
+          Embargos IBAMA sobrepostos ao alerta.
+
+          <Expandable title="embargos">
+            <ResponseField name="area_ha" type="number">Area embargada sobreposta.</ResponseField>
+            <ResponseField name="total" type="integer">Total de embargos sobrepostos.</ResponseField>
+          </Expandable>
+        </ResponseField>
+
+        <ResponseField name="reserva_legal" type="object">
+          Sobreposicao com Reserva Legal.
+
+          <Expandable title="reserva_legal">
+            <ResponseField name="area_ha" type="number">Area de RL sobreposta.</ResponseField>
+            <ResponseField name="total" type="integer">Total de RLs sobrepostas.</ResponseField>
+          </Expandable>
+        </ResponseField>
+
+        <ResponseField name="app" type="object">
+          Sobreposicao com APP.
+
+          <Expandable title="app">
+            <ResponseField name="area_ha" type="number">Area de APP sobreposta.</ResponseField>
+            <ResponseField name="total" type="integer">Total de APPs sobrepostas.</ResponseField>
+          </Expandable>
+        </ResponseField>
+
+        <ResponseField name="territorios" type="object">
+          Territorios sobrepostos ao alerta.
+
+          <Expandable title="territorios">
+            <ResponseField name="biomas" type="array">Biomas sobrepostos.</ResponseField>
+            <ResponseField name="unidades_conservacao" type="array">Unidades de conservacao.</ResponseField>
+            <ResponseField name="terras_indigenas" type="array">Terras indigenas.</ResponseField>
+            <ResponseField name="quilombos" type="array">Comunidades quilombolas.</ResponseField>
+            <ResponseField name="assentamentos" type="array">Assentamentos.</ResponseField>
+          </Expandable>
+        </ResponseField>
+
+        <ResponseField name="imagens_satelite" type="array">
+          Imagens de satelite do alerta. URLs assinadas com validade de 1 hora.
+
+          <Expandable title="imagem">
+            <ResponseField name="url" type="string">URL assinada da imagem (validade 1h).</ResponseField>
+            <ResponseField name="data_aquisicao" type="string">Data de aquisicao da imagem.</ResponseField>
+            <ResponseField name="constelacao" type="string">Constelacao do satelite.</ResponseField>
+            <ResponseField name="satelite" type="string">Nome do satelite.</ResponseField>
+            <ResponseField name="cached" type="boolean">Se a imagem esta cacheada em nosso servidor.</ResponseField>
+          </Expandable>
+        </ResponseField>
       </Expandable>
     </ResponseField>
 
-    <ResponseField name="reserva_legal" type="object">
-      `area_ha`, `geometrias` (GeoJSON).
-    </ResponseField>
-
-    <ResponseField name="app" type="object">
-      `area_ha`, `geometrias` (GeoJSON).
-    </ResponseField>
-
-    <ResponseField name="embargos" type="object">
-      `area_ha`, `detalhes` (array de embargos IBAMA).
-    </ResponseField>
-
-    <ResponseField name="autorizacoes_desmatamento" type="array">
-      Autorizacoes de supressao vegetal.
-    </ResponseField>
-
-    <ResponseField name="territorios_cruzados" type="object">
-      <Expandable title="territorios">
-        <ResponseField name="biomas" type="array">Biomas sobrepostos.</ResponseField>
-        <ResponseField name="cidades" type="array">Municipios.</ResponseField>
-        <ResponseField name="estados" type="array">Estados.</ResponseField>
-        <ResponseField name="unidades_conservacao" type="array">Unidades de conservacao.</ResponseField>
-        <ResponseField name="terras_indigenas" type="array">Terras indigenas.</ResponseField>
-        <ResponseField name="quilombos" type="array">Comunidades quilombolas.</ResponseField>
-        <ResponseField name="assentamentos" type="array">Assentamentos.</ResponseField>
-      </Expandable>
-    </ResponseField>
-
-    <ResponseField name="imagens_satelite" type="array">
-      Imagens de satelite antes/depois dos alertas.
-    </ResponseField>
-
-    <ResponseField name="nascentes" type="array">
-      Nascentes d'agua dentro da propriedade.
+    <ResponseField name="source" type="string">
+      Fonte dos dados (`MapBiomas Alerta API v2 (GraphQL)`).
     </ResponseField>
   </Expandable>
 </ResponseField>
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://data-api.dadosfazenda.com.br/ambiental/car/GO-5203401-617CD0C0"
+curl -X GET "https://data-api.dadosfazenda.com.br/ambiental/car/MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17" \
+  -H "Authorization: Bearer SEU_TOKEN_API"
 ```
 
 ```python Python
 import httpx
 
 response = httpx.get(
-    "https://data-api.dadosfazenda.com.br/ambiental/car/GO-5203401-617CD0C0"
+    "https://data-api.dadosfazenda.com.br/ambiental/car/MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17",
+    headers={"Authorization": "Bearer SEU_TOKEN"}
 )
 data = response.json()["data"]
 resumo = data["resumo_ambiental"]
-print(f"Alertas: {resumo['total_alertas']}")
-print(f"Area desmatada: {resumo['area_desmatada_ha']} ha")
-print(f"Area embargada: {resumo['area_embargada_ha']} ha")
+print(f"Alertas: {resumo['total_alertas_desmatamento']}")
+print(f"Area desmatada: {resumo['area_total_desmatada_ha']} ha")
+print(f"Possui embargo: {resumo['possui_embargo']}")
+
+for alerta in data["alertas_desmatamento"]:
+    print(f"  Alerta {alerta['codigo_alerta']}: {alerta['area_ha']} ha ({alerta['detectado_em']})")
+    for img in alerta.get("imagens_satelite", []):
+        print(f"    Imagem: {img['url']}")
 ```
 </RequestExample>

@@ -13,26 +13,26 @@ A DadosFazenda Data API permite consultar dados de propriedades rurais brasileir
   <Card title="Busca por CPF/CNPJ" icon="magnifying-glass" href="/api-reference/busca-por-cpf">
     Descubra todas as propriedades rurais vinculadas a um documento.
   </Card>
-  <Card title="Propriedades Rurais (CAR)" icon="map" href="/api-reference/car/busca-local">
-    Busque CARs por codigo, coordenada ou imovel. Cruzamento automatico com SIGEF e SNCI.
+  <Card title="Busca CAR por Coordenadas" icon="map-pin" href="/api-reference/car/busca-coordenadas">
+    Encontre o CAR a partir de latitude e longitude.
   </Card>
-  <Card title="Dados Climaticos" icon="cloud-sun" href="/api-reference/weather/precipitacao">
-    Precipitacao, temperatura e clima atual. Historico desde 1940.
+  <Card title="Informacoes do CAR" icon="map" href="/api-reference/car/info">
+    Dados completos do CAR com demonstrativo ambiental (RL, APP, vegetacao nativa).
   </Card>
-  <Card title="Commodities" icon="chart-line" href="/api-reference/commodities/precos">
-    Precos de commodities agricolas atualizados diariamente (fonte CNA).
+  <Card title="Alertas Ambientais" icon="tree" href="/api-reference/ambiental/por-car">
+    Desmatamento, embargos IBAMA, reserva legal e APP via MapBiomas.
   </Card>
-  <Card title="Analise de Solo" icon="seedling" href="/api-reference/solo/propriedades">
-    Propriedades fisico-quimicas do solo em resolucao de 250m.
+  <Card title="Precipitacao" icon="cloud-rain" href="/api-reference/weather/precipitacao-por-car">
+    Historico de precipitacao diaria por CAR. Dados desde 1940.
   </Card>
-  <Card title="Delineamento de Talhoes" icon="draw-polygon" href="/api-reference/delineamento/talhoes">
-    Deteccao automatica de talhoes por IA via imagens de satelite.
+  <Card title="Temperatura" icon="temperature-half" href="/api-reference/weather/temperatura-por-car">
+    Historico de temperatura diaria (max/min) por CAR.
   </Card>
-  <Card title="Vegetacao (NDVI)" icon="leaf" href="/api-reference/ndvi/serie-temporal">
-    Serie temporal do indice de vegetacao em resolucao de 10m.
+  <Card title="Analise de Solo" icon="seedling" href="/api-reference/solo/propriedades-por-car">
+    Propriedades fisico-quimicas do solo (argila, pH, carbono, CTC).
   </Card>
-  <Card title="Dados Ambientais" icon="tree" href="/api-reference/ambiental/por-car">
-    Alertas de desmatamento, embargos IBAMA, reserva legal e APP via MapBiomas.
+  <Card title="NDVI (Vegetacao)" icon="leaf" href="/api-reference/ndvi/serie-temporal-por-car">
+    Serie temporal do indice de vegetacao via Sentinel-2 (resolucao 10m).
   </Card>
 </CardGroup>
 
@@ -42,12 +42,10 @@ A DadosFazenda Data API permite consultar dados de propriedades rurais brasileir
 |-------|-------|
 | **SICAR / CAR** | Cadastro Ambiental Rural (geometria, status, demonstrativo ambiental) |
 | **Serpro / CCIR** | Imoveis rurais vinculados ao CPF/CNPJ, titulares, classificacao fundiaria |
-| **MapBiomas Alerta** | Desmatamento, embargos, areas protegidas |
-| **Open-Meteo** | Clima historico e atual (ERA5 reanalysis) |
-| **SoilGrids (ISRIC)** | Propriedades do solo em alta resolucao |
-| **Sentinel-2** | Imagens de satelite e NDVI |
-| **OneSoil** | Delineamento de talhoes por IA |
-| **CNA Brasil** | Precos de commodities agricolas |
+| **MapBiomas Alerta** | Desmatamento, embargos, areas protegidas, imagens de satelite |
+| **Open-Meteo** | Precipitacao e temperatura historica (ERA5 reanalysis) |
+| **SoilGrids (ISRIC)** | Propriedades do solo em resolucao de 250m |
+| **Sentinel-2** | Imagens de satelite e NDVI em resolucao de 10m |
 
 ## Formato de resposta
 

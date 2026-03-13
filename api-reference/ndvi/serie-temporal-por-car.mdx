@@ -1,0 +1,187 @@
+---
+title: "NDVI por CAR"
+api: "GET /ndvi/car/{codigo_car}/timeseries"
+description: "Serie temporal do indice de vegetacao (NDVI) para um CAR"
+---
+
+## Descricao
+
+Retorna a serie temporal do indice de vegetacao (NDVI) para uma propriedade rural a partir do codigo CAR.
+O NDVI e calculado a partir de imagens do satelite Sentinel-2 com resolucao de 10 metros.
+
+**Periodo maximo permitido: 90 dias.**
+
+Quando `images=true`, inclui URLs assinadas para imagens RGB e NDVI processadas (validade de 1 hora).
+
+Fonte: Sentinel-2 via Planetary Computer (Microsoft). Resolucao: 10m. Mascaramento de nuvens automatico.
+
+<ParamField path="codigo_car" type="string" required>
+  Codigo do CAR. Exemplo: `MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17`
+</ParamField>
+
+<ParamField query="start_date" type="string">
+  Data inicio no formato `YYYY-MM-DD`. Default: 90 dias atras.
+</ParamField>
+
+<ParamField query="end_date" type="string">
+  Data fim no formato `YYYY-MM-DD`. Default: hoje. Maximo de 90 dias de intervalo.
+</ParamField>
+
+<ParamField query="images" type="boolean" default={false}>
+  Se `true`, gera imagens de satelite (RGB e NDVI) e retorna URLs assinadas com validade de 1 hora.
+</ParamField>
+
+<ParamField query="force" type="boolean" default={false}>
+  Se `true`, recalcula o NDVI mesmo se houver dados em cache.
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="property_code" type="string">
+      Codigo do CAR consultado.
+    </ResponseField>
+
+    <ResponseField name="property_type" type="string">
+      Tipo de propriedade (sempre `car` nesta rota).
+    </ResponseField>
+
+    <ResponseField name="start_date" type="string">
+      Data inicio do periodo consultado.
+    </ResponseField>
+
+    <ResponseField name="end_date" type="string">
+      Data fim do periodo consultado.
+    </ResponseField>
+
+    <ResponseField name="geometry_area_ha" type="number">
+      Area da geometria em hectares.
+    </ResponseField>
+
+    <ResponseField name="cached" type="boolean">
+      Se os dados vieram do cache.
+    </ResponseField>
+
+    <ResponseField name="timeseries" type="array">
+      Array de pontos da serie temporal.
+
+      <Expandable title="datapoint">
+        <ResponseField name="scene_date" type="string">
+          Data da cena do satelite (`YYYY-MM-DD`).
+        </ResponseField>
+
+        <ResponseField name="ndvi_mean" type="number">
+          NDVI medio da propriedade (de -1 a 1). Valores acima de 0.6 indicam vegetacao densa e saudavel.
+        </ResponseField>
+
+        <ResponseField name="ndvi_median" type="number">
+          NDVI mediano.
+        </ResponseField>
+
+        <ResponseField name="ndvi_min" type="number">
+          NDVI minimo.
+        </ResponseField>
+
+        <ResponseField name="ndvi_max" type="number">
+          NDVI maximo.
+        </ResponseField>
+
+        <ResponseField name="ndvi_std" type="number">
+          Desvio padrao do NDVI.
+        </ResponseField>
+
+        <ResponseField name="cloud_cover" type="number">
+          Cobertura de nuvens da cena (0 a 100%).
+        </ResponseField>
+
+        <ResponseField name="rgb_url" type="string">
+          URL assinada da imagem RGB (validade 1h). Disponivel quando `images=true`.
+        </ResponseField>
+
+        <ResponseField name="ndvi_url" type="string">
+          URL assinada da imagem NDVI colorida (validade 1h). Disponivel quando `images=true`.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Escala NDVI
+
+| Faixa | Classificacao |
+|-------|--------------|
+| -1.0 a 0.0 | Agua, solo exposto, areas urbanas |
+| 0.0 a 0.2 | Solo exposto, vegetacao muito escassa |
+| 0.2 a 0.4 | Vegetacao rala ou estressada |
+| 0.4 a 0.6 | Vegetacao moderada |
+| 0.6 a 0.8 | Vegetacao densa e saudavel |
+| 0.8 a 1.0 | Vegetacao muito densa |
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://data-api.dadosfazenda.com.br/ndvi/car/MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17/timeseries?start_date=2025-01-01&end_date=2025-03-01&images=true" \
+  -H "Authorization: Bearer SEU_TOKEN_API"
+```
+
+```python Python
+import httpx
+
+response = httpx.get(
+    "https://data-api.dadosfazenda.com.br/ndvi/car/MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17/timeseries",
+    params={
+        "start_date": "2025-01-01",
+        "end_date": "2025-03-01",
+        "images": True,
+    },
+    headers={"Authorization": "Bearer SEU_TOKEN"}
+)
+data = response.json()["data"]
+for point in data["timeseries"]:
+    print(f"{point['scene_date']}: NDVI={point['ndvi_mean']:.3f}")
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 - Sucesso
+{
+  "success": true,
+  "data": {
+    "property_code": "MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17",
+    "property_type": "car",
+    "start_date": "2025-01-01",
+    "end_date": "2025-03-01",
+    "geometry_area_ha": 523.45,
+    "cached": false,
+    "timeseries": [
+      {
+        "scene_date": "2025-01-05",
+        "ndvi_mean": 0.72,
+        "ndvi_median": 0.74,
+        "ndvi_min": 0.12,
+        "ndvi_max": 0.89,
+        "ndvi_std": 0.11,
+        "cloud_cover": 8.5,
+        "rgb_url": "https://storage.example.com/ndvi/MT-5106505.../2025-01-05_rgb.png?...",
+        "ndvi_url": "https://storage.example.com/ndvi/MT-5106505.../2025-01-05_ndvi.png?..."
+      },
+      {
+        "scene_date": "2025-01-20",
+        "ndvi_mean": 0.68,
+        "ndvi_median": 0.70,
+        "ndvi_min": 0.10,
+        "ndvi_max": 0.85,
+        "ndvi_std": 0.13,
+        "cloud_cover": 12.3
+      }
+    ]
+  }
+}
+```
+
+```json 400 - Periodo excedido
+{
+  "detail": "Periodo maximo permitido: 90 dias. Solicitado: 120 dias."
+}
+```
+</ResponseExample>

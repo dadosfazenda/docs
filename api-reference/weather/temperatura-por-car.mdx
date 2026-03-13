@@ -1,12 +1,13 @@
 ---
-title: "Precipitacao por CAR"
-api: "GET /weather/precipitation/car/{codigo_car}"
-description: "Precipitacao diaria acumulada (mm) para uma fazenda a partir do codigo CAR"
+title: "Temperatura por CAR"
+api: "GET /weather/temperature/car/{codigo_car}"
+description: "Historico de temperatura diaria (maxima e minima) para um CAR"
 ---
 
 ## Descricao
 
-Retorna dados de precipitacao diaria acumulada (em milimetros) para o centroide de uma propriedade rural a partir do codigo CAR.
+Retorna o historico de temperatura diaria (maxima e minima em graus Celsius) para o centroide de uma propriedade rural
+a partir do codigo CAR.
 
 **Periodo maximo permitido: 12 meses (366 dias).**
 
@@ -33,8 +34,12 @@ Dados disponiveis de 1940 ate ~5 dias atras.
       Array de datas no formato `YYYY-MM-DD`.
     </ResponseField>
 
-    <ResponseField name="precipitation" type="array">
-      Array de precipitacao diaria acumulada em milimetros (mm).
+    <ResponseField name="temperature_max" type="array">
+      Array de temperaturas maximas diarias em graus Celsius.
+    </ResponseField>
+
+    <ResponseField name="temperature_min" type="array">
+      Array de temperaturas minimas diarias em graus Celsius.
     </ResponseField>
 
     <ResponseField name="car" type="object">
@@ -58,7 +63,7 @@ Dados disponiveis de 1940 ate ~5 dias atras.
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://data-api.dadosfazenda.com.br/weather/precipitation/car/GO-5205513-DAF91DDC4B054D37919111EA3E7322D3?start_date=2025-01-01&end_date=2025-03-01" \
+curl -X GET "https://data-api.dadosfazenda.com.br/weather/temperature/car/GO-5205513-DAF91DDC4B054D37919111EA3E7322D3?start_date=2025-01-01&end_date=2025-03-01" \
   -H "Authorization: Bearer SEU_TOKEN_API"
 ```
 
@@ -66,13 +71,13 @@ curl -X GET "https://data-api.dadosfazenda.com.br/weather/precipitation/car/GO-5
 import httpx
 
 response = httpx.get(
-    "https://data-api.dadosfazenda.com.br/weather/precipitation/car/GO-5205513-DAF91DDC4B054D37919111EA3E7322D3",
+    "https://data-api.dadosfazenda.com.br/weather/temperature/car/GO-5205513-DAF91DDC4B054D37919111EA3E7322D3",
     params={"start_date": "2025-01-01", "end_date": "2025-03-01"},
     headers={"Authorization": "Bearer SEU_TOKEN"}
 )
 data = response.json()["data"]
-total = sum(data["precipitation"])
-print(f"Precipitacao total: {total:.1f} mm")
+for i, dt in enumerate(data["dates"]):
+    print(f"{dt}: {data['temperature_min'][i]}C - {data['temperature_max'][i]}C")
 ```
 </RequestExample>
 
@@ -82,7 +87,8 @@ print(f"Precipitacao total: {total:.1f} mm")
   "success": true,
   "data": {
     "dates": ["2025-01-01", "2025-01-02", "2025-01-03"],
-    "precipitation": [12.5, 0.0, 8.3],
+    "temperature_max": [32.5, 33.1, 31.8],
+    "temperature_min": [21.3, 22.0, 20.5],
     "car": {
       "codigo": "GO-5205513-DAF91DDC4B054D37919111EA3E7322D3",
       "municipio": "Jussara",

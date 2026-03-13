@@ -26,64 +26,31 @@
         "tab": "API Reference",
         "groups": [
           {
-            "group": "CPF/CNPJ",
+            "group": "Propriedade Rural",
             "pages": [
-              "api-reference/busca-por-cpf"
+              "api-reference/busca-por-cpf",
+              "api-reference/car/busca-coordenadas",
+              "api-reference/car/info"
             ]
           },
           {
-            "group": "CAR",
+            "group": "Embargos",
             "pages": [
-              "api-reference/car/busca-local",
-              "api-reference/car/busca-por-raio",
-              "api-reference/car/busca-por-imovel",
-              "api-reference/car/info",
-              "api-reference/car/demonstrativo"
+              "api-reference/ambiental/por-car"
             ]
           },
           {
-            "group": "Clima",
+            "group": "Clima / Solo",
             "pages": [
-              "api-reference/weather/precipitacao",
+              "api-reference/solo/propriedades-por-car",
               "api-reference/weather/precipitacao-por-car",
-              "api-reference/weather/temperatura",
-              "api-reference/weather/clima-atual",
-              "api-reference/weather/clima-atual-por-car"
+              "api-reference/weather/temperatura-por-car"
             ]
           },
           {
-            "group": "Commodities",
+            "group": "Satelite",
             "pages": [
-              "api-reference/commodities/precos",
-              "api-reference/commodities/produtos",
-              "api-reference/commodities/estados"
-            ]
-          },
-          {
-            "group": "Solo",
-            "pages": [
-              "api-reference/solo/propriedades",
-              "api-reference/solo/propriedades-por-car"
-            ]
-          },
-          {
-            "group": "Delineamento",
-            "pages": [
-              "api-reference/delineamento/talhoes"
-            ]
-          },
-          {
-            "group": "NDVI",
-            "pages": [
-              "api-reference/ndvi/serie-temporal"
-            ]
-          },
-          {
-            "group": "Ambiental",
-            "pages": [
-              "api-reference/ambiental/por-car",
-              "api-reference/ambiental/por-sigef",
-              "api-reference/ambiental/por-snci"
+              "api-reference/ndvi/serie-temporal-por-car"
             ]
           }
         ]

@@ -1,19 +1,20 @@
 ---
-title: "Info do CAR"
+title: "Informacoes do CAR"
 api: "GET /car/{codigo_car}/info"
-description: "Dados basicos do CAR com preview anonimizado do SIGEF"
+description: "Dados completos do CAR incluindo demonstrativo ambiental (reserva legal, APP, vegetacao nativa)"
 ---
 
 ## Descricao
 
-Retorna dados basicos do CAR com preview do SIGEF principal (dados anonimizados, sem identificacao do proprietario). Ideal para verificar se existe cruzamento antes de fazer uma consulta completa.
+Retorna dados completos de um CAR incluindo o demonstrativo ambiental do site car.gov.br.
+O demonstrativo contem informacoes detalhadas sobre reserva legal, APP, vegetacao nativa, uso consolidado e sobreposicoes.
 
 <ParamField path="codigo_car" type="string" required>
-  Codigo do CAR.
+  Codigo do CAR. Exemplo: `GO-5203401-617CD0C0367A49CD809862F382945511`
 </ParamField>
 
 <ParamField query="min_sobreposicao" type="number" default={10.0}>
-  Percentual minimo de sobreposicao (0 a 100).
+  Percentual minimo de sobreposicao com SIGEF (0 a 100).
 </ParamField>
 
 ## Response
@@ -21,42 +22,211 @@ Retorna dados basicos do CAR com preview do SIGEF principal (dados anonimizados,
 <ResponseField name="data" type="object">
   <Expandable title="data">
     <ResponseField name="dados_car" type="object">
-      Dados basicos do CAR (codigo, municipio, estado, area, status).
+      Dados basicos do CAR.
+
+      <Expandable title="dados_car">
+        <ResponseField name="codigo" type="string">Codigo do CAR.</ResponseField>
+        <ResponseField name="municipio" type="string">Municipio.</ResponseField>
+        <ResponseField name="estado" type="string">UF.</ResponseField>
+        <ResponseField name="area_ha" type="number">Area em hectares.</ResponseField>
+        <ResponseField name="modulos_fiscais" type="number">Modulos fiscais.</ResponseField>
+        <ResponseField name="status" type="string">Status: `AT` (Ativo), `PE` (Pendente), `CA` (Cancelado), `SU` (Suspenso).</ResponseField>
+        <ResponseField name="tipo" type="string">Tipo: `IRU` (Imovel Rural), `AST` (Assentamento).</ResponseField>
+        <ResponseField name="condicao" type="string">Condicao de analise.</ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="demonstrativo" type="object">
+      Demonstrativo ambiental do CAR (dados do car.gov.br). Pode ser `null` se indisponivel.
+
+      <Expandable title="demonstrativo">
+        <ResponseField name="cabecalho" type="object">
+          Dados gerais do imovel.
+
+          <Expandable title="cabecalho">
+            <ResponseField name="codigo" type="string">Codigo do CAR.</ResponseField>
+            <ResponseField name="municipio" type="string">Municipio.</ResponseField>
+            <ResponseField name="estado" type="string">UF.</ResponseField>
+            <ResponseField name="area_ha" type="number">Area total em hectares.</ResponseField>
+            <ResponseField name="modulos_fiscais" type="number">Modulos fiscais.</ResponseField>
+            <ResponseField name="latitude" type="string">Latitude (formato DMS).</ResponseField>
+            <ResponseField name="longitude" type="string">Longitude (formato DMS).</ResponseField>
+            <ResponseField name="data_registro" type="string">Data de registro no CAR.</ResponseField>
+            <ResponseField name="data_retificacao" type="string">Data da ultima retificacao.</ResponseField>
+            <ResponseField name="status_imovel" type="string">Status (ex: `Ativo`).</ResponseField>
+            <ResponseField name="condicao_analise" type="string">Condicao de analise.</ResponseField>
+            <ResponseField name="houve_retificacao" type="boolean">Se houve retificacao.</ResponseField>
+            <ResponseField name="aderiu_pra" type="boolean">Se aderiu ao PRA.</ResponseField>
+          </Expandable>
+        </ResponseField>
+
+        <ResponseField name="areas" type="object">
+          Detalhamento de areas ambientais.
+
+          <Expandable title="areas">
+            <ResponseField name="imovel" type="object">
+              <Expandable title="imovel">
+                <ResponseField name="area_liquida_ha" type="number">Area liquida do imovel.</ResponseField>
+                <ResponseField name="area_uso_consolidado_ha" type="number">Area de uso consolidado.</ResponseField>
+              </Expandable>
+            </ResponseField>
+
+            <ResponseField name="reserva_legal" type="object">
+              <Expandable title="reserva_legal">
+                <ResponseField name="situacao" type="string">Situacao da RL.</ResponseField>
+                <ResponseField name="area_rl_averbada_ha" type="number">Area de RL averbada.</ResponseField>
+                <ResponseField name="area_rl_proposta_ha" type="number">Area de RL proposta.</ResponseField>
+                <ResponseField name="area_rl_em_app_ha" type="number">Area de RL computada em APP.</ResponseField>
+                <ResponseField name="area_rl_minima_exigida_ha" type="number">Area minima de RL exigida por lei.</ResponseField>
+                <ResponseField name="area_rl_excedente_passivo_ha" type="number">Excedente ou passivo de RL.</ResponseField>
+                <ResponseField name="area_rl_recompor_ha" type="number">Area de RL a recompor.</ResponseField>
+              </Expandable>
+            </ResponseField>
+
+            <ResponseField name="vegetacao_nativa" type="object">
+              <Expandable title="vegetacao_nativa">
+                <ResponseField name="area_rvn_ha" type="number">Area de remanescente de vegetacao nativa.</ResponseField>
+                <ResponseField name="area_aa_ha" type="number">Area antropizada antes de 22/07/2008.</ResponseField>
+                <ResponseField name="area_ap_ha" type="number">Area antropizada posterior a 22/07/2008.</ResponseField>
+              </Expandable>
+            </ResponseField>
+
+            <ResponseField name="app" type="object">
+              <Expandable title="app">
+                <ResponseField name="area_app_ha" type="number">Area total de APP.</ResponseField>
+                <ResponseField name="area_app_recompor_ha" type="number">APP a recompor.</ResponseField>
+                <ResponseField name="area_app_sobreposta_rvn_ha" type="number">APP sobreposta a vegetacao nativa.</ResponseField>
+              </Expandable>
+            </ResponseField>
+
+            <ResponseField name="sobreposicoes" type="object">
+              <Expandable title="sobreposicoes">
+                <ResponseField name="area_sobreposicao_outros_imoveis_ha" type="number">Sobreposicao com outros CARs.</ResponseField>
+                <ResponseField name="area_sobreposicao_terra_indigena_ha" type="number">Sobreposicao com terra indigena.</ResponseField>
+                <ResponseField name="area_sobreposicao_uc_ha" type="number">Sobreposicao com unidade de conservacao.</ResponseField>
+              </Expandable>
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+
+        <ResponseField name="restricoes" type="array">
+          Lista de restricoes aplicaveis ao imovel.
+        </ResponseField>
+
+        <ResponseField name="tem_terra_indigena" type="boolean">
+          Se o imovel tem sobreposicao com terra indigena.
+        </ResponseField>
+      </Expandable>
     </ResponseField>
 
     <ResponseField name="dados_imovel" type="object">
       SIGEF anonimizado (sem nome do proprietario). `null` se nao encontrado.
     </ResponseField>
 
-    <ResponseField name="dados_snci" type="object">
-      SNCI anonimizado. `null` se nao encontrado.
-    </ResponseField>
-
     <ResponseField name="tem_sigef" type="boolean">
       Indica se foi encontrado SIGEF correspondente.
     </ResponseField>
 
-    <ResponseField name="tem_snci" type="boolean">
-      Indica se foi encontrado SNCI correspondente.
-    </ResponseField>
-
     <ResponseField name="sobreposicao" type="object">
-      Metricas de sobreposicao. `null` se nao ha match.
-    </ResponseField>
-
-    <ResponseField name="from_cache" type="boolean">
-      Se veio do cache.
-    </ResponseField>
-
-    <ResponseField name="from_local_db" type="boolean">
-      Se veio do banco local.
+      Metricas de sobreposicao CAR/SIGEF. `null` se nao ha match.
     </ResponseField>
   </Expandable>
 </ResponseField>
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://data-api.dadosfazenda.com.br/car/GO-5203401-617CD0C0367A49CD/info" \
-  -H "Authorization: Bearer SEU_TOKEN"
+curl -X GET "https://data-api.dadosfazenda.com.br/car/GO-5203401-617CD0C0367A49CD809862F382945511/info" \
+  -H "Authorization: Bearer SEU_TOKEN_API"
+```
+
+```python Python
+import httpx
+
+response = httpx.get(
+    "https://data-api.dadosfazenda.com.br/car/GO-5203401-617CD0C0367A49CD809862F382945511/info",
+    headers={"Authorization": "Bearer SEU_TOKEN"}
+)
+data = response.json()["data"]
+print(f"CAR: {data['dados_car']['codigo']}")
+
+demo = data.get("demonstrativo")
+if demo:
+    rl = demo["areas"]["reserva_legal"]
+    print(f"Reserva Legal proposta: {rl['area_rl_proposta_ha']} ha")
+    print(f"Reserva Legal a recompor: {rl['area_rl_recompor_ha']} ha")
+    print(f"APP: {demo['areas']['app']['area_app_ha']} ha")
 ```
 </RequestExample>
+
+<ResponseExample>
+```json 200 - Sucesso
+{
+  "success": true,
+  "message": "CAR encontrado",
+  "data": {
+    "dados_car": {
+      "codigo": "GO-5203401-617CD0C0367A49CD809862F382945511",
+      "municipio": "Bom Jardim de Goias",
+      "estado": "GO",
+      "area_ha": 877.93,
+      "modulos_fiscais": 19.51,
+      "status": "AT",
+      "tipo": "IRU",
+      "condicao": "Aguardando analise"
+    },
+    "demonstrativo": {
+      "cabecalho": {
+        "codigo": "GO-5203401-617CD0C0367A49CD809862F382945511",
+        "municipio": "Bom Jardim de Goias",
+        "estado": "GO",
+        "area_ha": 877.93,
+        "modulos_fiscais": 19.51,
+        "latitude": "15 57'26,64\" S",
+        "longitude": "52 02'25,9\" O",
+        "data_registro": "17/10/2018",
+        "data_retificacao": "10/02/2022",
+        "status_imovel": "Ativo",
+        "condicao_analise": "Aguardando analise",
+        "houve_retificacao": true,
+        "aderiu_pra": null
+      },
+      "areas": {
+        "imovel": {
+          "area_liquida_ha": 877.93,
+          "area_uso_consolidado_ha": 529.23
+        },
+        "reserva_legal": {
+          "situacao": "Nao Analisada",
+          "area_rl_averbada_ha": 0.0,
+          "area_rl_proposta_ha": 226.91,
+          "area_rl_em_app_ha": 52.76,
+          "area_rl_minima_exigida_ha": 175.59,
+          "area_rl_excedente_passivo_ha": 51.43,
+          "area_rl_recompor_ha": 1.39
+        },
+        "vegetacao_nativa": {
+          "area_rvn_ha": 345.55,
+          "area_aa_ha": 0.0,
+          "area_ap_ha": 0.0
+        },
+        "app": {
+          "area_app_ha": 55.23,
+          "area_app_recompor_ha": 1.34,
+          "area_app_sobreposta_rvn_ha": 52.77
+        },
+        "sobreposicoes": {
+          "area_sobreposicao_outros_imoveis_ha": 876.37,
+          "area_sobreposicao_terra_indigena_ha": 0.0,
+          "area_sobreposicao_uc_ha": 0.0
+        }
+      },
+      "restricoes": [],
+      "tem_terra_indigena": false
+    },
+    "dados_imovel": null,
+    "tem_sigef": false,
+    "sobreposicao": null
+  }
+}
+```
+</ResponseExample>

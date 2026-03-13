@@ -1,0 +1,135 @@
+---
+title: "Busca CAR por Coordenadas"
+api: "GET /car/search/coordinates"
+description: "Busca o CAR que contem a coordenada informada (latitude/longitude)"
+---
+
+## Descricao
+
+A partir de uma coordenada geografica (latitude e longitude), identifica o CAR cujo poligono contem o ponto.
+Se mais de um CAR contiver o ponto, retorna o de menor area (mais especifico).
+
+<ParamField query="latitude" type="number" required>
+  Latitude do ponto (-90 a 90). Exemplo: `-23.5505`
+</ParamField>
+
+<ParamField query="longitude" type="number" required>
+  Longitude do ponto (-180 a 180). Exemplo: `-46.6333`
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="car" type="object">
+      Dados do CAR encontrado.
+
+      <Expandable title="car">
+        <ResponseField name="codigo" type="string">
+          Codigo do CAR (ex: `SP-3545803-FD2A9A3E60834C0E9D74543B0184A4E7`).
+        </ResponseField>
+
+        <ResponseField name="municipio" type="string">
+          Municipio do CAR.
+        </ResponseField>
+
+        <ResponseField name="estado" type="string">
+          UF do CAR (ex: `SP`).
+        </ResponseField>
+
+        <ResponseField name="area_ha" type="number">
+          Area do CAR em hectares.
+        </ResponseField>
+
+        <ResponseField name="modulos_fiscais" type="number">
+          Quantidade de modulos fiscais.
+        </ResponseField>
+
+        <ResponseField name="status" type="string">
+          Status do CAR: `AT` (Ativo), `PE` (Pendente), `CA` (Cancelado), `SU` (Suspenso).
+        </ResponseField>
+
+        <ResponseField name="tipo" type="string">
+          Tipo: `IRU` (Imovel Rural), `AST` (Assentamento), `PCT` (Territorio Tradicional).
+        </ResponseField>
+
+        <ResponseField name="condicao" type="string">
+          Condicao de analise.
+        </ResponseField>
+
+        <ResponseField name="centroid" type="object">
+          Centroide do poligono do CAR.
+
+          <Expandable title="centroid">
+            <ResponseField name="latitude" type="number">Latitude do centroide.</ResponseField>
+            <ResponseField name="longitude" type="number">Longitude do centroide.</ResponseField>
+          </Expandable>
+        </ResponseField>
+
+        <ResponseField name="geometry" type="object">
+          Geometria GeoJSON do poligono do CAR.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="query" type="object">
+      Coordenadas da consulta.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://data-api.dadosfazenda.com.br/car/search/coordinates?latitude=-15.7935&longitude=-47.8828" \
+  -H "Authorization: Bearer SEU_TOKEN_API"
+```
+
+```python Python
+import httpx
+
+response = httpx.get(
+    "https://data-api.dadosfazenda.com.br/car/search/coordinates",
+    params={"latitude": -15.7935, "longitude": -47.8828},
+    headers={"Authorization": "Bearer SEU_TOKEN"}
+)
+car = response.json()["data"]["car"]
+print(f"CAR: {car['codigo']} - {car['municipio']}/{car['estado']}")
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 - Sucesso
+{
+  "success": true,
+  "message": "CAR encontrado na coordenada",
+  "data": {
+    "car": {
+      "codigo": "DF-5300108-A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5D6",
+      "municipio": "Brasilia",
+      "estado": "DF",
+      "area_ha": 245.67,
+      "modulos_fiscais": 49.13,
+      "status": "AT",
+      "tipo": "IRU",
+      "condicao": "Analisado",
+      "centroid": {
+        "latitude": -15.7935,
+        "longitude": -47.8828
+      },
+      "geometry": { "type": "Polygon", "coordinates": [ ... ] }
+    },
+    "query": {
+      "latitude": -15.7935,
+      "longitude": -47.8828
+    }
+  }
+}
+```
+
+```json 404 - Nao encontrado
+{
+  "success": false,
+  "message": "Nenhum CAR encontrado na coordenada (-15.7935, -47.8828)"
+}
+```
+</ResponseExample>

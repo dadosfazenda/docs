@@ -7,8 +7,12 @@ description: "Busca propriedades rurais (CAR) vinculadas a um CPF ou CNPJ"
 ## Descricao
 
 A partir de um CPF ou CNPJ, esta rota identifica todos os imoveis rurais vinculados ao documento consultando bases publicas oficiais.
-Para cada imovel encontrado, busca o CAR (Cadastro Ambiental Rural) correspondente e enriquece com dados do demonstrativo ambiental,
-incluindo informacoes sobre reserva legal, APP, vegetacao nativa e sobreposicoes.
+Para cada imovel encontrado, busca o CAR (Cadastro Ambiental Rural) correspondente com dados basicos do cadastro.
+
+<Note>
+  Para obter o demonstrativo ambiental detalhado de um CAR (reserva legal, APP, vegetacao nativa),
+  utilize a rota [Obter informacoes de um CAR](/api-reference/car/info).
+</Note>
 
 <ParamField path="cpf_cnpj" type="string" required>
   CPF (11 digitos) ou CNPJ (14 digitos). Aceita com ou sem formatacao (pontos, tracos, barras).
@@ -61,7 +65,7 @@ incluindo informacoes sobre reserva legal, APP, vegetacao nativa e sobreposicoes
         </ResponseField>
 
         <ResponseField name="match_method" type="string">
-          Nivel de confianca da vinculacao ao CAR: `alto`, `medio`, `baixo` ou `nenhum`.
+          Metodo de vinculacao ao CAR: `sigef`, `matricula`, `sncr` ou `nenhum`.
         </ResponseField>
 
         <ResponseField name="ccir" type="object">
@@ -150,126 +154,15 @@ incluindo informacoes sobre reserva legal, APP, vegetacao nativa e sobreposicoes
             </ResponseField>
 
             <ResponseField name="status" type="string">
-              Status do CAR:
-              - `AT` — Ativo
-              - `PE` — Pendente
-              - `CA` — Cancelado
-              - `SU` — Suspenso
+              Status do CAR: `AT` (Ativo), `PE` (Pendente), `CA` (Cancelado), `SU` (Suspenso).
             </ResponseField>
 
             <ResponseField name="tipo" type="string">
-              Tipo do imovel:
-              - `IRU` — Imovel Rural
-              - `AST` — Assentamento
-              - `PCT` — Territorio de Povos e Comunidades Tradicionais
+              Tipo do imovel: `IRU` (Imovel Rural), `AST` (Assentamento), `PCT` (Territorio Tradicional).
             </ResponseField>
 
             <ResponseField name="condicao" type="string">
               Condicao de analise (ex: `Aguardando analise`, `Analisado`).
-            </ResponseField>
-
-            <ResponseField name="demonstrativo" type="object">
-              Dados do demonstrativo ambiental do CAR. Pode ser `null` se indisponivel.
-
-              <Expandable title="demonstrativo">
-                <ResponseField name="cabecalho" type="object">
-                  Dados gerais do imovel no CAR.
-
-                  <Expandable title="cabecalho">
-                    <ResponseField name="codigo" type="string">Codigo do CAR.</ResponseField>
-                    <ResponseField name="municipio" type="string">Municipio.</ResponseField>
-                    <ResponseField name="estado" type="string">UF.</ResponseField>
-                    <ResponseField name="area_ha" type="number">Area total em hectares.</ResponseField>
-                    <ResponseField name="modulos_fiscais" type="number">Modulos fiscais.</ResponseField>
-                    <ResponseField name="latitude" type="string">Latitude (formato DMS).</ResponseField>
-                    <ResponseField name="longitude" type="string">Longitude (formato DMS).</ResponseField>
-                    <ResponseField name="data_registro" type="string">Data de registro no CAR.</ResponseField>
-                    <ResponseField name="data_retificacao" type="string">Data da ultima retificacao.</ResponseField>
-                    <ResponseField name="status_imovel" type="string">Status (ex: `Ativo`).</ResponseField>
-                    <ResponseField name="condicao_analise" type="string">Condicao de analise.</ResponseField>
-                    <ResponseField name="houve_retificacao" type="boolean">Se houve retificacao.</ResponseField>
-                    <ResponseField name="aderiu_pra" type="boolean">Se aderiu ao PRA.</ResponseField>
-                  </Expandable>
-                </ResponseField>
-
-                <ResponseField name="areas" type="object">
-                  Detalhamento de areas ambientais.
-
-                  <Expandable title="areas">
-                    <ResponseField name="imovel" type="object">
-                      <Expandable title="imovel">
-                        <ResponseField name="area_liquida_ha" type="number">Area liquida do imovel.</ResponseField>
-                        <ResponseField name="area_uso_consolidado_ha" type="number">Area de uso consolidado.</ResponseField>
-                      </Expandable>
-                    </ResponseField>
-
-                    <ResponseField name="reserva_legal" type="object">
-                      Dados da Reserva Legal.
-
-                      <Expandable title="reserva_legal">
-                        <ResponseField name="situacao" type="string">Situacao da RL (ex: `Nao Analisada`).</ResponseField>
-                        <ResponseField name="area_rl_averbada_ha" type="number">Area de RL averbada.</ResponseField>
-                        <ResponseField name="area_rl_proposta_ha" type="number">Area de RL proposta.</ResponseField>
-                        <ResponseField name="area_rl_em_app_ha" type="number">Area de RL computada em APP.</ResponseField>
-                        <ResponseField name="area_rl_minima_exigida_ha" type="number">Area minima de RL exigida por lei.</ResponseField>
-                        <ResponseField name="area_rl_excedente_passivo_ha" type="number">Excedente ou passivo de RL.</ResponseField>
-                        <ResponseField name="area_rl_recompor_ha" type="number">Area de RL a recompor.</ResponseField>
-                        <ResponseField name="area_rl_vetorizada_sobreposta_rvn_ha" type="number">RL sobreposta a remanescente de vegetacao nativa.</ResponseField>
-                      </Expandable>
-                    </ResponseField>
-
-                    <ResponseField name="vegetacao_nativa" type="object">
-                      Remanescentes de vegetacao nativa.
-
-                      <Expandable title="vegetacao_nativa">
-                        <ResponseField name="area_rvn_ha" type="number">Area de remanescente de vegetacao nativa.</ResponseField>
-                        <ResponseField name="area_aa_ha" type="number">Area antropizada antes de 22/07/2008.</ResponseField>
-                        <ResponseField name="area_ap_ha" type="number">Area antropizada posterior a 22/07/2008.</ResponseField>
-                      </Expandable>
-                    </ResponseField>
-
-                    <ResponseField name="app" type="object">
-                      Area de Preservacao Permanente.
-
-                      <Expandable title="app">
-                        <ResponseField name="area_app_ha" type="number">Area total de APP.</ResponseField>
-                        <ResponseField name="area_app_em_aa_ha" type="number">APP em area antropizada anterior.</ResponseField>
-                        <ResponseField name="area_app_em_ac_ha" type="number">APP em area consolidada.</ResponseField>
-                        <ResponseField name="area_app_recompor_ha" type="number">APP a recompor.</ResponseField>
-                        <ResponseField name="area_app_sobreposta_rvn_ha" type="number">APP sobreposta a vegetacao nativa.</ResponseField>
-                      </Expandable>
-                    </ResponseField>
-
-                    <ResponseField name="uso_restrito" type="object">
-                      Areas de uso restrito.
-
-                      <Expandable title="uso_restrito">
-                        <ResponseField name="area_uso_restrito_ha" type="number">Area total de uso restrito.</ResponseField>
-                        <ResponseField name="area_uso_restrito_recompor_ha" type="number">Uso restrito a recompor.</ResponseField>
-                      </Expandable>
-                    </ResponseField>
-
-                    <ResponseField name="sobreposicoes" type="object">
-                      Sobreposicoes com outras areas.
-
-                      <Expandable title="sobreposicoes">
-                        <ResponseField name="area_sobreposicao_outros_imoveis_ha" type="number">Sobreposicao com outros imoveis CAR.</ResponseField>
-                        <ResponseField name="area_sobreposicao_terra_indigena_ha" type="number">Sobreposicao com terra indigena.</ResponseField>
-                        <ResponseField name="area_sobreposicao_uc_ha" type="number">Sobreposicao com unidade de conservacao.</ResponseField>
-                        <ResponseField name="area_sobreposicao_assentamento_ha" type="number">Sobreposicao com assentamento.</ResponseField>
-                      </Expandable>
-                    </ResponseField>
-                  </Expandable>
-                </ResponseField>
-
-                <ResponseField name="restricoes" type="array">
-                  Lista de restricoes aplicaveis ao imovel.
-                </ResponseField>
-
-                <ResponseField name="tem_terra_indigena" type="boolean">
-                  Se o imovel tem sobreposicao com terra indigena.
-                </ResponseField>
-              </Expandable>
             </ResponseField>
           </Expandable>
         </ResponseField>
@@ -297,27 +190,7 @@ for prop in data["data"]["propriedades"]:
     print(f"{prop['denominacao']} - {prop['municipio']}/{prop['uf']}")
     if prop["car"]:
         print(f"  CAR: {prop['car']['codigo']}")
-        demo = prop["car"].get("demonstrativo")
-        if demo:
-            rl = demo["areas"]["reserva_legal"]
-            print(f"  RL proposta: {rl['area_rl_proposta_ha']} ha")
-            print(f"  RL a recompor: {rl['area_rl_recompor_ha']} ha")
-```
-
-```javascript JavaScript
-const response = await fetch(
-  "https://data-api.dadosfazenda.com.br/cpf-car/12345678901",
-  { headers: { Authorization: "Bearer SEU_TOKEN" } }
-);
-const { data } = await response.json();
-
-data.propriedades.forEach((prop) => {
-  console.log(`${prop.denominacao} - ${prop.municipio}/${prop.uf}`);
-  if (prop.car?.demonstrativo) {
-    const rl = prop.car.demonstrativo.areas.reserva_legal;
-    console.log(`  RL proposta: ${rl.area_rl_proposta_ha} ha`);
-  }
-});
+        print(f"  Area: {prop['car']['area_ha']} ha")
 ```
 </RequestExample>
 
@@ -336,7 +209,7 @@ data.propriedades.forEach((prop) => {
         "municipio": "BOM JARDIM DE GOIAS",
         "uf": "GO",
         "area_total_ha": 877.93,
-        "match_method": "alto",
+        "match_method": "sigef",
         "ccir": {
           "denominacao": "Fazenda Esperanca",
           "classificacao_fundiaria": "GRANDE PROPRIEDADE",
@@ -365,87 +238,8 @@ data.propriedades.forEach((prop) => {
           "modulos_fiscais": 19.51,
           "status": "AT",
           "tipo": "IRU",
-          "condicao": "Aguardando analise",
-          "demonstrativo": {
-            "cabecalho": {
-              "codigo": "GO-5203401-617CD0C0367A49CD809862F382945511",
-              "municipio": "Bom Jardim de Goias",
-              "estado": "GO",
-              "area_ha": 877.93,
-              "modulos_fiscais": 19.51,
-              "latitude": "15 57'26,64\" S",
-              "longitude": "52 02'25,9\" O",
-              "data_registro": "17/10/2018",
-              "data_retificacao": "10/02/2022",
-              "status_imovel": "Ativo",
-              "condicao_analise": "Aguardando analise",
-              "houve_retificacao": true,
-              "aderiu_pra": null
-            },
-            "areas": {
-              "imovel": {
-                "area_liquida_ha": 877.93,
-                "area_uso_consolidado_ha": 529.23
-              },
-              "reserva_legal": {
-                "situacao": "Nao Analisada",
-                "area_rl_averbada_ha": 0.0,
-                "area_rl_proposta_ha": 226.91,
-                "area_rl_em_app_ha": 52.76,
-                "area_rl_minima_exigida_ha": 175.59,
-                "area_rl_excedente_passivo_ha": 51.43,
-                "area_rl_recompor_ha": 1.39,
-                "area_rl_vetorizada_sobreposta_rvn_ha": 225.52
-              },
-              "vegetacao_nativa": {
-                "area_rvn_ha": 345.55,
-                "area_aa_ha": 0.0,
-                "area_ap_ha": 0.0
-              },
-              "app": {
-                "area_app_ha": 55.23,
-                "area_app_em_aa_ha": 0.0,
-                "area_app_em_ac_ha": 2.46,
-                "area_app_recompor_ha": 1.34,
-                "area_app_sobreposta_rvn_ha": 52.77
-              },
-              "uso_restrito": {
-                "area_uso_restrito_ha": 0.0,
-                "area_uso_restrito_recompor_ha": 0.0
-              },
-              "sobreposicoes": {
-                "area_sobreposicao_outros_imoveis_ha": 876.37,
-                "area_sobreposicao_terra_indigena_ha": 0.0,
-                "area_sobreposicao_uc_ha": 0.0,
-                "area_sobreposicao_assentamento_ha": 0.0
-              }
-            },
-            "restricoes": [],
-            "tem_terra_indigena": false
-          }
+          "condicao": "Aguardando analise"
         }
-      },
-      {
-        "codigo_imovel_incra": "519984199",
-        "denominacao": "FAZENDA SERRA",
-        "municipio": "PARAUNA",
-        "uf": "GO",
-        "area_total_ha": 111.32,
-        "match_method": "nenhum",
-        "ccir": {
-          "denominacao": "FAZENDA SERRA",
-          "classificacao_fundiaria": "MEDIA PROPRIEDADE",
-          "area_total": 111.32,
-          "area_certificada": 0.0,
-          "numero_modulos_fiscais": 3.39,
-          "titulares": [],
-          "ccir": {
-            "numero": "67890",
-            "situacao": "REGULAR",
-            "data_vencimento": "2025-06-16"
-          }
-        },
-        "car": null
       }
     ]
   }
