@@ -61,10 +61,6 @@
       "anchors": []
     }
   },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
   "navbar": {
     "links": [
       {
@@ -86,5 +82,6 @@
   },
   "footer": {
     "socials": {}
-  }
+  },
+  "logo": "/images/DadosFazend(2).png"
 }
