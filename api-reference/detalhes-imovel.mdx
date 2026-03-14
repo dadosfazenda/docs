@@ -1,6 +1,6 @@
 ---
 title: "Detalhes do Imovel"
-api: "GET /cpf-car/{cpf_cnpj}/imovel/{codigo_imovel}"
+api: "GET /cpf-car/imovel/{codigo_imovel}"
 description: "Dados detalhados de um imovel INCRA: titulares, cartorio, CCIR e areas"
 ---
 
@@ -10,10 +10,6 @@ Retorna dados completos de um imovel rural a partir do codigo INCRA, consultando
 Use esta rota apos a [Busca por CPF/CNPJ](/api-reference/busca-por-cpf) para obter detalhes de um imovel especifico.
 
 Os dados sao cacheados por 7 dias para evitar consultas repetidas.
-
-<ParamField path="cpf_cnpj" type="string" required>
-  CPF ou CNPJ do titular.
-</ParamField>
 
 <ParamField path="codigo_imovel" type="string" required>
   Codigo do imovel INCRA (retornado como `codigo_imovel` na rota de listagem).
@@ -185,7 +181,7 @@ Os dados sao cacheados por 7 dias para evitar consultas repetidas.
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://data-api.dadosfazenda.com.br/cpf-car/12345678901/imovel/433133781" \
+curl -X GET "https://data-api.dadosfazenda.com.br/cpf-car/imovel/433133781" \
   -H "Authorization: Bearer SEU_TOKEN_API"
 ```
 
@@ -193,7 +189,7 @@ curl -X GET "https://data-api.dadosfazenda.com.br/cpf-car/12345678901/imovel/433
 import httpx
 
 response = httpx.get(
-    "https://data-api.dadosfazenda.com.br/cpf-car/12345678901/imovel/433133781",
+    "https://data-api.dadosfazenda.com.br/cpf-car/imovel/433133781",
     headers={"Authorization": "Bearer SEU_TOKEN"}
 )
 data = response.json()
