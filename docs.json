@@ -29,6 +29,7 @@
             "group": "Propriedade Rural",
             "pages": [
               "api-reference/busca-por-cpf",
+              "api-reference/detalhes-imovel",
               "api-reference/car/busca-coordenadas",
               "api-reference/car/info"
             ]

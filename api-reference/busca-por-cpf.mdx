@@ -6,13 +6,9 @@ description: "Busca propriedades rurais (CAR) vinculadas a um CPF ou CNPJ"
 
 ## Descricao
 
-A partir de um CPF ou CNPJ, esta rota identifica todos os imoveis rurais vinculados ao documento consultando bases publicas oficiais.
-Para cada imovel encontrado, busca o CAR (Cadastro Ambiental Rural) correspondente com dados basicos do cadastro.
+A partir de um CPF ou CNPJ, esta rota identifica todos os imoveis rurais vinculados ao documento e tenta vincular cada um ao respectivo CAR (Cadastro Ambiental Rural).
 
-<Note>
-  Para obter o demonstrativo ambiental detalhado de um CAR (reserva legal, APP, vegetacao nativa),
-  utilize a rota [Obter informacoes de um CAR](/api-reference/car/info).
-</Note>
+A resposta retorna dados basicos de cada imovel (SNCR) e o CAR vinculado quando encontrado. Para dados detalhados de um imovel (titulares, cartorio, CCIR), utilize a rota [Detalhes do imovel](/api-reference/detalhes-imovel).
 
 <ParamField path="cpf_cnpj" type="string" required>
   CPF (11 digitos) ou CNPJ (14 digitos). Aceita com ou sem formatacao (pontos, tracos, barras).
@@ -44,16 +40,16 @@ Para cada imovel encontrado, busca o CAR (Cadastro Ambiental Rural) corresponden
       Lista de propriedades encontradas.
 
       <Expandable title="propriedade">
-        <ResponseField name="codigo_imovel_incra" type="string">
+        <ResponseField name="codigo_imovel" type="string">
           Codigo do imovel no INCRA (ex: `433133781`).
         </ResponseField>
 
         <ResponseField name="denominacao" type="string">
-          Nome do imovel (ex: `Fazenda Esperanca`).
+          Nome do imovel (ex: `Fazenda Esperanca`). Fonte: SNCR.
         </ResponseField>
 
         <ResponseField name="municipio" type="string">
-          Municipio sede do imovel segundo o INCRA.
+          Municipio do imovel.
         </ResponseField>
 
         <ResponseField name="uf" type="string">
@@ -62,71 +58,6 @@ Para cada imovel encontrado, busca o CAR (Cadastro Ambiental Rural) corresponden
 
         <ResponseField name="area_total_ha" type="number">
           Area total do imovel em hectares.
-        </ResponseField>
-
-        <ResponseField name="match_method" type="string">
-          Metodo de vinculacao ao CAR: `sigef`, `matricula`, `sncr` ou `nenhum`.
-        </ResponseField>
-
-        <ResponseField name="ccir" type="object">
-          Resumo dos dados do CCIR (Certificado de Cadastro de Imovel Rural).
-
-          <Expandable title="ccir">
-            <ResponseField name="denominacao" type="string">
-              Nome do imovel.
-            </ResponseField>
-
-            <ResponseField name="classificacao_fundiaria" type="string">
-              Classificacao (ex: `GRANDE PROPRIEDADE`).
-            </ResponseField>
-
-            <ResponseField name="area_total" type="number">
-              Area total em hectares.
-            </ResponseField>
-
-            <ResponseField name="area_certificada" type="number">
-              Area certificada pelo INCRA em hectares.
-            </ResponseField>
-
-            <ResponseField name="numero_modulos_fiscais" type="number">
-              Quantidade de modulos fiscais.
-            </ResponseField>
-
-            <ResponseField name="titulares" type="array">
-              Lista de titulares do imovel.
-
-              <Expandable title="titular">
-                <ResponseField name="nome" type="string">
-                  Nome do titular.
-                </ResponseField>
-                <ResponseField name="cpf_cnpj" type="string">
-                  CPF ou CNPJ do titular.
-                </ResponseField>
-                <ResponseField name="condicao" type="string">
-                  Condicao de titularidade (ex: `PROPRIETARIO`).
-                </ResponseField>
-                <ResponseField name="percentual" type="number">
-                  Percentual de detencao do imovel.
-                </ResponseField>
-              </Expandable>
-            </ResponseField>
-
-            <ResponseField name="ccir" type="object">
-              Dados do ultimo CCIR emitido.
-
-              <Expandable title="ccir_dados">
-                <ResponseField name="numero" type="string">
-                  Numero do CCIR.
-                </ResponseField>
-                <ResponseField name="situacao" type="string">
-                  Situacao do CCIR (ex: `REGULAR`).
-                </ResponseField>
-                <ResponseField name="data_vencimento" type="string">
-                  Data de vencimento (formato `YYYY-MM-DD`).
-                </ResponseField>
-              </Expandable>
-            </ResponseField>
-          </Expandable>
         </ResponseField>
 
         <ResponseField name="car" type="object">
@@ -190,7 +121,6 @@ for prop in data["data"]["propriedades"]:
     print(f"{prop['denominacao']} - {prop['municipio']}/{prop['uf']}")
     if prop["car"]:
         print(f"  CAR: {prop['car']['codigo']}")
-        print(f"  Area: {prop['car']['area_ha']} ha")
 ```
 </RequestExample>
 
@@ -204,42 +134,29 @@ for prop in data["data"]["propriedades"]:
     "cars_encontrados": 2,
     "propriedades": [
       {
-        "codigo_imovel_incra": "433133781",
+        "codigo_imovel": "433133781",
         "denominacao": "Fazenda Esperanca",
         "municipio": "BOM JARDIM DE GOIAS",
         "uf": "GO",
-        "area_total_ha": 877.93,
-        "match_method": "sigef",
-        "ccir": {
-          "denominacao": "Fazenda Esperanca",
-          "classificacao_fundiaria": "GRANDE PROPRIEDADE",
-          "area_total": 877.93,
-          "area_certificada": 877.93,
-          "numero_modulos_fiscais": 19.51,
-          "titulares": [
-            {
-              "nome": "JOAO DA SILVA",
-              "cpf_cnpj": "123.456.789-01",
-              "condicao": "PROPRIETARIO",
-              "percentual": 100.0
-            }
-          ],
-          "ccir": {
-            "numero": "12345",
-            "situacao": "REGULAR",
-            "data_vencimento": "2025-06-16"
-          }
-        },
+        "area_total_ha": 877.4,
         "car": {
           "codigo": "GO-5203401-617CD0C0367A49CD809862F382945511",
           "municipio": "Bom Jardim de Goias",
           "estado": "GO",
-          "area_ha": 877.93,
-          "modulos_fiscais": 19.51,
+          "area_ha": 877.9331,
+          "modulos_fiscais": 19.5096,
           "status": "AT",
           "tipo": "IRU",
           "condicao": "Aguardando analise"
         }
+      },
+      {
+        "codigo_imovel": "433298102",
+        "denominacao": "Sitio Boa Vista",
+        "municipio": "JUSSARA",
+        "uf": "GO",
+        "area_total_ha": 48.2,
+        "car": null
       }
     ]
   }
