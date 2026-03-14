@@ -1,6 +1,6 @@
 ---
 title: "Detalhes do Imovel"
-api: "GET /cpf-car/imovel/{codigo_imovel}"
+api: "GET /imovel/{codigo_imovel}"
 description: "Dados detalhados de um imovel INCRA: titulares, cartorio, CCIR e areas"
 ---
 
@@ -181,7 +181,7 @@ Os dados sao cacheados por 7 dias para evitar consultas repetidas.
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://data-api.dadosfazenda.com.br/cpf-car/imovel/433133781" \
+curl -X GET "https://data-api.dadosfazenda.com.br/imovel/433133781" \
   -H "Authorization: Bearer SEU_TOKEN_API"
 ```
 
@@ -189,7 +189,7 @@ curl -X GET "https://data-api.dadosfazenda.com.br/cpf-car/imovel/433133781" \
 import httpx
 
 response = httpx.get(
-    "https://data-api.dadosfazenda.com.br/cpf-car/imovel/433133781",
+    "https://data-api.dadosfazenda.com.br/imovel/433133781",
     headers={"Authorization": "Bearer SEU_TOKEN"}
 )
 data = response.json()
