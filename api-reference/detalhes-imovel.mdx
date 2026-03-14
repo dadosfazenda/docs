@@ -1,18 +1,18 @@
 ---
 title: "Detalhes do Imovel"
 api: "GET /imovel/{codigo_imovel}"
-description: "Dados detalhados de um imovel INCRA: titulares, cartorio, CCIR e areas"
+description: "Dados detalhados de um imovel rural: titulares, cartorio, CCIR e areas"
 ---
 
 ## Descricao
 
-Retorna dados completos de um imovel rural a partir do codigo INCRA, consultando o Serpro CCIR.
+Retorna dados completos de um imovel rural a partir do seu codigo.
 Use esta rota apos a [Busca por CPF/CNPJ](/api-reference/busca-por-cpf) para obter detalhes de um imovel especifico.
 
 Os dados sao cacheados por 7 dias para evitar consultas repetidas.
 
 <ParamField path="codigo_imovel" type="string" required>
-  Codigo do imovel INCRA (retornado como `codigo_imovel` na rota de listagem).
+  Codigo do imovel (retornado como `codigo_imovel` na rota de listagem).
 
   Exemplo: `433133781`
 </ParamField>
@@ -26,7 +26,7 @@ Os dados sao cacheados por 7 dias para evitar consultas repetidas.
 <ResponseField name="data" type="object">
   <Expandable title="data">
     <ResponseField name="codigo_imovel" type="string">
-      Codigo do imovel no INCRA.
+      Codigo do imovel.
     </ResponseField>
 
     <ResponseField name="denominacao" type="string">
@@ -50,7 +50,7 @@ Os dados sao cacheados por 7 dias para evitar consultas repetidas.
     </ResponseField>
 
     <ResponseField name="area_certificada" type="number">
-      Area certificada pelo INCRA em hectares.
+      Area certificada em hectares.
     </ResponseField>
 
     <ResponseField name="area_registrada" type="number">
@@ -258,7 +258,7 @@ for t in data["data"]["titulares"]:
 
 ```json 404 - Nao encontrado
 {
-  "message": "Imovel nao encontrado no Serpro",
+  "message": "Imovel nao encontrado",
   "status_code": 404
 }
 ```

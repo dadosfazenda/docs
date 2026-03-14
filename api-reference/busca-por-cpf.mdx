@@ -28,8 +28,8 @@ A resposta retorna dados basicos de cada imovel (SNCR) e o CAR vinculado quando 
       Documento consultado (somente digitos).
     </ResponseField>
 
-    <ResponseField name="imoveis_incra" type="integer">
-      Total de imoveis rurais encontrados no INCRA para este documento.
+    <ResponseField name="total_imoveis" type="integer">
+      Total de imoveis rurais encontrados para este documento.
     </ResponseField>
 
     <ResponseField name="cars_encontrados" type="integer">
@@ -41,7 +41,7 @@ A resposta retorna dados basicos de cada imovel (SNCR) e o CAR vinculado quando 
 
       <Expandable title="propriedade">
         <ResponseField name="codigo_imovel" type="string">
-          Codigo do imovel no INCRA (ex: `433133781`).
+          Codigo do imovel (ex: `433133781`).
         </ResponseField>
 
         <ResponseField name="denominacao" type="string">
@@ -130,7 +130,7 @@ for prop in data["data"]["propriedades"]:
   "message": "Encontrados 2 CAR(s) para o documento",
   "data": {
     "cpf_cnpj": "12345678901",
-    "imoveis_incra": 3,
+    "total_imoveis": 3,
     "cars_encontrados": 2,
     "propriedades": [
       {
