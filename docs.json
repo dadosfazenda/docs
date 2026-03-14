@@ -7,7 +7,7 @@
     "light": "#07C983",
     "dark": "#15803D"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/images/logo_dados_fazenda_report.png",
   "navigation": {
     "tabs": [
       {
@@ -83,5 +83,5 @@
   "footer": {
     "socials": {}
   },
-  "logo": "/images/DadosFazend(2).png"
+  "logo": "/images/logo_dados_fazenda_report.png"
 }
