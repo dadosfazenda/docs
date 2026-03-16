@@ -1,23 +1,18 @@
 ---
-title: "NDVI / NDRE por CAR"
+title: "NDVI por CAR"
 api: "GET /ndvi/car/{codigo_car}/timeseries"
-description: "Serie temporal dos indices de vegetacao (NDVI e NDRE) para um CAR"
+description: "Serie temporal do indice de vegetacao NDVI para um CAR via Sentinel-2"
 ---
 
 ## Descricao
 
-Retorna a serie temporal dos indices de vegetacao **NDVI** e **NDRE** para uma propriedade rural a partir do codigo CAR.
+Retorna a serie temporal do indice de vegetacao **NDVI** (Normalized Difference Vegetation Index) para uma propriedade rural a partir do codigo CAR.
 
-- **NDVI** (Normalized Difference Vegetation Index): calculado com bandas NIR (B08) e Red (B04). Indica vigor da vegetacao.
-- **NDRE** (Normalized Difference Red Edge): calculado com bandas NIR (B08) e Red Edge (B05). Mais sensivel a variacao de clorofila e estagio fenologico.
-
-Ambos os indices sao calculados a partir de imagens do satelite **Sentinel-2** com resolucao de **10 metros**.
+O NDVI e calculado a partir de imagens do satelite **Sentinel-2** com resolucao de **10 metros**, usando as bandas NIR (B08) e Red (B04).
 
 **Periodo maximo permitido: 90 dias.**
 
-Quando `images=true`, inclui URLs assinadas para imagens RGB, NDVI e NDRE processadas (validade de 1 hora).
-
-Fonte: Sentinel-2 L2A via Planetary Computer (Microsoft). Resolucao: 10m. Mascaramento de nuvens automatico (banda SCL).
+Quando `images=true`, inclui URLs assinadas para imagens RGB e NDVI processadas (validade de 1 hora).
 
 <ParamField path="codigo_car" type="string" required>
   Codigo do CAR. Exemplo: `MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17`
@@ -32,7 +27,7 @@ Fonte: Sentinel-2 L2A via Planetary Computer (Microsoft). Resolucao: 10m. Mascar
 </ParamField>
 
 <ParamField query="images" type="boolean" default={false}>
-  Se `true`, gera imagens de satelite (RGB, NDVI e NDRE) e retorna URLs assinadas com validade de 1 hora.
+  Se `true`, gera imagens de satelite (RGB e NDVI) e retorna URLs assinadas com validade de 1 hora.
 </ParamField>
 
 <ParamField query="force" type="boolean" default={false}>
@@ -104,31 +99,7 @@ Fonte: Sentinel-2 L2A via Planetary Computer (Microsoft). Resolucao: 10m. Mascar
         </ResponseField>
 
         <ResponseField name="distribution" type="object">
-          Distribuicao percentual do NDVI por zona de classificacao. Chaves: `water_clouds_urban`, `bare_soil_urban`, `bare_soil`, `sparse_vegetation`, `dense_healthy_vegetation`. Valores em percentual (0-100).
-        </ResponseField>
-
-        <ResponseField name="ndre_mean" type="number">
-          NDRE medio da propriedade (de -1 a 1). `null` se banda Red Edge indisponivel.
-        </ResponseField>
-
-        <ResponseField name="ndre_median" type="number">
-          NDRE mediano.
-        </ResponseField>
-
-        <ResponseField name="ndre_min" type="number">
-          NDRE minimo.
-        </ResponseField>
-
-        <ResponseField name="ndre_max" type="number">
-          NDRE maximo.
-        </ResponseField>
-
-        <ResponseField name="ndre_std" type="number">
-          Desvio padrao do NDRE.
-        </ResponseField>
-
-        <ResponseField name="ndre_distribution" type="object">
-          Distribuicao percentual do NDRE por zona. Chaves: `water_non_vegetated`, `bare_soil`, `early_sparse_vegetation`, `moderate_vegetation`, `dense_healthy_vegetation`, `very_dense_healthy_vegetation`. Valores em percentual (0-100). `null` se Red Edge indisponivel.
+          Distribuicao percentual do NDVI por zona de classificacao. Valores em percentual (0-100).
         </ResponseField>
 
         <ResponseField name="rgb_url" type="string">
@@ -137,10 +108,6 @@ Fonte: Sentinel-2 L2A via Planetary Computer (Microsoft). Resolucao: 10m. Mascar
 
         <ResponseField name="ndvi_url" type="string">
           URL assinada da imagem NDVI colorida (validade 1h). Disponivel quando `images=true`.
-        </ResponseField>
-
-        <ResponseField name="ndre_url" type="string">
-          URL assinada da imagem NDRE colorida (validade 1h). Disponivel quando `images=true`.
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -151,26 +118,11 @@ Fonte: Sentinel-2 L2A via Planetary Computer (Microsoft). Resolucao: 10m. Mascar
 
 | Faixa | Classificacao |
 |-------|--------------|
-| -1.0 a 0.0 | Agua, nuvens, areas urbanas (`water_clouds_urban`) |
-| 0.0 a 0.1 | Solo exposto / areas urbanas (`bare_soil_urban`) |
-| 0.1 a 0.2 | Solo exposto (`bare_soil`) |
-| 0.2 a 0.5 | Vegetacao esparsa (`sparse_vegetation`) |
-| 0.5 a 1.0 | Vegetacao densa e saudavel (`dense_healthy_vegetation`) |
-
-### Escala NDRE
-
-| Faixa | Classificacao |
-|-------|--------------|
-| -1.0 a 0.0 | Agua / areas nao vegetadas (`water_non_vegetated`) |
-| 0.0 a 0.1 | Solo exposto (`bare_soil`) |
-| 0.1 a 0.2 | Vegetacao inicial / esparsa (`early_sparse_vegetation`) |
-| 0.2 a 0.4 | Vegetacao moderada (`moderate_vegetation`) |
-| 0.4 a 0.6 | Vegetacao densa e saudavel (`dense_healthy_vegetation`) |
-| 0.6 a 1.0 | Vegetacao muito densa (`very_dense_healthy_vegetation`) |
-
-<Note>
-  O NDRE e mais sensivel a diferencas de clorofila que o NDVI. Enquanto o NDVI satura em areas de vegetacao muito densa, o NDRE continua diferenciando niveis de saude da planta. Use o NDRE para monitoramento de lavouras e deteccao precoce de estresse.
-</Note>
+| -1.0 a 0.0 | Agua, nuvens, areas urbanas |
+| 0.0 a 0.1 | Solo exposto / areas urbanas |
+| 0.1 a 0.2 | Solo exposto |
+| 0.2 a 0.5 | Vegetacao esparsa |
+| 0.5 a 1.0 | Vegetacao densa e saudavel |
 
 <RequestExample>
 ```bash cURL
@@ -192,8 +144,7 @@ response = httpx.get(
 )
 data = response.json()["data"]
 for point in data["timeseries"]:
-    ndre = point.get("ndre_mean", "N/A")
-    print(f"{point['scene_date']}: NDVI={point['ndvi_mean']:.3f}, NDRE={ndre}")
+    print(f"{point['scene_date']}: NDVI={point['ndvi_mean']:.3f}")
 ```
 </RequestExample>
 
@@ -225,52 +176,8 @@ for point in data["timeseries"]:
           "sparse_vegetation": 18.4,
           "dense_healthy_vegetation": 76.1
         },
-        "ndre_mean": 0.38,
-        "ndre_median": 0.40,
-        "ndre_min": 0.05,
-        "ndre_max": 0.62,
-        "ndre_std": 0.09,
-        "ndre_distribution": {
-          "water_non_vegetated": 0.3,
-          "bare_soil": 1.5,
-          "early_sparse_vegetation": 5.2,
-          "moderate_vegetation": 42.1,
-          "dense_healthy_vegetation": 38.7,
-          "very_dense_healthy_vegetation": 12.2
-        },
         "rgb_url": "https://storage.example.com/ndvi/MT-5106505.../2025-01-05_rgb.png?...",
-        "ndvi_url": "https://storage.example.com/ndvi/MT-5106505.../2025-01-05_ndvi.png?...",
-        "ndre_url": "https://storage.example.com/ndvi/MT-5106505.../2025-01-05_ndre.png?..."
-      },
-      {
-        "scene_id": "S2A_MSIL2A_20250120T133221_N0511_R081_T22KGA_20250120T162401",
-        "scene_date": "2025-01-20",
-        "cloud_cover": 12.3,
-        "ndvi_mean": 0.68,
-        "ndvi_median": 0.70,
-        "ndvi_min": 0.10,
-        "ndvi_max": 0.85,
-        "ndvi_std": 0.13,
-        "distribution": {
-          "water_clouds_urban": 0.8,
-          "bare_soil_urban": 1.5,
-          "bare_soil": 4.2,
-          "sparse_vegetation": 22.1,
-          "dense_healthy_vegetation": 71.4
-        },
-        "ndre_mean": 0.35,
-        "ndre_median": 0.37,
-        "ndre_min": 0.04,
-        "ndre_max": 0.58,
-        "ndre_std": 0.10,
-        "ndre_distribution": {
-          "water_non_vegetated": 0.5,
-          "bare_soil": 2.0,
-          "early_sparse_vegetation": 6.8,
-          "moderate_vegetation": 45.3,
-          "dense_healthy_vegetation": 35.2,
-          "very_dense_healthy_vegetation": 10.2
-        }
+        "ndvi_url": "https://storage.example.com/ndvi/MT-5106505.../2025-01-05_ndvi.png?..."
       }
     ]
   }
