@@ -174,7 +174,7 @@ Fonte: Sentinel-2 L2A via Planetary Computer (Microsoft). Resolucao: 10m. Mascar
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://data-api.dadosfazenda.com.br/ndvi/car/MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17/timeseries?start_date=2025-01-01&end_date=2025-03-01&images=true" \
+curl -X GET "https://data.dadosfazenda.com.br/ndvi/car/MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17/timeseries?start_date=2025-01-01&end_date=2025-03-01&images=true" \
   -H "Authorization: Bearer SEU_TOKEN_API"
 ```
 
@@ -182,7 +182,7 @@ curl -X GET "https://data-api.dadosfazenda.com.br/ndvi/car/MT-5106505-EC68A6B4C2
 import httpx
 
 response = httpx.get(
-    "https://data-api.dadosfazenda.com.br/ndvi/car/MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17/timeseries",
+    "https://data.dadosfazenda.com.br/ndvi/car/MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17/timeseries",
     params={
         "start_date": "2025-01-01",
         "end_date": "2025-03-01",

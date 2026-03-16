@@ -120,7 +120,7 @@ As imagens de satelite dos alertas sao cacheadas em nosso servidor e entregues v
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://data-api.dadosfazenda.com.br/ambiental/car/MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17" \
+curl -X GET "https://data.dadosfazenda.com.br/ambiental/car/MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17" \
   -H "Authorization: Bearer SEU_TOKEN_API"
 ```
 
@@ -128,7 +128,7 @@ curl -X GET "https://data-api.dadosfazenda.com.br/ambiental/car/MT-5106505-EC68A
 import httpx
 
 response = httpx.get(
-    "https://data-api.dadosfazenda.com.br/ambiental/car/MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17",
+    "https://data.dadosfazenda.com.br/ambiental/car/MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17",
     headers={"Authorization": "Bearer SEU_TOKEN"}
 )
 data = response.json()["data"]

@@ -63,7 +63,7 @@ Dados disponiveis de 1940 ate ~5 dias atras.
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://data-api.dadosfazenda.com.br/weather/temperature/car/GO-5205513-DAF91DDC4B054D37919111EA3E7322D3?start_date=2025-01-01&end_date=2025-03-01" \
+curl -X GET "https://data.dadosfazenda.com.br/weather/temperature/car/GO-5205513-DAF91DDC4B054D37919111EA3E7322D3?start_date=2025-01-01&end_date=2025-03-01" \
   -H "Authorization: Bearer SEU_TOKEN_API"
 ```
 
@@ -71,7 +71,7 @@ curl -X GET "https://data-api.dadosfazenda.com.br/weather/temperature/car/GO-520
 import httpx
 
 response = httpx.get(
-    "https://data-api.dadosfazenda.com.br/weather/temperature/car/GO-5205513-DAF91DDC4B054D37919111EA3E7322D3",
+    "https://data.dadosfazenda.com.br/weather/temperature/car/GO-5205513-DAF91DDC4B054D37919111EA3E7322D3",
     params={"start_date": "2025-01-01", "end_date": "2025-03-01"},
     headers={"Authorization": "Bearer SEU_TOKEN"}
 )

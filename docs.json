@@ -75,7 +75,7 @@
     }
   },
   "api": {
-    "baseUrl": "https://data-api.dadosfazenda.com.br",
+    "baseUrl": "https://data.dadosfazenda.com.br",
     "auth": {
       "method": "bearer"
     }

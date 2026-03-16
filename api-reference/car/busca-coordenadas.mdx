@@ -80,7 +80,7 @@ Se mais de um CAR contiver o ponto, retorna o de menor area (mais especifico).
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://data-api.dadosfazenda.com.br/car/search/coordinates?latitude=-15.7935&longitude=-47.8828" \
+curl -X GET "https://data.dadosfazenda.com.br/car/search/coordinates?latitude=-15.7935&longitude=-47.8828" \
   -H "Authorization: Bearer SEU_TOKEN_API"
 ```
 
@@ -88,7 +88,7 @@ curl -X GET "https://data-api.dadosfazenda.com.br/car/search/coordinates?latitud
 import httpx
 
 response = httpx.get(
-    "https://data-api.dadosfazenda.com.br/car/search/coordinates",
+    "https://data.dadosfazenda.com.br/car/search/coordinates",
     params={"latitude": -15.7935, "longitude": -47.8828},
     headers={"Authorization": "Bearer SEU_TOKEN"}
 )

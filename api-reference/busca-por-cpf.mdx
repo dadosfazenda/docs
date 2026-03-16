@@ -104,7 +104,7 @@ A resposta retorna dados basicos de cada imovel (SNCR) e o CAR vinculado quando 
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://data-api.dadosfazenda.com.br/cpf-car/12345678901" \
+curl -X GET "https://data.dadosfazenda.com.br/cpf-car/12345678901" \
   -H "Authorization: Bearer SEU_TOKEN_API"
 ```
 
@@ -112,7 +112,7 @@ curl -X GET "https://data-api.dadosfazenda.com.br/cpf-car/12345678901" \
 import httpx
 
 response = httpx.get(
-    "https://data-api.dadosfazenda.com.br/cpf-car/12345678901",
+    "https://data.dadosfazenda.com.br/cpf-car/12345678901",
     headers={"Authorization": "Bearer SEU_TOKEN"}
 )
 data = response.json()
