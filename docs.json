@@ -56,6 +56,12 @@
             ]
           },
           {
+            "group": "Trabalho Escravo",
+            "pages": [
+              "api-reference/trabalho-escravo/busca-por-cpf"
+            ]
+          },
+          {
             "group": "Satelite",
             "pages": [
               "api-reference/ndvi/serie-temporal-por-car"
