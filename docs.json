@@ -49,6 +49,13 @@
             ]
           },
           {
+            "group": "Credito Rural (SICOR)",
+            "pages": [
+              "api-reference/sicor/creditos-por-car",
+              "api-reference/sicor/creditos-por-cpf"
+            ]
+          },
+          {
             "group": "Satelite",
             "pages": [
               "api-reference/ndvi/serie-temporal-por-car"

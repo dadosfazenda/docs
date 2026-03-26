@@ -1,0 +1,147 @@
+---
+title: "Creditos por CAR"
+api: "GET /sicor/creditos/car/{codigo_car}"
+description: "Consulta operacoes de credito rural vinculadas a um CAR (dados de 2015 a 2026)"
+---
+
+## Descricao
+
+Retorna todas as operacoes de credito rural registradas no SICOR (Banco Central) vinculadas ao codigo CAR informado. Inclui dados de 2015 ate o ano corrente.
+
+Para cada operacao, retorna: produto/cultura financiada, programa de credito (PRONAF, etc), banco, valores, juros, area financiada, datas de plantio e colheita, status (vigente/vencido), tipo de beneficiario (proprietario, arrendatario, etc) e CPF/CNPJ.
+
+Tambem retorna um resumo agregado com totais.
+
+<ParamField path="codigo_car" type="string" required>
+  Codigo do CAR. Aceita com ou sem tracos.
+  Exemplos: `GO-5203401-617CD0C0367A49CD809862F382945511` ou `GO5203401617CD0C0367A49CD809862F382945511`
+</ParamField>
+
+<ParamField query="offset" type="integer" default={0}>
+  Offset para paginacao.
+</ParamField>
+
+<ParamField query="limit" type="integer" default={100}>
+  Quantidade por pagina (max: 500).
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="codigo_car" type="string">
+      Codigo do CAR consultado (normalizado, sem tracos).
+    </ResponseField>
+
+    <ResponseField name="resumo" type="object">
+      Resumo agregado de todas as operacoes.
+      <Expandable title="resumo">
+        <ResponseField name="total_operacoes" type="integer">
+          Total de operacoes de credito encontradas.
+        </ResponseField>
+        <ResponseField name="anos_com_credito" type="integer">
+          Quantidade de anos distintos com operacoes.
+        </ResponseField>
+        <ResponseField name="primeira_operacao" type="string">
+          Data da primeira operacao (ISO 8601).
+        </ResponseField>
+        <ResponseField name="ultima_operacao" type="string">
+          Data da ultima operacao (ISO 8601).
+        </ResponseField>
+        <ResponseField name="valor_total_credito" type="number">
+          Soma dos valores de credito (R$).
+        </ResponseField>
+        <ResponseField name="area_total_financiada" type="number">
+          Soma das areas financiadas (hectares).
+        </ResponseField>
+        <ResponseField name="taxa_juros_media" type="number">
+          Media ponderada da taxa de juros (% a.a.).
+        </ResponseField>
+        <ResponseField name="total_produtos" type="integer">
+          Quantidade de produtos/culturas distintos financiados.
+        </ResponseField>
+        <ResponseField name="operacoes_vigentes" type="integer">
+          Operacoes com vencimento futuro.
+        </ResponseField>
+        <ResponseField name="operacoes_vencidas" type="integer">
+          Operacoes ja vencidas.
+        </ResponseField>
+        <ResponseField name="total_cpfs_cnpjs" type="integer">
+          CPFs/CNPJs distintos vinculados.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="operacoes" type="array">
+      Lista de operacoes de credito.
+      <Expandable title="operacao">
+        <ResponseField name="ref_bacen" type="integer">
+          Referencia BACEN da operacao.
+        </ResponseField>
+        <ResponseField name="dt_emissao" type="string">
+          Data de emissao da operacao.
+        </ResponseField>
+        <ResponseField name="dt_vencimento" type="string">
+          Data de vencimento.
+        </ResponseField>
+        <ResponseField name="status_operacao" type="string">
+          Status: `vigente` ou `vencido`.
+        </ResponseField>
+        <ResponseField name="ano_emissao" type="integer">
+          Ano de emissao.
+        </ResponseField>
+        <ResponseField name="produto" type="string">
+          Produto/cultura financiada (ex: SOJA, MILHO, CAFE).
+        </ResponseField>
+        <ResponseField name="finalidade" type="string">
+          Finalidade: Custeio, Investimento, Comercializacao.
+        </ResponseField>
+        <ResponseField name="programa" type="string">
+          Programa de credito (PRONAF, PRONAMP, etc).
+        </ResponseField>
+        <ResponseField name="instrumento_credito" type="string">
+          Tipo de instrumento de credito.
+        </ResponseField>
+        <ResponseField name="instituicao_financeira" type="string">
+          Nome do banco que concedeu o credito.
+        </ResponseField>
+        <ResponseField name="fonte_recurso" type="string">
+          Fonte dos recursos (Poupanca Rural, BNDES, FCO, etc).
+        </ResponseField>
+        <ResponseField name="vl_parc_credito" type="number">
+          Valor do credito (R$).
+        </ResponseField>
+        <ResponseField name="vl_area_financ" type="number">
+          Area financiada (hectares).
+        </ResponseField>
+        <ResponseField name="vl_juros" type="number">
+          Taxa de juros (% a.a.).
+        </ResponseField>
+        <ResponseField name="tipo_beneficiario" type="string">
+          Tipo: Produtor rural, Arrendatario, Parceiro, Cooperativa, etc.
+        </ResponseField>
+        <ResponseField name="proprietario_cpf_cnpj" type="string">
+          CPF ou CNPJ do proprietario vinculado ao CAR.
+        </ResponseField>
+        <ResponseField name="mutuario_cpf_cnpj" type="string">
+          CPF ou CNPJ de quem tomou o credito.
+        </ResponseField>
+        <ResponseField name="tipo_agricultura" type="string">
+          Convencional, Organica, Agroecologica, etc.
+        </ResponseField>
+        <ResponseField name="tipo_cultivo" type="string">
+          Sequeiro, Irrigado, Confinamento, etc.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="metadata" type="object">
+      Metadados de paginacao.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Fonte dos dados
+
+Banco Central do Brasil - Sistema de Operacoes do Credito Rural (SICOR).
+Dados atualizados mensalmente.
