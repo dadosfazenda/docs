@@ -8,14 +8,7 @@ description: "Retorna os proprietários de um imóvel rural identificado pelo c�
 
 Consulta os proprietários vinculados a um CAR com enriquecimento de dados pessoais (telefones, emails, idade, etc).
 
-A busca segue uma cascata de fontes, parando na primeira que retornar resultado:
-
-1. **SICOR** — base local de crédito rural (gratuito)
-2. **SIGEF + Serpro CCIR** — parcela certificada INCRA → titulares via Serpro → enriquecimento Datecode
-3. **Umbrella** — base nacional de proprietários rurais → enriquecimento Datecode
-4. **Registro Rural** — fallback final → enriquecimento Datecode
-
-Quando encontrado via Umbrella, os dados do imóvel (denominação, matrícula, cartório) são retornados dentro de `dados_car`.
+Quando disponíveis, os dados do imóvel (denominação, matrícula, cartório) são retornados dentro de `dados_car`.
 
 <ParamField path="codigo_car" type="string" required>
   Código do CAR. Exemplo: `GO-5211909-8D9398BED77F4EC88CB75EED7FB0FC42`
