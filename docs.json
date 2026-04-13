@@ -63,6 +63,12 @@
             ]
           },
           {
+            "group": "Desmatamento (PRODES)",
+            "pages": [
+              "api-reference/prodes/desmatamento-por-car"
+            ]
+          },
+          {
             "group": "Satelite",
             "pages": [
               "api-reference/ndvi/serie-temporal-por-car"

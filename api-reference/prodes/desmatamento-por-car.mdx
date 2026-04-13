@@ -1,0 +1,154 @@
+---
+title: "Desmatamento PRODES por CAR"
+api: "GET /prodes/car/{codigo_car}"
+description: "Retorna poligonos de desmatamento detectados pelo PRODES que intersectam com um CAR"
+---
+
+## Descricao
+
+Retorna todos os poligonos de desmatamento do PRODES (corte raso) que intersectam com a geometria de um imovel rural (CAR).
+
+Para cada area de desmatamento, retorna a classificacao, ano de deteccao, satelite utilizado, area desmatada e o percentual de sobreposicao com a propriedade.
+
+Os resultados sao ordenados por ano (mais recente primeiro) e area de intersecao.
+
+<ParamField path="codigo_car" type="string" required>
+  Codigo do CAR. Exemplo: `MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17`
+</ParamField>
+
+<ParamField query="year_min" type="integer">
+  Ano minimo para filtrar. Exemplo: `2020`
+</ParamField>
+
+<ParamField query="year_max" type="integer">
+  Ano maximo para filtrar. Exemplo: `2024`
+</ParamField>
+
+<ParamField query="image_date_after" type="string">
+  Data minima da imagem no formato `YYYY-MM-DD`. Quando informado, tem prioridade sobre `year_min`.
+</ParamField>
+
+<ParamField query="image_date_before" type="string">
+  Data maxima da imagem no formato `YYYY-MM-DD`. Quando informado, tem prioridade sobre `year_max`.
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="codigo_car" type="string">
+      Codigo do CAR consultado.
+    </ResponseField>
+
+    <ResponseField name="total" type="integer">
+      Total de poligonos de desmatamento encontrados.
+    </ResponseField>
+
+    <ResponseField name="desmatamentos" type="array">
+      Lista de areas de desmatamento que intersectam com o CAR.
+
+      <Expandable title="desmatamento">
+        <ResponseField name="uuid" type="string">Identificador unico do poligono PRODES.</ResponseField>
+        <ResponseField name="biome" type="string">Bioma (ex: `CERRADO`, `AMAZONIA`, `MATA ATLANTICA`).</ResponseField>
+        <ResponseField name="state" type="string">UF (ex: `MT`, `GO`, `PA`).</ResponseField>
+        <ResponseField name="main_class" type="string">Classe principal (ex: `DESMATAMENTO`).</ResponseField>
+        <ResponseField name="class_name" type="string">Subclassificacao (ex: `DESMATAMENTO_CR`).</ResponseField>
+        <ResponseField name="year" type="integer">Ano de deteccao do desmatamento.</ResponseField>
+        <ResponseField name="area_km" type="number">Area total do poligono PRODES em km².</ResponseField>
+        <ResponseField name="image_date" type="string">Data da imagem de satelite utilizada na deteccao.</ResponseField>
+        <ResponseField name="satellite" type="string">Satelite utilizado (ex: `LANDSAT-8`, `LANDSAT-9`).</ResponseField>
+        <ResponseField name="sensor" type="string">Sensor do satelite (ex: `OLI`, `OLI-2`).</ResponseField>
+        <ResponseField name="area_intersecao_m2" type="number">Area de intersecao com o CAR em metros quadrados.</ResponseField>
+        <ResponseField name="area_intersecao_ha" type="number">Area de intersecao com o CAR em hectares.</ResponseField>
+        <ResponseField name="percentual_sobre_propriedade" type="number">Percentual da propriedade afetado pelo desmatamento.</ResponseField>
+        <ResponseField name="geojson" type="object">Geometria GeoJSON do poligono de desmatamento.</ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://data.dadosfazenda.com.br/prodes/car/MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17?year_min=2020" \
+  -H "Authorization: Bearer SEU_TOKEN_API"
+```
+
+```python Python
+import httpx
+
+response = httpx.get(
+    "https://data.dadosfazenda.com.br/prodes/car/MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17",
+    params={"year_min": 2020},
+    headers={"Authorization": "Bearer SEU_TOKEN_API"}
+)
+data = response.json()["data"]
+print(f"Total de areas desmatadas: {data['total']}")
+
+for d in data["desmatamentos"]:
+    print(f"  {d['year']} — {d['area_intersecao_ha']:.2f} ha ({d['percentual_sobre_propriedade']:.1f}%) — {d['biome']}")
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 - Com desmatamento
+{
+  "success": true,
+  "data": {
+    "codigo_car": "MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17",
+    "total": 2,
+    "desmatamentos": [
+      {
+        "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "biome": "CERRADO",
+        "state": "MT",
+        "main_class": "DESMATAMENTO",
+        "class_name": "DESMATAMENTO_CR",
+        "year": 2023,
+        "area_km": 0.45,
+        "image_date": "2023-08-15",
+        "satellite": "LANDSAT-8",
+        "sensor": "OLI",
+        "area_intersecao_m2": 150000.0,
+        "area_intersecao_ha": 15.0,
+        "percentual_sobre_propriedade": 10.24,
+        "geojson": { "type": "Polygon", "coordinates": [ "..." ] }
+      },
+      {
+        "uuid": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+        "biome": "CERRADO",
+        "state": "MT",
+        "main_class": "DESMATAMENTO",
+        "class_name": "DESMATAMENTO_CR",
+        "year": 2021,
+        "area_km": 0.12,
+        "image_date": "2021-07-22",
+        "satellite": "LANDSAT-8",
+        "sensor": "OLI",
+        "area_intersecao_m2": 48000.0,
+        "area_intersecao_ha": 4.8,
+        "percentual_sobre_propriedade": 3.28,
+        "geojson": { "type": "Polygon", "coordinates": [ "..." ] }
+      }
+    ]
+  }
+}
+```
+
+```json 200 - Sem desmatamento
+{
+  "success": true,
+  "data": {
+    "codigo_car": "GO-5211909-8D9398BED77F4EC88CB75EED7FB0FC42",
+    "total": 0,
+    "desmatamentos": []
+  }
+}
+```
+
+```json 404 - CAR nao encontrado
+{
+  "success": false,
+  "message": "CAR nao encontrado: XX-0000000-INVALID"
+}
+```
+</ResponseExample>
