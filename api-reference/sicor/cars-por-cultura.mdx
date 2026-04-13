@@ -1,0 +1,166 @@
+---
+title: "CARs por Cultura"
+api: "GET /sicor/cars-por-cultura"
+description: "Busca CARs que possuem operacoes de credito rural para uma cultura especifica, com historico ano a ano"
+---
+
+## Descricao
+
+Retorna todos os CARs que possuem operacoes de credito rural vinculadas a uma cultura especifica (ex: SOJA, MILHO, CAFE).
+
+Para cada CAR, retorna um historico ano a ano com valor financiado, area e finalidade do credito.
+
+<ParamField query="produto" type="string" required>
+  Nome da cultura/produto. Exemplo: `SOJA`, `MILHO`, `CAFE`, `ALGODAO`
+</ParamField>
+
+<ParamField query="uf" type="string">
+  Filtro por estado. Exemplo: `MT`, `GO`, `BA`
+</ParamField>
+
+<ParamField query="year_min" type="integer">
+  Ano minimo. Exemplo: `2016`
+</ParamField>
+
+<ParamField query="year_max" type="integer">
+  Ano maximo. Exemplo: `2025`
+</ParamField>
+
+<ParamField query="offset" type="integer" default="0">
+  Offset para paginacao.
+</ParamField>
+
+<ParamField query="limit" type="integer" default="50">
+  Quantidade por pagina.
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="produto" type="string">
+      Cultura consultada.
+    </ResponseField>
+
+    <ResponseField name="total" type="integer">
+      Total de CARs encontrados.
+    </ResponseField>
+
+    <ResponseField name="filtros" type="object">
+      Filtros aplicados na consulta.
+    </ResponseField>
+
+    <ResponseField name="cars" type="array">
+      Lista de CARs com historico de credito para a cultura.
+
+      <Expandable title="car">
+        <ResponseField name="codigo_car" type="string">Codigo do CAR (sem tracos).</ResponseField>
+        <ResponseField name="uf" type="string">UF do CAR.</ResponseField>
+        <ResponseField name="anos_com_credito" type="integer">Quantidade de anos distintos com operacoes.</ResponseField>
+        <ResponseField name="primeiro_ano" type="integer">Primeiro ano com operacao.</ResponseField>
+        <ResponseField name="ultimo_ano" type="integer">Ultimo ano com operacao.</ResponseField>
+        <ResponseField name="valor_total" type="number">Valor total financiado (R$).</ResponseField>
+        <ResponseField name="area_total_ha" type="number">Area total financiada (hectares).</ResponseField>
+        <ResponseField name="total_operacoes" type="integer">Total de operacoes de credito.</ResponseField>
+
+        <ResponseField name="historico" type="array">
+          Historico ano a ano de operacoes.
+
+          <Expandable title="registro">
+            <ResponseField name="ano" type="integer">Ano da operacao.</ResponseField>
+            <ResponseField name="produto" type="string">Cultura financiada.</ResponseField>
+            <ResponseField name="finalidade" type="string">Finalidade (Custeio, Investimento, Comercializacao).</ResponseField>
+            <ResponseField name="valor_credito" type="number">Valor financiado no ano (R$).</ResponseField>
+            <ResponseField name="area_financiada_ha" type="number">Area financiada no ano (hectares).</ResponseField>
+            <ResponseField name="operacoes" type="integer">Quantidade de operacoes no ano.</ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="metadata" type="object">
+      Metadados de paginacao.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://data.dadosfazenda.com.br/sicor/cars-por-cultura?produto=SOJA&uf=MT&year_min=2016" \
+  -H "Authorization: Bearer SEU_TOKEN_API"
+```
+
+```python Python
+import httpx
+
+response = httpx.get(
+    "https://data.dadosfazenda.com.br/sicor/cars-por-cultura",
+    params={"produto": "SOJA", "uf": "MT", "year_min": 2016},
+    headers={"Authorization": "Bearer SEU_TOKEN_API"}
+)
+data = response.json()["data"]
+print(f"Total de CARs com SOJA: {data['total']}")
+
+for car in data["cars"]:
+    print(f"\n{car['codigo_car']} — {car['uf']} — {car['anos_com_credito']} anos")
+    for h in car["historico"]:
+        print(f"  {h['ano']}: {h['finalidade']} — R$ {h['valor_credito']:,.2f} — {h['area_financiada_ha']} ha")
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 - Sucesso
+{
+  "success": true,
+  "message": "1234 CAR(s) encontrado(s) com credito para 'SOJA'",
+  "data": {
+    "produto": "SOJA",
+    "filtros": { "uf": "MT", "year_min": 2016, "year_max": null },
+    "total": 1234,
+    "cars": [
+      {
+        "codigo_car": "MT5106505EC68A6B4C2AF4EB283BCE84BF6D56A17",
+        "uf": "MT",
+        "anos_com_credito": 8,
+        "primeiro_ano": 2016,
+        "ultimo_ano": 2025,
+        "valor_total": 2500000.00,
+        "area_total_ha": 1200.0,
+        "total_operacoes": 12,
+        "historico": [
+          {
+            "ano": 2025,
+            "produto": "SOJA",
+            "finalidade": "Custeio",
+            "valor_credito": 350000.00,
+            "area_financiada_ha": 150.0,
+            "operacoes": 2
+          },
+          {
+            "ano": 2024,
+            "produto": "SOJA",
+            "finalidade": "Custeio",
+            "valor_credito": 300000.00,
+            "area_financiada_ha": 150.0,
+            "operacoes": 1
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "offset": 0,
+      "limit": 50,
+      "total": 1234,
+      "has_next": true
+    }
+  }
+}
+```
+
+```json 404 - Nenhum resultado
+{
+  "success": false,
+  "message": "Nenhum CAR encontrado para 'QUINOA'"
+}
+```
+</ResponseExample>
