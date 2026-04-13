@@ -8,7 +8,7 @@ description: "Busca propriedades rurais (CAR) vinculadas a um CPF ou CNPJ"
 
 A partir de um CPF ou CNPJ, esta rota identifica todos os imoveis rurais vinculados ao documento e tenta vincular cada um ao respectivo CAR (Cadastro Ambiental Rural).
 
-A resposta retorna dados basicos de cada imovel (SNCR) e o CAR vinculado quando encontrado. Para dados detalhados de um imovel (titulares, cartorio, CCIR), utilize a rota [Detalhes do imovel](/api-reference/detalhes-imovel).
+A resposta retorna dados basicos de cada imovel e o CAR vinculado quando encontrado. Para dados detalhados de um imovel (titulares, cartorio, CCIR), utilize a rota [Detalhes do imovel](/api-reference/detalhes-imovel).
 
 <ParamField path="cpf_cnpj" type="string" required>
   CPF (11 digitos) ou CNPJ (14 digitos). Aceita com ou sem formatacao (pontos, tracos, barras).
@@ -45,7 +45,7 @@ A resposta retorna dados basicos de cada imovel (SNCR) e o CAR vinculado quando 
         </ResponseField>
 
         <ResponseField name="denominacao" type="string">
-          Nome do imovel (ex: `Fazenda Esperanca`). Fonte: SNCR.
+          Nome do imovel (ex: `Fazenda Esperanca`).
         </ResponseField>
 
         <ResponseField name="municipio" type="string">

@@ -1,16 +1,14 @@
 ---
 title: "Alertas Ambientais por CAR"
 api: "GET /ambiental/car/{codigo_car}"
-description: "Alertas de desmatamento, embargos IBAMA, reserva legal e APP via MapBiomas"
+description: "Alertas de desmatamento, embargos IBAMA, reserva legal e APP"
 ---
 
 ## Descricao
 
-Retorna dados ambientais completos de um imovel rural consultando a API MapBiomas Alerta v2. Inclui alertas de desmatamento, embargos, sobreposicoes com areas protegidas e imagens de satelite antes/depois.
+Retorna dados ambientais completos de um imovel rural. Inclui alertas de desmatamento, embargos, sobreposicoes com areas protegidas e imagens de satelite antes/depois.
 
 As imagens de satelite dos alertas sao cacheadas em nosso servidor e entregues via URLs assinadas com validade de **1 hora**.
-
-**Fonte**: MapBiomas Alerta (plataforma.alerta.mapbiomas.org)
 
 <ParamField path="codigo_car" type="string" required>
   Codigo do CAR. Exemplo: `MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17`

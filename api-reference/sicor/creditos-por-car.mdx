@@ -1,12 +1,12 @@
 ---
-title: "Creditos por CAR"
+title: "Financiamentos Rurais por CAR"
 api: "GET /sicor/creditos/car/{codigo_car}"
-description: "Consulta operacoes de credito rural vinculadas a um CAR (dados de 2015 a 2026)"
+description: "Consulta financiamentos e operacoes de credito rural vinculadas a um CAR (dados de 2015 a 2026)"
 ---
 
 ## Descricao
 
-Retorna todas as operacoes de credito rural registradas no SICOR (Banco Central) vinculadas ao codigo CAR informado. Inclui dados de 2015 ate o ano corrente.
+Retorna todas as operacoes de credito rural vinculadas ao codigo CAR informado. Inclui dados de 2015 ate o ano corrente.
 
 Para cada operacao, retorna: produto/cultura financiada, programa de credito (PRONAF, etc), banco, valores, juros, area financiada, datas de plantio e colheita, status (vigente/vencido), tipo de beneficiario (proprietario, arrendatario, etc) e CPF/CNPJ.
 
@@ -141,7 +141,3 @@ Tambem retorna um resumo agregado com totais.
   </Expandable>
 </ResponseField>
 
-## Fonte dos dados
-
-Banco Central do Brasil - Sistema de Operacoes do Credito Rural (SICOR).
-Dados atualizados mensalmente.

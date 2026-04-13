@@ -1,0 +1,145 @@
+---
+title: "CARs por Raio"
+api: "GET /internal/car/search/radius"
+description: "Busca todos os CARs dentro de um raio a partir de uma coordenada geografica"
+---
+
+## Descricao
+
+Retorna todos os imóveis rurais (CAR) cujo polígono intersecta ou está dentro do raio informado a partir de uma coordenada central.
+
+Os resultados são ordenados por distância crescente (mais próximo primeiro).
+
+<ParamField query="lat" type="number" required>
+  Latitude do ponto central. Exemplo: `-15.7935`
+</ParamField>
+
+<ParamField query="lng" type="number" required>
+  Longitude do ponto central. Exemplo: `-47.8828`
+</ParamField>
+
+<ParamField query="radius_km" type="number" default="10.0">
+  Raio de busca em quilômetros. Mínimo: `0.1`, máximo: `100`.
+</ParamField>
+
+<ParamField query="min_area_ha" type="number">
+  Área mínima do imóvel em hectares. Exemplo: `1000` para filtrar fazendas acima de 1.000 ha.
+</ParamField>
+
+<ParamField query="max_area_ha" type="number">
+  Área máxima do imóvel em hectares.
+</ParamField>
+
+<ParamField query="offset" type="integer" default="0">
+  Offset para paginação.
+</ParamField>
+
+<ParamField query="limit" type="integer" default="50">
+  Quantidade por página.
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="cars" type="array">
+      Lista de CARs encontrados dentro do raio, ordenados por distância.
+
+      <Expandable title="car">
+        <ResponseField name="codigo" type="string">Código do CAR.</ResponseField>
+        <ResponseField name="municipio" type="string">Município.</ResponseField>
+        <ResponseField name="estado" type="string">UF.</ResponseField>
+        <ResponseField name="area_ha" type="number">Área cadastrada em hectares.</ResponseField>
+        <ResponseField name="modulos_fiscais" type="number">Quantidade de módulos fiscais.</ResponseField>
+        <ResponseField name="status" type="string">Status: `AT`, `PE`, `CA`, `SU`.</ResponseField>
+        <ResponseField name="tipo" type="string">Tipo: `IRU`, `AST`, `PCT`.</ResponseField>
+        <ResponseField name="condicao" type="string">Condição de análise.</ResponseField>
+        <ResponseField name="distancia_m" type="number">Distância do ponto central em metros.</ResponseField>
+        <ResponseField name="distancia_km" type="number">Distância do ponto central em quilômetros.</ResponseField>
+        <ResponseField name="geometry" type="object">Geometria GeoJSON do polígono do CAR.</ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="total" type="integer">
+      Total de CARs encontrados dentro do raio (considerando filtros).
+    </ResponseField>
+
+    <ResponseField name="pagination" type="object">
+      Metadados de paginação.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://data.dadosfazenda.com.br/internal/car/search/radius?lat=-15.7935&lng=-47.8828&radius_km=50&min_area_ha=1000" \
+  -H "x-service-key: SEU_SERVICE_KEY"
+```
+
+```python Python
+import httpx
+
+response = httpx.get(
+    "https://data.dadosfazenda.com.br/internal/car/search/radius",
+    params={
+        "lat": -15.7935,
+        "lng": -47.8828,
+        "radius_km": 50,
+        "min_area_ha": 1000,
+    },
+    headers={"x-service-key": "SEU_SERVICE_KEY"}
+)
+data = response.json()["data"]
+print(f"Total: {data['total']} CARs encontrados")
+for car in data["cars"]:
+    print(f"{car['codigo']} — {car['area_ha']} ha — {car['distancia_km']} km")
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 - Sucesso
+{
+  "success": true,
+  "data": {
+    "cars": [
+      {
+        "codigo": "GO-5203401-617CD0C0367A49CD809862F382945511",
+        "municipio": "Bom Jardim de Goias",
+        "estado": "GO",
+        "area_ha": 1240.5,
+        "modulos_fiscais": 27.6,
+        "status": "AT",
+        "tipo": "IRU",
+        "condicao": "Analisado",
+        "distancia_m": 4823.1,
+        "distancia_km": 4.82,
+        "geometry": { "type": "MultiPolygon", "coordinates": [ "..." ] }
+      }
+    ],
+    "total": 1,
+    "pagination": {
+      "offset": 0,
+      "limit": 50,
+      "total": 1,
+      "has_next": false
+    }
+  }
+}
+```
+
+```json 200 - Nenhum resultado
+{
+  "success": true,
+  "data": {
+    "cars": [],
+    "total": 0,
+    "pagination": {
+      "offset": 0,
+      "limit": 50,
+      "total": 0,
+      "has_next": false
+    }
+  }
+}
+```
+</ResponseExample>
