@@ -31,7 +31,8 @@
               "api-reference/busca-por-cpf",
               "api-reference/detalhes-imovel",
               "api-reference/car/busca-coordenadas",
-              "api-reference/car/info"
+              "api-reference/car/info",
+              "api-reference/car/proprietarios"
             ]
           },
           {

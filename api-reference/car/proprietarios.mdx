@@ -1,0 +1,194 @@
+---
+title: "Proprietários do CAR"
+api: "GET /car/{codigo_car}/proprietarios"
+description: "Retorna os proprietários de um imóvel rural identificado pelo código CAR, com dados pessoais enriquecidos."
+---
+
+## Descricao
+
+Consulta os proprietários vinculados a um CAR com enriquecimento de dados pessoais (telefones, emails, idade, etc).
+
+A busca segue uma cascata de fontes, parando na primeira que retornar resultado:
+
+1. **SICOR** — base local de crédito rural (gratuito)
+2. **SIGEF + Serpro CCIR** — parcela certificada INCRA → titulares via Serpro → enriquecimento Datecode
+3. **Umbrella** — base nacional de proprietários rurais → enriquecimento Datecode
+4. **Registro Rural** — fallback final → enriquecimento Datecode
+
+Quando encontrado via Umbrella, os dados do imóvel (denominação, matrícula, cartório) são retornados dentro de `dados_car`.
+
+<ParamField path="codigo_car" type="string" required>
+  Código do CAR. Exemplo: `GO-5211909-8D9398BED77F4EC88CB75EED7FB0FC42`
+</ParamField>
+
+<ParamField query="min_sobreposicao" type="number" default={10.0}>
+  Percentual mínimo de sobreposição para match com SIGEF (0 a 100).
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="dados_car" type="object">
+      Dados do CAR. Quando há dados via Umbrella, inclui também informações do imóvel (matrícula, cartório, denominação).
+
+      <Expandable title="dados_car">
+        <ResponseField name="codigo" type="string">Código do CAR.</ResponseField>
+        <ResponseField name="municipio" type="string">Município.</ResponseField>
+        <ResponseField name="estado" type="string">UF.</ResponseField>
+        <ResponseField name="area_ha" type="number">Área em hectares.</ResponseField>
+        <ResponseField name="status" type="string">Status: `AT`, `PE`, `CA`, `SU`.</ResponseField>
+        <ResponseField name="tipo" type="string">Tipo: `IRU`, `AST`.</ResponseField>
+        <ResponseField name="denominacao" type="string">Nome do imóvel (quando disponível via Umbrella).</ResponseField>
+        <ResponseField name="matricula" type="string">Número da matrícula no cartório (quando disponível).</ResponseField>
+        <ResponseField name="data_matricula" type="string">Data da matrícula (quando disponível).</ResponseField>
+        <ResponseField name="cartorio" type="string">Cartório de registro (quando disponível).</ResponseField>
+        <ResponseField name="tipo_imovel" type="string">Tipo do imóvel, ex: `Imóvel Rural` (quando disponível).</ResponseField>
+        <ResponseField name="uf" type="string">UF do imóvel (quando disponível).</ResponseField>
+        <ResponseField name="codigo_protocolo" type="string">Código de protocolo do imóvel (quando disponível).</ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="dados_titulares" type="array">
+      Lista de proprietários encontrados. Vazia se nenhuma fonte retornar resultado.
+
+      <Expandable title="dados_titulares[]">
+        <ResponseField name="nome" type="string">Nome do proprietário conforme fonte original.</ResponseField>
+        <ResponseField name="cpf_cnpj" type="string">CPF ou CNPJ formatado (ex: `841.897.381-15`).</ResponseField>
+        <ResponseField name="cpf" type="string">CPF sem formatação (ex: `84189738115`). Presente quando enriquecido via Datecode.</ResponseField>
+        <ResponseField name="cpf_formato" type="string">CPF formatado confirmado pelo Datecode.</ResponseField>
+        <ResponseField name="sexo" type="string">`MASCULINO` ou `FEMININO`.</ResponseField>
+        <ResponseField name="data_nascimento" type="string">Data de nascimento.</ResponseField>
+        <ResponseField name="idade" type="number">Idade atual.</ResponseField>
+        <ResponseField name="emails" type="array">Lista de emails encontrados (strings).</ResponseField>
+        <ResponseField name="telefones" type="array">
+          Lista de telefones.
+
+          <Expandable title="telefones[]">
+            <ResponseField name="ddd" type="string">DDD.</ResponseField>
+            <ResponseField name="telefone" type="string">Número sem DDD.</ResponseField>
+            <ResponseField name="tipo" type="string">Ex: `TELEFONE MÓVEL`, `TELEFONE RESIDENCIAL`.</ResponseField>
+            <ResponseField name="operadora" type="string">Operadora (pode ser vazio).</ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="ccir" type="string">
+      Código CCIR (código do imóvel INCRA). Presente apenas quando há match com SIGEF.
+    </ResponseField>
+
+    <ResponseField name="sobreposicao" type="object">
+      Métricas de sobreposição CAR/SIGEF.
+
+      <Expandable title="sobreposicao">
+        <ResponseField name="percentual_car_coberto" type="number">Percentual do CAR coberto por SIGEF.</ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="cache" type="boolean">
+      `true` se os dados geométricos vieram do cache local.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://data.dadosfazenda.com.br/car/GO-5211909-8D9398BED77F4EC88CB75EED7FB0FC42/proprietarios" \
+  -H "Authorization: Bearer SEU_TOKEN_API"
+```
+
+```python Python
+import httpx
+
+response = httpx.get(
+    "https://data.dadosfazenda.com.br/car/GO-5211909-8D9398BED77F4EC88CB75EED7FB0FC42/proprietarios",
+    headers={"Authorization": "Bearer SEU_TOKEN_API"}
+)
+data = response.json()["data"]
+
+print(f"Imóvel: {data['dados_car'].get('denominacao', '-')}")
+print(f"Matrícula: {data['dados_car'].get('matricula', '-')}")
+
+for t in data["dados_titulares"]:
+    print(f"{t['nome']} — CPF: {t['cpf_cnpj']}")
+    for tel in t.get("telefones", []):
+        print(f"  ({tel['ddd']}) {tel['telefone']} — {tel['tipo']}")
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 - Com proprietários (via Umbrella)
+{
+  "success": true,
+  "message": "Dados completos do CAR (cache)",
+  "data": {
+    "dados_car": {
+      "tipo": "IRU",
+      "codigo": "GO-5211909-8D9398BED77F4EC88CB75EED7FB0FC42",
+      "estado": "GO",
+      "status": "AT",
+      "area_ha": 146.4525,
+      "municipio": "Jataí",
+      "denominacao": "FAZENDA LEÃO, LUGAR DENOMINADO RAMALHUDA",
+      "matricula": "165",
+      "data_matricula": "21/08/1978",
+      "cartorio": "Jataí/GO",
+      "tipo_imovel": "Imóvel Rural",
+      "uf": "GOIÁS",
+      "codigo_protocolo": "GO-5211909-6C67.1755.2B29.BE26.0F1D.AAA6.F80E.3153"
+    },
+    "dados_titulares": [
+      {
+        "nome": "ANIRCIO GOUEIA DE MORES JUNIOR",
+        "cpf_cnpj": "841.897.381-15",
+        "cpf": "84189738115",
+        "cpf_formato": "841.897.381-15",
+        "sexo": "MASCULINO",
+        "data_nascimento": "07/03/1975",
+        "idade": 51,
+        "emails": ["ANIRCIOGOUVEIA@HOTMAIL.COM"],
+        "telefones": [
+          { "ddd": "64", "telefone": "999067186", "tipo": "TELEFONE MÓVEL", "operadora": "" },
+          { "ddd": "64", "telefone": "999272854", "tipo": "TELEFONE MÓVEL", "operadora": "" }
+        ]
+      },
+      {
+        "nome": "ANIRCIO GOUEIA DE MORES",
+        "cpf_cnpj": "020.772.301-00",
+        "cpf": "02077230100",
+        "cpf_formato": "020.772.301-00",
+        "sexo": "MASCULINO",
+        "data_nascimento": "02/11/1946",
+        "idade": 79,
+        "emails": ["ANIRCIOGOUVEIA@HOTMAIL.COM"],
+        "telefones": [
+          { "ddd": "64", "telefone": "996264596", "tipo": "TELEFONE MÓVEL", "operadora": "" }
+        ]
+      }
+    ],
+    "sobreposicao": { "percentual_car_coberto": 0 },
+    "cache": true
+  }
+}
+```
+
+```json 200 - Sem proprietários encontrados
+{
+  "success": true,
+  "message": "Dados completos do CAR",
+  "data": {
+    "dados_car": {
+      "codigo": "SP-3550308-ABC123...",
+      "municipio": "Sao Paulo",
+      "estado": "SP",
+      "area_ha": 50.0,
+      "status": "AT"
+    },
+    "dados_titulares": [],
+    "sobreposicao": { "percentual_car_coberto": 0 },
+    "cache": false
+  }
+}
+```
+</ResponseExample>
