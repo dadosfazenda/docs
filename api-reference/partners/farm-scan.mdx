@@ -1,0 +1,148 @@
+---
+title: "FarmScan via WhatsApp"
+api: "POST /internal/partners/farm-scan"
+description: "Gera um relatorio FarmScan e envia automaticamente via WhatsApp para o cliente final do parceiro."
+---
+
+## Descricao
+
+Endpoint dedicado a parceiros B2B. Gera o relatorio FarmScan completo em PDF
+(mapa, dados do CAR, certificacoes SIGEF/SNCI, embargos IBAMA, composicao do
+solo e precipitacao) e envia automaticamente via WhatsApp utilizando um
+template Meta-aprovado da DadosFazenda.
+
+O processamento e **assincrono**: a API responde em ~1s com `202 Accepted`
+e o PDF chega no WhatsApp do destinatario em aproximadamente 15 segundos.
+
+## Como funciona
+
+A rota aceita **lat/lng** OU **codigo_car** (apenas um dos dois). Quando vem
+coordenadas, a API resolve automaticamente o CAR que contem o ponto.
+
+O destinatario do WhatsApp e cadastrado como lead na DadosFazenda
+(visivel no dashboard de eventos do parceiro).
+
+## Custo
+
+Cada chamada bem sucedida consome **1 unidade** da cota mensal da api_key.
+Validacoes que falham (telefone invalido, CAR inexistente) **nao consomem cota**.
+
+## Parametros
+
+<ParamField query="lat" type="number">
+  Latitude do ponto (-90 a 90). Use junto com `lng`.
+</ParamField>
+
+<ParamField query="lng" type="number">
+  Longitude do ponto (-180 a 180). Use junto com `lat`.
+</ParamField>
+
+<ParamField query="codigo_car" type="string">
+  Codigo SICAR do imovel (ex: `MG-3111507-DBEB9FF072D2402FA066E8AF2F60CF71`).
+  Alternativa a lat/lng.
+</ParamField>
+
+<ParamField body="name" type="string" required>
+  Nome do destinatario (cliente final do parceiro). Aparece nos registros internos.
+</ParamField>
+
+<ParamField body="phone" type="string" required>
+  Telefone do destinatario com DDI+DDD+numero, apenas digitos. 10 a 13 digitos.
+  Exemplo: `5511999999999`.
+</ParamField>
+
+<ParamField body="email" type="string">
+  Email do destinatario. Opcional, mas recomendado para cadastro de lead.
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string">
+  Sempre `processing` em respostas 202.
+</ResponseField>
+
+<ResponseField name="codigo_car" type="string">
+  CAR resolvido (igual ao recebido, ou resolvido a partir de lat/lng).
+</ResponseField>
+
+<ResponseField name="recipient_phone" type="string">
+  Telefone normalizado (apenas digitos) para o qual o PDF sera enviado.
+</ResponseField>
+
+<ResponseField name="delivery" type="string">
+  Sempre `whatsapp_template`.
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL — por coordenada
+curl -X POST "https://data.dadosfazenda.com.br/internal/partners/farm-scan?lat=-19.7894&lng=-43.7847" \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Joao da Silva",
+    "phone": "5511999999999",
+    "email": "joao@exemplo.com"
+  }'
+```
+
+```bash cURL — por CAR
+curl -X POST "https://data.dadosfazenda.com.br/internal/partners/farm-scan?codigo_car=MG-3111507-DBEB9FF072D2402FA066E8AF2F60CF71" \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Joao da Silva",
+    "phone": "5511999999999",
+    "email": "joao@exemplo.com"
+  }'
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 202 Accepted
+{
+  "success": true,
+  "message": "Success",
+  "data": {
+    "status": "processing",
+    "codigo_car": "MG-3111507-DBEB9FF072D2402FA066E8AF2F60CF71",
+    "recipient_phone": "5511999999999",
+    "delivery": "whatsapp_template"
+  }
+}
+```
+
+```json 422 — phone invalido
+{
+  "success": false,
+  "message": "phone deve ter entre 10 e 13 digitos numericos.",
+  "data": null
+}
+```
+
+```json 422 — parametros incoerentes
+{
+  "success": false,
+  "message": "Informe lat+lng OU codigo_car (nao ambos, nao nenhum).",
+  "data": null
+}
+```
+
+```json 404 — CAR nao localizado
+{
+  "success": false,
+  "message": "Nenhum CAR encontrado em (lat, lng).",
+  "data": null
+}
+```
+
+</ResponseExample>
+
+## Boas praticas
+
+- **Verifique se o destinatario consente em receber o relatorio antes de chamar a rota.** O envio via template e proativo (fora da janela de 24h) e segue as regras da Meta para mensagens transacionais.
+- **Use lat/lng quando o CAR nao for conhecido.** A API faz o lookup espacial localmente — sem custo extra.
+- **Idempotencia:** chamadas repetidas com mesmo CAR + telefone disparam multiplos envios. O parceiro paga por chamada — implemente dedupe do seu lado se necessario.
+- **Falhas pos-envio:** se a Meta rejeitar o template (numero invalido, opt-out, etc.), o erro fica nos logs internos. A cota ja foi debitada nesse caso.
