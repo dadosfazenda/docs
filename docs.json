@@ -50,8 +50,9 @@
             ]
           },
           {
-            "group": "Credito Rural (SICOR)",
+            "group": "Credito Rural (BCB)",
             "pages": [
+              "api-reference/car/area-financiavel",
               "api-reference/sicor/creditos-por-car",
               "api-reference/sicor/creditos-por-cpf"
             ]
