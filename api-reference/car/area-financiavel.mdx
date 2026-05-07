@@ -11,11 +11,13 @@ sob o **Manual de Crédito Rural (MCR)** do Banco Central. O número resultante 
 operacional para bancos, cooperativas e analistas estimarem limite de custeio, investimento e
 comercialização.
 
-A metodologia parte de uma base geométrica do CAR (idealmente o uso consolidado do SICAR),
-subtrai sobreposições com camadas restritivas absolutas (Unidades de Conservação, Terras
-Indígenas, comunidades quilombolas tituladas e embargos IBAMA vigentes) e aplica um
-**bloqueio regulatório binário** quando há detecção de PRODES pós-2019 em imóveis acima de
-4 módulos fiscais (Resolução CMN 5.268/2025).
+A metodologia parte de uma base geométrica do CAR (idealmente o uso consolidado do SICAR)
+e subtrai sobreposições com camadas restritivas absolutas (Unidades de Conservação, Terras
+Indígenas, comunidades quilombolas tituladas e embargos IBAMA vigentes). Quando há
+detecção de PRODES pós-2019 em imóveis acima de 4 módulos fiscais (Resolução CMN 5.268/2025),
+o response sinaliza a **vedação regulatória** no campo `bloqueio` — mas o valor calculado
+de `area_financiavel_ha` é preservado, já que cada instituição/analista pode tratar
+casos de regularização (ASV/PRAD) de forma diferente.
 
 ## Marco regulatório
 
@@ -59,8 +61,7 @@ A `base` é escolhida em cascata, da mais precisa para a mais grosseira:
 <ParamField query="include_geometry" type="boolean" default={false}>
   Quando `true`, inclui o polígono GeoJSON da área financiável (base − união de restrições)
   em `geometry_financiavel`. Tipicamente devolvido como `MultiPolygon` SRID 4326. Útil pra
-  renderizar no mapa o que é financiável vs o que está restrito. Quando há `bloqueio`,
-  o campo sempre vem `null` (não há área financiável a renderizar).
+  renderizar no mapa o que é financiável vs o que está restrito.
 </ParamField>
 
 ## Response
@@ -77,16 +78,17 @@ A `base` é escolhida em cascata, da mais precisa para a mais grosseira:
     </ResponseField>
 
     <ResponseField name="area_financiavel_ha" type="number">
-      O número operacional final em hectares. `0` quando há `bloqueio`, senão
-      `base_ha − exclusoes_ha`. `null` quando o CAR não foi encontrado.
+      O número calculado em hectares: `base_ha − exclusoes_ha`. **Sempre devolvido** quando o
+      CAR existe (mesmo quando há `bloqueio` — quem consome decide se acata a vedação ou
+      avalia caso a caso). `null` apenas quando o CAR não foi encontrado.
     </ResponseField>
 
     <ResponseField name="status_credito" type="string">
       Indicador rápido de status. Valores possíveis:
 
       - `livre` — sem restrições; `area_financiavel_ha` = `base_ha`
-      - `com_restricoes` — restrições parciais; alguma área foi excluída mas o crédito ainda é viável
-      - `bloqueado` — crédito impedido para todo o empreendimento (PRODES pós-2019 em imóvel > 4 mod. fiscais)
+      - `com_restricoes` — restrições parciais; alguma área foi excluída mas o crédito é viável
+      - `bloqueado` — vedação regulatória detectada (PRODES pós-2019 em imóvel > 4 mod. fiscais). Análise caso a caso
       - `indisponivel` — não foi possível calcular (CAR não encontrado)
     </ResponseField>
 
@@ -103,8 +105,9 @@ A `base` é escolhida em cascata, da mais precisa para a mais grosseira:
     </ResponseField>
 
     <ResponseField name="bloqueio" type="object">
-      `null` quando não há bloqueio. Quando há (PRODES pós-2019 detectado em imóvel
-      > 4 mod. fiscais), traz os caminhos de regularização exigidos pelo MCR 2-2-9.
+      `null` quando não há vedação regulatória. Quando há (PRODES pós-2019 detectado em
+      imóvel > 4 mod. fiscais), traz contexto + caminhos de regularização exigidos pelo
+      MCR 2-2-9. **Não zera `area_financiavel_ha`** — é informativo.
 
       <Expandable title="bloqueio">
         <ResponseField name="motivo" type="string">Identificador do motivo (ex: `prodes_pos_2019`).</ResponseField>
@@ -118,7 +121,7 @@ A `base` é escolhida em cascata, da mais precisa para a mais grosseira:
 
     <ResponseField name="geometry_financiavel" type="object">
       GeoJSON do polígono financiável (base − união de restrições). Só preenchido quando
-      `?include_geometry=true` E não há bloqueio. Tipicamente `MultiPolygon` SRID 4326.
+      `?include_geometry=true`. Tipicamente `MultiPolygon` SRID 4326.
     </ResponseField>
 
     <ResponseField name="detalhes" type="object">
@@ -127,10 +130,6 @@ A `base` é escolhida em cascata, da mais precisa para a mais grosseira:
       <Expandable title="detalhes">
         <ResponseField name="base_ha" type="number">Área da base de cálculo do modo escolhido.</ResponseField>
         <ResponseField name="exclusoes_ha" type="number">Total de exclusões em hectares (sem dupla contagem).</ResponseField>
-        <ResponseField name="valor_calculado_ha" type="number">
-          `base_ha − exclusoes_ha`. Quando há bloqueio, preserva quanto **seria**
-          financiável se destravado — útil pra decidir se vale buscar regularização.
-        </ResponseField>
         <ResponseField name="modulos_fiscais" type="number">
           Módulos fiscais do CAR. Usado como critério para aplicar PRODES pós-2019
           (regra ativa quando > 4 a partir de 04/2026).
@@ -200,11 +199,11 @@ A `base` é escolhida em cascata, da mais precisa para a mais grosseira:
     `com_restricoes` conforme outras camadas.
   </Accordion>
 
-  <Accordion title="4. PRODES detectado em imóvel > 4 mod. fiscais (BLOQUEADO)">
-    Aplicado MCR 2-2-9: `area_financiavel_ha = 0`, `status_credito = bloqueado`,
-    `bloqueio` populado com `motivo`, `descricao`, `fundamento` e caminhos de
-    `regularizacao` (ASV ou PRAD). `detalhes.valor_calculado_ha` preserva quanto
-    seria financiável se destravado.
+  <Accordion title="4. PRODES detectado em imóvel > 4 mod. fiscais (vedação regulatória)">
+    `status_credito = bloqueado`, `bloqueio` populado com `motivo`, `descricao`,
+    `fundamento` e caminhos de `regularizacao` (ASV ou PRAD). **`area_financiavel_ha`
+    continua com o valor calculado** — quem consome decide acatar a vedação ou avaliar
+    caso a caso (ex: ASV em curso, PRAD aprovado).
   </Accordion>
 
   <Accordion title="5. CAR sem uso consolidado mas com APP/RL/VN (fallback)">
@@ -288,7 +287,6 @@ elif data["resumo_restricoes"]["total"] > 0:
     "detalhes": {
       "base_ha": 47.1561,
       "exclusoes_ha": 0,
-      "valor_calculado_ha": 47.1561,
       "modulos_fiscais": 0.71,
       "exclusoes": {
         "unidade_conservacao": { "ha": 0, "items": [] },
@@ -338,7 +336,6 @@ elif data["resumo_restricoes"]["total"] > 0:
     "detalhes": {
       "base_ha": 180.50,
       "exclusoes_ha": 35.18,
-      "valor_calculado_ha": 145.32,
       "modulos_fiscais": 6.50,
       "exclusoes": {
         "unidade_conservacao": {
@@ -386,13 +383,13 @@ elif data["resumo_restricoes"]["total"] > 0:
 }
 ```
 
-```json 200 - BLOQUEADO (PRODES pós-2019)
+```json 200 - Com vedação regulatória (PRODES pós-2019)
 {
   "success": true,
   "data": {
     "codigo_car": "GO-5218805-52A8321D5912439C9E814F21BAA4058A",
     "area_total_ha": 1043.6057,
-    "area_financiavel_ha": 0.0,
+    "area_financiavel_ha": 893.4394,
     "status_credito": "bloqueado",
     "resumo_restricoes": {
       "total": 1,
@@ -411,7 +408,6 @@ elif data["resumo_restricoes"]["total"] > 0:
     "detalhes": {
       "base_ha": 905.4072,
       "exclusoes_ha": 11.9678,
-      "valor_calculado_ha": 893.4394,
       "modulos_fiscais": 34.7613,
       "exclusoes": {
         "unidade_conservacao": { "ha": 0, "items": [] },
@@ -454,7 +450,6 @@ elif data["resumo_restricoes"]["total"] > 0:
     "detalhes": {
       "base_ha": 272.92,
       "exclusoes_ha": 0,
-      "valor_calculado_ha": 272.92,
       "modulos_fiscais": 9.40,
       "exclusoes": { "...": "..." }
     },
