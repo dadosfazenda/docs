@@ -139,6 +139,26 @@ Os dados sao cacheados por 7 dias para evitar consultas repetidas.
       Debitos anteriores do CCIR.
     </ResponseField>
 
+    <ResponseField name="cafir" type="object">
+      Dados do registro CAFIR (Cadastro de Imoveis Rurais da Receita Federal). `null` se nao houver vinculacao do imovel ao CAFIR.
+
+      <Expandable title="cafir">
+        <ResponseField name="nirf" type="string">NIRF — Numero do imovel na RF (8 chars).</ResponseField>
+        <ResponseField name="nome" type="string">Nome do imovel registrado na RF.</ResponseField>
+        <ResponseField name="area_ha" type="number">Area declarada na RF (ha).</ResponseField>
+        <ResponseField name="uf" type="string">UF.</ResponseField>
+        <ResponseField name="municipio" type="string">Municipio.</ResponseField>
+        <ResponseField name="cep" type="string">CEP.</ResponseField>
+        <ResponseField name="situacao" type="string">`ativo` | `cancelado_*` | `pendencia_*`.</ResponseField>
+        <ResponseField name="situacao_codigo" type="integer">Codigo numerico (2=ativo, 46-59=cancel, 83-98=pend).</ResponseField>
+        <ResponseField name="imune_isento" type="boolean">`true` se imune/isento de ITR.</ResponseField>
+        <ResponseField name="sncr_status" type="string">`vinculacao_provisoria` | `vinculacao_confirmada` | `desvinculado` | `descaracterizacao_rural`.</ResponseField>
+        <ResponseField name="sncr_codigo" type="integer">Codigo numerico (1-4).</ResponseField>
+        <ResponseField name="data_atualizacao" type="string">Data da ultima atualizacao na RF (ISO 8601).</ResponseField>
+        <ResponseField name="data_snapshot" type="string">Data da extracao oficial (ISO 8601).</ResponseField>
+      </Expandable>
+    </ResponseField>
+
     <ResponseField name="car" type="object">
       Dados do CAR vinculado. `null` se nenhum CAR foi encontrado.
 
