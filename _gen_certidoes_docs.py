@@ -9,26 +9,26 @@ os.makedirs(OUTDIR, exist_ok=True)
 
 # consult_key -> campos obrigatórios (espelha o catálogo)
 FIELDS = {
-    "apf_rural": ["cnpj_or_cpf"],
+    "apf_rural": ["cnpj_cpf"],
     "ccd_pf": ["cpf"],
     "ccd_pj": ["cnpj"],
-    "cnd": ["cpf_or_cnpj", "uf"],
+    "cnd": ["cpf_cnpj", "uf"],
     "cndir": ["nirf"],
-    "cndm": ["cpf_or_cnpj", "municipio_ibge"],
-    "ibama_debitos": ["cpf_or_cnpj"],
-    "ibama_embargos": ["cpf_or_cnpj"],
-    "mpf": ["cpf_or_cnpj"],
-    "tcu": ["cpf_or_cnpj"],
-    "trf": ["cpf_or_cnpj", "regiao_trf"],
-    "trt": ["cpf_or_cnpj", "regiao_trt"],
+    "cndm": ["cpf_cnpj", "municipio_ibge"],
+    "ibama_debitos": ["cpf_cnpj"],
+    "ibama_embargos": ["cpf_cnpj"],
+    "mpf": ["cpf_cnpj"],
+    "tcu": ["cpf_cnpj"],
+    "trf": ["cpf_cnpj", "regiao_trf"],
+    "trt": ["cpf_cnpj", "regiao_trt"],
     "tse": ["cpf", "nome_completo", "data_nascimento"],
-    "tst": ["cpf_or_cnpj"],
+    "tst": ["cpf_cnpj"],
     "dap": ["cpf", "data_nascimento"],
     "cnj_improbidade": ["cpf", "nome_completo"],
-    "lista_suja_trabalho_escravo": ["cpf_or_cnpj"],
+    "lista_suja_trabalho_escravo": ["cpf_cnpj"],
     "titularidade_car": ["codigo_car"],
-    "imoveis_por_titular": ["cpf_or_cnpj"],
-    "processos_por_titular": ["cpf_or_cnpj"],
+    "imoveis_por_titular": ["cpf_cnpj"],
+    "processos_por_titular": ["cpf_cnpj"],
 }
 
 TITLES = {
@@ -78,8 +78,8 @@ DESCRIPTIONS = {
 }
 
 FIELD_META = {
-    "cpf_or_cnpj": ("CPF ou CNPJ do titular (apenas dígitos).", "12345678000190"),
-    "cnpj_or_cpf": ("CNPJ ou CPF do titular (apenas dígitos).", "12345678000190"),
+    "cpf_cnpj": ("CPF ou CNPJ do titular (apenas dígitos).", "12345678000190"),
+    "cnpj_cpf": ("CNPJ ou CPF do titular (apenas dígitos).", "12345678000190"),
     "cpf": ("CPF do titular (apenas dígitos, 11 caracteres).", "12345678909"),
     "cnpj": ("CNPJ do titular (apenas dígitos, 14 caracteres).", "12345678000190"),
     "uf": ("Sigla da UF (2 letras).", "MG"),

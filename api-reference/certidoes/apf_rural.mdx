@@ -20,7 +20,7 @@ bem-sucedida consome **1 unidade** da cota mensal. Em erro de consulta a cota
 
 ## Parâmetros
 
-<ParamField body="cnpj_or_cpf" type="string" required>
+<ParamField body="cnpj_cpf" type="string" required>
   CNPJ ou CPF do titular (apenas dígitos).
 </ParamField>
 
@@ -46,7 +46,7 @@ curl -X POST "https://data.dadosfazenda.com.br/v1/certidoes/apf_rural" \
   -H "Authorization: Bearer SEU_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "cnpj_or_cpf": "12345678000190"
+    "cnpj_cpf": "12345678000190"
   }'
 ```
 
