@@ -74,6 +74,31 @@
             "pages": [
               "api-reference/ndvi/serie-temporal-por-car"
             ]
+          },
+          {
+            "group": "Certidões",
+            "pages": [
+              "api-reference/certidoes/apf_rural",
+              "api-reference/certidoes/ccd_pf",
+              "api-reference/certidoes/ccd_pj",
+              "api-reference/certidoes/cnd",
+              "api-reference/certidoes/cndir",
+              "api-reference/certidoes/cndm",
+              "api-reference/certidoes/ibama_debitos",
+              "api-reference/certidoes/ibama_embargos",
+              "api-reference/certidoes/mpf",
+              "api-reference/certidoes/tcu",
+              "api-reference/certidoes/trf",
+              "api-reference/certidoes/trt",
+              "api-reference/certidoes/tse",
+              "api-reference/certidoes/tst",
+              "api-reference/certidoes/dap",
+              "api-reference/certidoes/cnj_improbidade",
+              "api-reference/certidoes/lista_suja_trabalho_escravo",
+              "api-reference/certidoes/titularidade_car",
+              "api-reference/certidoes/imoveis_por_titular",
+              "api-reference/certidoes/processos_por_titular"
+            ]
           }
         ]
       }
