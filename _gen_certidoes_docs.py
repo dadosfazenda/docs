@@ -29,6 +29,22 @@ FIELDS = {
     "titularidade_car": ["codigo_car"],
     "imoveis_por_titular": ["cpf_cnpj"],
     "processos_por_titular": ["cpf_cnpj"],
+    "ccir_consulta": ["codigo_imovel"],
+    "recibo_car": ["codigo_car"],
+    "sicor_creditos_car": ["codigo_car"],
+    "autos_infracao_por_titular": ["cpf_cnpj"],
+    "caf_pf": ["cpf"],
+    "caf_pj": ["cnpj"],
+    "protestos_nacional": ["cpf_cnpj"],
+    "tcu_consolidada_pj": ["cnpj"],
+    "tj_certidao": ["cpf_cnpj", "uf", "tipo_tj"],
+    "tj_processos": ["cpf_cnpj", "uf", "grau"],
+    "tse_situacao": ["cpf", "nome_completo", "data_nascimento"],
+    "pf_antecedentes": ["cpf"],
+    "veicular": ["placa"],
+    "vinculos_societarios": ["cpf_cnpj"],
+    "scr_bacen": ["cpf_cnpj"],
+    "scr_bacen_detalhada": ["cpf_cnpj"],
 }
 
 TITLES = {
@@ -52,6 +68,22 @@ TITLES = {
     "titularidade_car": "Titularidade por CAR",
     "imoveis_por_titular": "Imóveis Rurais por Titular",
     "processos_por_titular": "Processos Judiciais por Titular",
+    "ccir_consulta": "CCIR — Certificado de Cadastro de Imóvel Rural",
+    "recibo_car": "Recibo do CAR",
+    "sicor_creditos_car": "Crédito Rural por CAR (SICOR)",
+    "autos_infracao_por_titular": "Autos de Infração Ambiental (IBAMA)",
+    "caf_pf": "CAF-PF — Cadastro Nacional da Agricultura Familiar (PF)",
+    "caf_pj": "CAF-PJ — Cadastro Nacional da Agricultura Familiar (PJ)",
+    "protestos_nacional": "Protestos Nacional — IEPTB",
+    "tcu_consolidada_pj": "TCU — Consulta Consolidada (PJ)",
+    "tj_certidao": "TJ — Certidão Cível, Criminal e Fiscal",
+    "tj_processos": "TJ — Processos",
+    "tse_situacao": "TSE — Situação Eleitoral",
+    "pf_antecedentes": "Polícia Federal — Antecedentes Criminais",
+    "veicular": "Consulta Veicular",
+    "vinculos_societarios": "Vínculos Societários e de Parentesco",
+    "scr_bacen": "SCR Analítico — Resumo BACEN",
+    "scr_bacen_detalhada": "SCR Detalhada — Resumo BACEN",
 }
 
 DESCRIPTIONS = {
@@ -75,6 +107,22 @@ DESCRIPTIONS = {
     "titularidade_car": "Retorna a titularidade (proprietário) de um imóvel a partir do código CAR.",
     "imoveis_por_titular": "Lista os imóveis rurais (CARs) vinculados a um CPF/CNPJ.",
     "processos_por_titular": "Lista processos judiciais vinculados a um CPF/CNPJ.",
+    "ccir_consulta": "Dados do CCIR (INCRA) pelo código do imóvel: denominação, áreas, módulos fiscais, titulares, registros cartoriais e dados do último CCIR. Entrega em PDF.",
+    "recibo_car": "Recibo oficial de inscrição do imóvel no Cadastro Ambiental Rural (CAR/SICAR), em PDF.",
+    "sicor_creditos_car": "Operações de crédito rural registradas no SICOR (Banco Central) vinculadas ao imóvel por código CAR: produto, valor financiado, juros, área e status (vigente ou vencido), com resumo agregado.",
+    "autos_infracao_por_titular": "Autos de infração ambiental registrados pelo IBAMA vinculados a um CPF/CNPJ: infração, gravidade, área, município/UF, número do processo e valor da multa.",
+    "caf_pf": "Comprovante de inscrição no Cadastro Nacional da Agricultura Familiar (CAF), que substitui a antiga DAP e identifica o agricultor familiar para acesso a políticas públicas.",
+    "caf_pj": "Comprovante de inscrição no CAF de organização produtiva da agricultura familiar (cooperativas e associações).",
+    "protestos_nacional": "Consulta nacional de protestos de títulos em cartórios, homologada pelo CENPROT/IEPTB, por CPF ou CNPJ.",
+    "tcu_consolidada_pj": "Consulta consolidada de impedimentos e ocorrências no Tribunal de Contas da União para Pessoa Jurídica.",
+    "tj_certidao": "Certidão de distribuição do Tribunal de Justiça (cível, criminal, fiscal e outras naturezas), por estado.",
+    "tj_processos": "Consulta de processos no Tribunal de Justiça por CPF ou CNPJ, por estado e grau de jurisdição.",
+    "tse_situacao": "Situação eleitoral do eleitor (regularidade, zona, seção) junto à Justiça Eleitoral.",
+    "pf_antecedentes": "Certidão de antecedentes criminais emitida pela Polícia Federal.",
+    "veicular": "Dados cadastrais do veículo a partir da placa (modelo, ano, situação, restrições).",
+    "vinculos_societarios": "Mapa de relacionamentos de um CPF ou CNPJ: participações societárias e vínculos de parentesco, com a rede de relacionamentos em até três níveis e indicadores de PEP e óbito.",
+    "scr_bacen": "Resumo analítico do Sistema de Informações de Crédito (SCR) do Banco Central por CPF ou CNPJ: score, classe de risco, volume, carteira a vencer e vencida, e distribuição do endividamento por categoria, prazo e modalidade.",
+    "scr_bacen_detalhada": "Posição detalhada do SCR do Banco Central por CPF ou CNPJ: responsabilidade total, score, faixa de risco, carteira (limite, a vencer, vencido, prejuízo) e operações por modalidade, com comprovante oficial em PDF.",
 }
 
 FIELD_META = {
@@ -90,9 +138,29 @@ FIELD_META = {
     "nome_completo": ("Nome completo do titular.", "João da Silva"),
     "data_nascimento": ("Data de nascimento (AAAA-MM-DD).", "1980-05-15"),
     "codigo_car": ("Código SICAR do imóvel.", "MG-3111507-DBEB9FF072D2402FA066E8AF2F60CF71"),
+    "codigo_imovel": ("Código do imóvel rural no INCRA (número do CCIR/SNCR, apenas dígitos).", "9990125869208"),
+    "placa": ("Placa do veículo (padrão antigo ABC1234 ou Mercosul ABC1D23).", "ABC1D23"),
+    "tipo_tj": ("Natureza da certidão. Valores: Cível, Criminal, Fiscal, FinsEleitorais, FalênciaRecuperação, Família, Militar.", "Cível"),
+    "grau": ("Grau de jurisdição: 1 (primeiro grau) ou 2 (segundo grau).", "1"),
 }
 
 BASE = "https://data.dadosfazenda.com.br"
+
+# Bloco opcional (Markdown) injetado após a seção "Parâmetros" de certidões específicas.
+# Mantém o template genérico pros demais; só quem estiver no dict ganha o bloco extra.
+EXTRA_BODY = {
+    "tj_certidao": (
+        "<Note>\n"
+        "  Valores aceitos em `tipo_tj`: `Cível`, `Criminal`, `Fiscal`, "
+        "`FinsEleitorais`, `FalênciaRecuperação`, `Família`, `Militar`.\n"
+        "</Note>"
+    ),
+    "tj_processos": (
+        "<Note>\n"
+        "  Valores aceitos em `grau`: `1` (primeiro grau) ou `2` (segundo grau).\n"
+        "</Note>"
+    ),
+}
 
 
 def mdx(key: str) -> str:
@@ -103,6 +171,8 @@ def mdx(key: str) -> str:
         f'<ParamField body="{f}" type="string" required>\n  {FIELD_META[f][0]}\n</ParamField>'
         for f in fields
     )
+    extra = EXTRA_BODY.get(key)
+    params_block = params + ("\n\n" + extra if extra else "")
     body_example = "{\n" + ",\n".join(f'    "{f}": "{FIELD_META[f][1]}"' for f in fields) + "\n  }"
     return f'''---
 title: "{title}"
@@ -126,7 +196,7 @@ bem-sucedida consome **1 unidade** da cota mensal. Em erro de consulta a cota
 
 ## Parâmetros
 
-{params}
+{params_block}
 
 ## Resposta
 

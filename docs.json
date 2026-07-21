@@ -97,7 +97,23 @@
               "api-reference/certidoes/lista_suja_trabalho_escravo",
               "api-reference/certidoes/titularidade_car",
               "api-reference/certidoes/imoveis_por_titular",
-              "api-reference/certidoes/processos_por_titular"
+              "api-reference/certidoes/processos_por_titular",
+              "api-reference/certidoes/ccir_consulta",
+              "api-reference/certidoes/recibo_car",
+              "api-reference/certidoes/sicor_creditos_car",
+              "api-reference/certidoes/autos_infracao_por_titular",
+              "api-reference/certidoes/caf_pf",
+              "api-reference/certidoes/caf_pj",
+              "api-reference/certidoes/protestos_nacional",
+              "api-reference/certidoes/tcu_consolidada_pj",
+              "api-reference/certidoes/tj_certidao",
+              "api-reference/certidoes/tj_processos",
+              "api-reference/certidoes/tse_situacao",
+              "api-reference/certidoes/pf_antecedentes",
+              "api-reference/certidoes/veicular",
+              "api-reference/certidoes/vinculos_societarios",
+              "api-reference/certidoes/scr_bacen",
+              "api-reference/certidoes/scr_bacen_detalhada"
             ]
           }
         ]
