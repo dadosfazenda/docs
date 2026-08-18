@@ -19,7 +19,12 @@
               "index",
               "autenticacao"
             ]
-          },
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
           {
             "group": "API v2 — Consultas por CAR",
             "pages": [
@@ -45,12 +50,7 @@
               "api-reference/v2/sobreposicoes/terras-indigenas",
               "api-reference/v2/sobreposicoes/unidades-conservacao"
             ]
-          }
-        ]
-      },
-      {
-        "tab": "API Reference",
-        "groups": [
+          },
           {
             "group": "Propriedade Rural",
             "pages": [
