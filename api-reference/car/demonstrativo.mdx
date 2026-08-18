@@ -1,17 +1,219 @@
 ---
-title: "Demonstrativo do CAR (dedicado)"
+title: "Demonstrativo do CAR"
 api: "GET /car/{codigo_car}/demonstrativo"
-description: "Demonstrativo ambiental do imóvel direto da base oficial: reserva legal, APP e vegetação nativa"
+description: "Demonstrativo ambiental oficial do imóvel: reserva legal, APP, vegetação nativa, uso consolidado e restrições"
 ---
 
 ## Descrição
 
-Demonstrativo ambiental do imóvel direto da base oficial: reserva legal, APP e vegetação nativa.
+Retorna o demonstrativo ambiental do imóvel na base oficial do CAR: situação do
+cadastro, quadros de área (reserva legal, APP, vegetação nativa, uso restrito,
+servidões e sobreposições) e restrições apontadas na análise.
 
-<ParamField path="codigo_car" type="string" required>Código do CAR</ParamField>
+A consulta é feita na base oficial no momento da chamada, então reflete o
+estado atual do cadastro, inclusive cancelamentos e retificações.
+
+<ParamField path="codigo_car" type="string" required>
+  Código do CAR. Exemplo: `GO-5211909-F784E857816C42E1BD7EB130ADFE0CFC`
+</ParamField>
 
 ## Resposta
 
-<ResponseField name="demonstrativo" type="object">Quadros do demonstrativo oficial: situação do cadastro, reserva legal (declarada, averbada, proposta), APP e vegetação nativa</ResponseField>
+<ResponseField name="demonstrativo" type="object">
+  <Expandable title="demonstrativo">
+    <ResponseField name="cabecalho" type="object">
+      <Expandable title="cabecalho">
+        <ResponseField name="codigo" type="string"></ResponseField>
+        <ResponseField name="municipio" type="string"></ResponseField>
+        <ResponseField name="estado" type="string"></ResponseField>
+        <ResponseField name="area_ha" type="number"></ResponseField>
+        <ResponseField name="modulos_fiscais" type="number"></ResponseField>
+        <ResponseField name="latitude" type="string"></ResponseField>
+        <ResponseField name="longitude" type="string"></ResponseField>
+        <ResponseField name="centroide_x" type="number"></ResponseField>
+        <ResponseField name="centroide_y" type="number"></ResponseField>
+        <ResponseField name="data_registro" type="string"></ResponseField>
+        <ResponseField name="data_retificacao" type="string"></ResponseField>
+        <ResponseField name="data_demonstrativo" type="string"></ResponseField>
+        <ResponseField name="data_analise" type="string"></ResponseField>
+        <ResponseField name="status_imovel" type="string"></ResponseField>
+        <ResponseField name="condicao_analise" type="string"></ResponseField>
+        <ResponseField name="houve_retificacao" type="boolean"></ResponseField>
+        <ResponseField name="aderiu_pra" type="string"></ResponseField>
+        <ResponseField name="condicao_pra" type="string"></ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="areas" type="object">
+      <Expandable title="areas">
+        <ResponseField name="imovel" type="object">
+          <Expandable title="imovel">
+            <ResponseField name="area_liquida_ha" type="number"></ResponseField>
+            <ResponseField name="area_uso_consolidado_ha" type="number"></ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="reserva_legal" type="object">
+          <Expandable title="reserva_legal">
+            <ResponseField name="situacao" type="string"></ResponseField>
+            <ResponseField name="area_rl_averbada_ha" type="number"></ResponseField>
+            <ResponseField name="area_rl_averbada_nao_aprovada_ha" type="number"></ResponseField>
+            <ResponseField name="area_rl_proposta_ha" type="number"></ResponseField>
+            <ResponseField name="area_rl_declarada_ha" type="number"></ResponseField>
+            <ResponseField name="area_rl_em_app_ha" type="number"></ResponseField>
+            <ResponseField name="area_rl_minima_exigida_ha" type="number"></ResponseField>
+            <ResponseField name="area_rl_excedente_passivo_ha" type="number"></ResponseField>
+            <ResponseField name="area_rl_recompor_ha" type="number"></ResponseField>
+            <ResponseField name="area_rl_recompor_aa_ha" type="number"></ResponseField>
+            <ResponseField name="area_rl_recompor_ac_ha" type="number"></ResponseField>
+            <ResponseField name="area_rl_vetorizada_sobreposta_rvn_ha" type="number"></ResponseField>
+            <ResponseField name="area_rl_compensada_de_terceiros_ha" type="number"></ResponseField>
+            <ResponseField name="area_rl_compensada_em_terceiros_ha" type="number"></ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="vegetacao_nativa" type="object">
+          <Expandable title="vegetacao_nativa">
+            <ResponseField name="area_rvn_ha" type="number"></ResponseField>
+            <ResponseField name="area_aa_ha" type="number"></ResponseField>
+            <ResponseField name="area_ap_ha" type="number"></ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="app" type="object">
+          <Expandable title="app">
+            <ResponseField name="area_app_ha" type="number"></ResponseField>
+            <ResponseField name="area_app_em_aa_ha" type="number"></ResponseField>
+            <ResponseField name="area_app_em_ac_ha" type="number"></ResponseField>
+            <ResponseField name="area_app_recompor_ha" type="number"></ResponseField>
+            <ResponseField name="area_app_sobreposta_rvn_ha" type="number"></ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="uso_restrito" type="object">
+          <Expandable title="uso_restrito">
+            <ResponseField name="area_uso_restrito_ha" type="number"></ResponseField>
+            <ResponseField name="area_uso_restrito_recompor_ha" type="number"></ResponseField>
+            <ResponseField name="area_uso_restrito_sobreposta_rvn_ha" type="number"></ResponseField>
+            <ResponseField name="area_ur_em_aa_ha" type="number"></ResponseField>
+            <ResponseField name="area_ur_em_ac_ha" type="number"></ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="servidao" type="object">
+          <Expandable title="servidao">
+            <ResponseField name="area_servidao_administrativa_ha" type="number"></ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="sobreposicoes" type="object">
+          <Expandable title="sobreposicoes">
+            <ResponseField name="area_sobreposicao_outros_imoveis_ha" type="number"></ResponseField>
+            <ResponseField name="area_sobreposicao_terra_indigena_ha" type="number"></ResponseField>
+            <ResponseField name="area_sobreposicao_uc_ha" type="number"></ResponseField>
+            <ResponseField name="area_sobreposicao_assentamento_ha" type="number"></ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="restricoes" type="array"></ResponseField>
+    <ResponseField name="tem_terra_indigena" type="boolean"></ResponseField>
+  </Expandable>
+</ResponseField>
 
-Prefira esta rota quando o demonstrativo for obrigatório: em `/car/{codigo_car}/info` ele é anexado por melhor esforço, com timeout.
+<RequestExample>
+```bash cURL
+curl "https://data.dadosfazenda.com.br/car/GO-5211909-F784E857816C42E1BD7EB130ADFE0CFC/demonstrativo" \
+  -H "Authorization: Bearer $API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "demonstrativo": {
+      "cabecalho": {
+        "codigo": "GO-5211909-F784E857816C42E1BD7EB130ADFE0CFC",
+        "municipio": "Jataí",
+        "estado": "GO",
+        "area_ha": 19.524,
+        "modulos_fiscais": 0.4881,
+        "latitude": "17°24'15,57\" S",
+        "longitude": "51°54'01,87\" O",
+        "centroide_x": -51.9005202281792,
+        "centroide_y": -17.4043253615804,
+        "data_registro": "18/10/2016",
+        "data_retificacao": "29/04/2020",
+        "data_demonstrativo": "18/08/26 19:24",
+        "data_analise": "03/03/2017",
+        "status_imovel": "Cancelado",
+        "condicao_analise": "Cancelado por decisão administrativa",
+        "houve_retificacao": true,
+        "aderiu_pra": null,
+        "condicao_pra": null
+      },
+      "areas": {
+        "imovel": {
+          "area_liquida_ha": 19.524,
+          "area_uso_consolidado_ha": 15.084801195012686
+        },
+        "reserva_legal": {
+          "situacao": "Não Analisada",
+          "area_rl_averbada_ha": 0.0,
+          "area_rl_averbada_nao_aprovada_ha": 0.0,
+          "area_rl_proposta_ha": 0.0,
+          "area_rl_declarada_ha": 0.0,
+          "area_rl_em_app_ha": 0.0,
+          "area_rl_minima_exigida_ha": 3.9048,
+          "area_rl_excedente_passivo_ha": -3.9048,
+          "area_rl_recompor_ha": 0.0,
+          "area_rl_recompor_aa_ha": 0.0,
+          "area_rl_recompor_ac_ha": 0.0,
+          "area_rl_vetorizada_sobreposta_rvn_ha": 0.0,
+          "area_rl_compensada_de_terceiros_ha": 0.0,
+          "area_rl_compensada_em_terceiros_ha": 0.0
+        },
+        "vegetacao_nativa": {
+          "area_rvn_ha": 4.423892627345538,
+          "area_aa_ha": 0.006392391555156542,
+          "area_ap_ha": 0.0
+        },
+        "app": {
+          "area_app_ha": 0.2392512608116049,
+          "area_app_em_aa_ha": 0.0064,
+          "area_app_em_ac_ha": 0.0,
+          "area_app_recompor_ha": 0.0065,
+          "area_app_sobreposta_rvn_ha": 0.2328
+        },
+        "uso_restrito": {
+          "area_uso_restrito_ha": 0.0,
+          "area_uso_restrito_recompor_ha": 0.0,
+          "area_uso_restrito_sobreposta_rvn_ha": 0.0,
+          "area_ur_em_aa_ha": 0.0,
+          "area_ur_em_ac_ha": 0.0
+        },
+        "servidao": {
+          "area_servidao_administrativa_ha": 0.0
+        },
+        "sobreposicoes": {
+          "area_sobreposicao_outros_imoveis_ha": 0.6336,
+          "area_sobreposicao_terra_indigena_ha": 0.0,
+          "area_sobreposicao_uc_ha": 0.0,
+          "area_sobreposicao_assentamento_ha": 0.0
+        }
+      },
+      "restricoes": [],
+      "tem_terra_indigena": false
+    }
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 404 - CAR não encontrado na base oficial
+{ "success": false, "message": "CAR não encontrado", "data": null }
+```
+
+```json 502 - base oficial indisponível
+{ "success": false, "message": "Erro ao consultar a base do CAR", "data": null }
+```
+</ResponseExample>
