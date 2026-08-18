@@ -1,0 +1,17 @@
+---
+title: "Demonstrativo do CAR (dedicado)"
+api: "GET /car/{codigo_car}/demonstrativo"
+description: "Demonstrativo ambiental do imóvel direto da base oficial: reserva legal, APP e vegetação nativa"
+---
+
+## Descrição
+
+Demonstrativo ambiental do imóvel direto da base oficial: reserva legal, APP e vegetação nativa.
+
+<ParamField path="codigo_car" type="string" required>Código do CAR</ParamField>
+
+## Resposta
+
+<ResponseField name="demonstrativo" type="object">Quadros do demonstrativo oficial: situação do cadastro, reserva legal (declarada, averbada, proposta), APP e vegetação nativa</ResponseField>
+
+Prefira esta rota quando o demonstrativo for obrigatório: em `/car/{codigo_car}/info` ele é anexado por melhor esforço, com timeout.

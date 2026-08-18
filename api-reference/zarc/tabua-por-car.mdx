@@ -1,0 +1,34 @@
+---
+title: "ZARC — tábua de risco"
+api: "GET /zarc/tabua/{codigo_car}"
+description: "Janelas de plantio por decêndio, safra a safra, com filtros de solo, ciclo e manejo"
+---
+
+## Descrição
+
+Janelas de plantio por decêndio, safra a safra, com filtros de solo, ciclo e manejo.
+
+<ParamField path="codigo_car" type="string" required>Código do CAR</ParamField>
+<ParamField query="cultura" type="string" required>Nome exato da cultura (obtido em /zarc/culturas)</ParamField>
+<ParamField query="solo" type="string">Código do solo (1-3 textura; 11-16 classes de água disponível AD1-AD6)</ParamField>
+<ParamField query="ciclo" type="string">Grupo de ciclo da cultivar (20=Grupo I, 21=II, 22=III, 24=IV)</ParamField>
+<ParamField query="manejo" type="string">Sequeiro ou Irrigado</ParamField>
+
+## Resposta
+
+Campos observados na resposta real:
+
+<ResponseField name="cultura" type="string"></ResponseField>
+<ResponseField name="filtros.ciclo" type="string"></ResponseField>
+<ResponseField name="filtros.manejo" type="string"></ResponseField>
+<ResponseField name="filtros.solo" type="string"></ResponseField>
+<ResponseField name="geocodigo" type="string"></ResponseField>
+<ResponseField name="opcoes.ciclos[]" type="string"></ResponseField>
+<ResponseField name="opcoes.manejos[]" type="string"></ResponseField>
+<ResponseField name="opcoes.solos[]" type="string"></ResponseField>
+<ResponseField name="safras[]" type="array"></ResponseField>
+<ResponseField name="safras[].combinacoes" type="integer"></ResponseField>
+<ResponseField name="safras[].portaria" type="string"></ResponseField>
+<ResponseField name="safras[].riscos[]" type="integer"></ResponseField>
+<ResponseField name="safras[].safra" type="string"></ResponseField>
+<ResponseField name="safras[].safra_ini" type="integer"></ResponseField>

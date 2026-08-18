@@ -1,0 +1,23 @@
+---
+title: "Proprietários (base local)"
+api: "GET /car/{codigo_car}/proprietarios-local"
+description: "Titulares do imóvel na base local, sem custo de consulta externa"
+---
+
+## Descrição
+
+Titulares do imóvel na base local, sem custo de consulta externa.
+
+<ParamField path="codigo_car" type="string" required>Código do CAR</ParamField>
+
+
+
+## Resposta
+
+Campos observados na resposta real:
+
+<ResponseField name="codigo_car" type="string"></ResponseField>
+<ResponseField name="proprietarios[]" type="array"></ResponseField>
+<ResponseField name="proprietarios[].documento" type="string"></ResponseField>
+<ResponseField name="proprietarios[].nome" type="string"></ResponseField>
+<ResponseField name="proprietarios[].tipo" type="string"></ResponseField>

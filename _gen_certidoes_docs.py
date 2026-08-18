@@ -43,6 +43,10 @@ FIELDS = {
     "pf_antecedentes": ["cpf"],
     "veicular": ["placa"],
     "vinculos_societarios": ["cpf_cnpj"],
+    "boa_vista_credito": ["cpf_cnpj"],
+    "cnh": ["cpf"],
+    "sintegra": ["cpf_cnpj", "uf", "ie"],
+    "veicular_frotas": ["cpf_cnpj"],
     "scr_bacen": ["cpf_cnpj"],
     "scr_bacen_detalhada": ["cpf_cnpj"],
 }
@@ -82,11 +86,19 @@ TITLES = {
     "pf_antecedentes": "Polícia Federal — Antecedentes Criminais",
     "veicular": "Consulta Veicular",
     "vinculos_societarios": "Vínculos Societários e de Parentesco",
+    "boa_vista_credito": "Relatório de Crédito",
+    "cnh": "CNH — Situação",
+    "sintegra": "SINTEGRA — Inscrição Estadual",
+    "veicular_frotas": "Frota Veicular por Titular",
     "scr_bacen": "SCR Analítico — Resumo BACEN",
     "scr_bacen_detalhada": "SCR Detalhada — Resumo BACEN",
 }
 
 DESCRIPTIONS = {
+    "boa_vista_credito": "Relatório de crédito por CPF/CNPJ: score, situação cadastral e histórico de consultas.",
+    "cnh": "Situação da CNH do titular do CPF.",
+    "sintegra": "Consulta de inscrição estadual no SINTEGRA. Informe a UF e um de CPF, CNPJ ou IE.",
+    "veicular_frotas": "Frota de veículos vinculada ao CPF/CNPJ.",
     "apf_rural": "Consulta a Autorização Provisória de Funcionamento (APF) de produtor rural.",
     "ccd_pf": "Certidão Conjunta de Débitos relativos a Tributos Federais e à Dívida Ativa da União (Pessoa Física).",
     "ccd_pj": "Certidão Conjunta de Débitos relativos a Tributos Federais e à Dívida Ativa da União (Pessoa Jurídica).",
@@ -127,6 +139,7 @@ DESCRIPTIONS = {
 
 FIELD_META = {
     "cpf_cnpj": ("CPF ou CNPJ do titular (apenas dígitos).", "12345678000190"),
+    "ie": ("Inscrição estadual (alternativa a CPF/CNPJ no SINTEGRA).", "123456789"),
     "cnpj_cpf": ("CNPJ ou CPF do titular (apenas dígitos).", "12345678000190"),
     "cpf": ("CPF do titular (apenas dígitos, 11 caracteres).", "12345678909"),
     "cnpj": ("CNPJ do titular (apenas dígitos, 14 caracteres).", "12345678000190"),

@@ -1,0 +1,37 @@
+---
+title: "Histórico de secas por CAR"
+api: "GET /secas/car/{codigo_car}"
+description: "Severidade de seca no imóvel mês a mês desde 2014 (Monitor de Secas), com episódios mais severos"
+---
+
+## Descrição
+
+Severidade de seca no imóvel mês a mês desde 2014 (Monitor de Secas), com episódios mais severos.
+
+<ParamField path="codigo_car" type="string" required>Código do CAR</ParamField>
+
+
+
+## Resposta
+
+Campos observados na resposta real:
+
+<ResponseField name="codigo_car" type="string"></ResponseField>
+<ResponseField name="episodios[]" type="array"></ResponseField>
+<ResponseField name="episodios[].fim" type="string"></ResponseField>
+<ResponseField name="episodios[].inicio" type="string"></ResponseField>
+<ResponseField name="episodios[].meses" type="integer"></ResponseField>
+<ResponseField name="episodios[].pico" type="integer"></ResponseField>
+<ResponseField name="episodios[].rotulo_pico" type="string"></ResponseField>
+<ResponseField name="resumo.meses_com_seca" type="integer"></ResponseField>
+<ResponseField name="resumo.meses_totais" type="integer"></ResponseField>
+<ResponseField name="resumo.pct_com_seca" type="number"></ResponseField>
+<ResponseField name="resumo.pior_rotulo" type="string"></ResponseField>
+<ResponseField name="resumo.pior_valor" type="integer"></ResponseField>
+<ResponseField name="serie[]" type="array"></ResponseField>
+<ResponseField name="serie[].ano" type="integer"></ResponseField>
+<ResponseField name="serie[].classe" type="string"></ResponseField>
+<ResponseField name="serie[].data" type="string"></ResponseField>
+<ResponseField name="serie[].mes" type="integer"></ResponseField>
+<ResponseField name="serie[].rotulo" type="string"></ResponseField>
+<ResponseField name="serie[].valor" type="integer"></ResponseField>

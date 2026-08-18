@@ -1,0 +1,24 @@
+---
+title: "ZARC — culturas do município"
+api: "GET /zarc/culturas/{codigo_car}"
+description: "Culturas com tábua de risco ZARC publicada para o município do imóvel"
+---
+
+## Descrição
+
+Culturas com tábua de risco ZARC publicada para o município do imóvel.
+
+<ParamField path="codigo_car" type="string" required>Código do CAR</ParamField>
+
+
+
+## Resposta
+
+Campos observados na resposta real:
+
+<ResponseField name="culturas[]" type="array"></ResponseField>
+<ResponseField name="culturas[].cultura" type="string"></ResponseField>
+<ResponseField name="culturas[].safras" type="integer"></ResponseField>
+<ResponseField name="geocodigo" type="string"></ResponseField>
+<ResponseField name="municipio" type="string"></ResponseField>
+<ResponseField name="uf" type="string"></ResponseField>

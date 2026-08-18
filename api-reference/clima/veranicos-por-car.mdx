@@ -1,0 +1,29 @@
+---
+title: "Veranicos por CAR"
+api: "GET /secas/veranicos/car/{codigo_car}"
+description: "Maior sequência de dias secos por mês no município do imóvel, climatologia de 44 anos"
+---
+
+## Descrição
+
+Maior sequência de dias secos por mês no município do imóvel, climatologia de 44 anos.
+
+<ParamField path="codigo_car" type="string" required>Código do CAR</ParamField>
+
+
+
+## Resposta
+
+Campos observados na resposta real:
+
+<ResponseField name="climatologia[]" type="array"></ResponseField>
+<ResponseField name="climatologia[].media_dias_secos" type="number"></ResponseField>
+<ResponseField name="climatologia[].mes" type="integer"></ResponseField>
+<ResponseField name="climatologia[].pior_dias_secos" type="number"></ResponseField>
+<ResponseField name="geocodigo" type="string"></ResponseField>
+<ResponseField name="periodo.anos" type="integer"></ResponseField>
+<ResponseField name="periodo.ate" type="integer"></ResponseField>
+<ResponseField name="periodo.de" type="integer"></ResponseField>
+<ResponseField name="piores_anos[]" type="array"></ResponseField>
+<ResponseField name="piores_anos[].ano" type="integer"></ResponseField>
+<ResponseField name="piores_anos[].dias_secos" type="number"></ResponseField>

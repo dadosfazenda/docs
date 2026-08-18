@@ -1,0 +1,37 @@
+---
+title: "Histórico de culturas por CAR"
+api: "GET /conab/safras/car/{codigo_car}"
+description: "Culturas plantadas no imóvel por cruzamento espacial com os mapeamentos de safra da CONAB"
+---
+
+## Descrição
+
+Culturas plantadas no imóvel por cruzamento espacial com os mapeamentos de safra da CONAB.
+
+<ParamField path="codigo_car" type="string" required>Código do CAR</ParamField>
+
+
+
+## Resposta
+
+Campos observados na resposta real:
+
+<ResponseField name="items[]" type="array"></ResponseField>
+<ResponseField name="items[].area_intersecao_ha" type="number"></ResponseField>
+<ResponseField name="items[].cultura" type="string"></ResponseField>
+<ResponseField name="items[].cultura_label" type="string"></ResponseField>
+<ResponseField name="items[].municipio_ibge" type="string"></ResponseField>
+<ResponseField name="items[].municipio_nome" type="string"></ResponseField>
+<ResponseField name="items[].percentual_sobre_imovel" type="number"></ResponseField>
+<ResponseField name="items[].polygons_count" type="integer"></ResponseField>
+<ResponseField name="items[].safra" type="string"></ResponseField>
+<ResponseField name="items[].source_layer" type="string"></ResponseField>
+<ResponseField name="items[].uf" type="string"></ResponseField>
+<ResponseField name="summary[]" type="array"></ResponseField>
+<ResponseField name="summary[].area_total_ha" type="number"></ResponseField>
+<ResponseField name="summary[].cultura" type="string"></ResponseField>
+<ResponseField name="summary[].cultura_label" type="string"></ResponseField>
+<ResponseField name="summary[].safras[]" type="string"></ResponseField>
+<ResponseField name="summary[].safras_count" type="integer"></ResponseField>
+<ResponseField name="total_culturas" type="integer"></ResponseField>
+<ResponseField name="total_safras" type="integer"></ResponseField>
