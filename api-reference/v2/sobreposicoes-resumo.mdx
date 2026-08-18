@@ -1,0 +1,36 @@
+---
+title: "Resumo de sobreposições"
+api: "GET /v2/car/{codigo_car}/sobreposicoes"
+description: "Uma chamada responde quantas ocorrências de cada camada tocam o imóvel"
+---
+
+## Descrição
+
+Triagem em uma chamada: para as 17 camadas, devolve quantas ocorrências
+intersectam o imóvel. Use o detalhe por camada para obter atributos e polígonos
+apenas das camadas com ocorrência.
+
+<ParamField path="codigo_car" type="string" required>
+  Código do CAR. Exemplo: `GO-5211909-40A31261C76845DCBE6C47797F9B7B57`
+</ParamField>
+
+## Resposta
+
+<ResponseField name="codigo_car" type="string">Código consultado</ResponseField>
+<ResponseField name="sobreposicoes" type="object">Mapa camada → quantidade de ocorrências</ResponseField>
+<ResponseField name="camadas_com_ocorrencia" type="array">Atalho: só as camadas com contagem maior que zero</ResponseField>
+
+```json Exemplo
+{
+  "codigo_car": "GO-5211909-40A31261C76845DCBE6C47797F9B7B57",
+  "sobreposicoes": { "mineracao": 1, "pivos": 1, "prodes": 10, "terras-indigenas": 0 },
+  "camadas_com_ocorrencia": ["mineracao", "pivos", "prodes"]
+}
+```
+
+<RequestExample>
+```bash cURL
+curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C47797F9B7B57/sobreposicoes" \
+  -H "Authorization: Bearer $API_KEY"
+```
+</RequestExample>

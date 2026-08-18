@@ -1,0 +1,62 @@
+---
+title: "Armazéns CONAB por CAR"
+api: "GET /v2/car/{codigo_car}/sobreposicoes/armazens"
+description: "Armazéns cadastrados na CONAB dentro do imóvel"
+---
+
+## Descrição
+
+Armazéns cadastrados na CONAB dentro do imóvel. Informe o código do CAR: a resposta diz se há ocorrência, traz cada uma com seus atributos e o polígono em GeoJSON.
+
+Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobreposições](/api-reference/v2/sobreposicoes-resumo), que responde todas as camadas de uma vez.
+
+<ParamField path="codigo_car" type="string" required>
+  Código do CAR. Exemplo: `GO-5211909-40A31261C76845DCBE6C47797F9B7B57`
+</ParamField>
+
+<ParamField query="geometria" type="boolean" default="true">
+  Incluir o polígono de cada ocorrência. Com `false`, a resposta cai de megabytes para kilobytes em camadas densas.
+</ParamField>
+
+<ParamField query="limite" type="integer" default="200">
+  Máximo de ocorrências (1 a 1000). Quando atinge o limite, a resposta traz `truncado: true`.
+</ParamField>
+
+## Resposta
+
+<ResponseField name="codigo_car" type="string">Código do CAR consultado</ResponseField>
+<ResponseField name="camada" type="string">Nome da camada</ResponseField>
+<ResponseField name="descricao" type="string">Descrição da camada</ResponseField>
+<ResponseField name="total" type="integer">Quantidade de ocorrências que intersectam o imóvel</ResponseField>
+<ResponseField name="itens" type="array">Ocorrências encontradas</ResponseField>
+<ResponseField name="itens[].geometry" type="object">Geometria em GeoJSON (EPSG:4326). Omitida com `geometria=false`</ResponseField>
+<ResponseField name="itens[].atributos" type="object">Atributos da ocorrência, conforme a base de origem (campos abaixo)</ResponseField>
+<ResponseField name="truncado" type="boolean">Presente quando o retorno bateu no `limite`</ResponseField>
+
+### Atributos da ocorrência
+
+Os nomes seguem a base pública de origem.
+
+<ResponseField name="itens[].atributos.identificacao_armazem" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.especie" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.tipo" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.tipo_entidade" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.tipo_pessoa" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.municipio" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.cod_ibge" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.uf" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.capacidade_estatica_t" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.capacidade_expedicao_t" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.capacidade_recepcao_t" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.latitude" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.longitude" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.nome_armazenador" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.endereco" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.email" type="string"></ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C47797F9B7B57/sobreposicoes/armazens" \
+  -H "Authorization: Bearer $API_KEY"
+```
+</RequestExample>

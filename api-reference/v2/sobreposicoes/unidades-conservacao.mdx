@@ -1,0 +1,86 @@
+---
+title: "Unidades de conservação por CAR"
+api: "GET /v2/car/{codigo_car}/sobreposicoes/unidades-conservacao"
+description: "Unidades de conservação (CNUC/MMA) que intersectam o imóvel"
+---
+
+## Descrição
+
+Unidades de conservação (CNUC/MMA) que intersectam o imóvel. Informe o código do CAR: a resposta diz se há ocorrência, traz cada uma com seus atributos, a área de interseção com o imóvel e o polígono em GeoJSON.
+
+Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobreposições](/api-reference/v2/sobreposicoes-resumo), que responde todas as camadas de uma vez.
+
+<ParamField path="codigo_car" type="string" required>
+  Código do CAR. Exemplo: `GO-5211909-40A31261C76845DCBE6C47797F9B7B57`
+</ParamField>
+
+<ParamField query="geometria" type="boolean" default="true">
+  Incluir o polígono de cada ocorrência. Com `false`, a resposta cai de megabytes para kilobytes em camadas densas.
+</ParamField>
+
+<ParamField query="limite" type="integer" default="200">
+  Máximo de ocorrências (1 a 1000). Quando atinge o limite, a resposta traz `truncado: true`.
+</ParamField>
+
+## Resposta
+
+<ResponseField name="codigo_car" type="string">Código do CAR consultado</ResponseField>
+<ResponseField name="camada" type="string">Nome da camada</ResponseField>
+<ResponseField name="descricao" type="string">Descrição da camada</ResponseField>
+<ResponseField name="total" type="integer">Quantidade de ocorrências que intersectam o imóvel</ResponseField>
+<ResponseField name="area_sobreposta_ha" type="number">Soma das áreas de interseção com o imóvel, em hectares</ResponseField>
+<ResponseField name="itens" type="array">Ocorrências encontradas</ResponseField>
+<ResponseField name="itens[].area_sobreposta_ha" type="number">Área da INTERSEÇÃO desta ocorrência com o imóvel (não a área total da ocorrência)</ResponseField>
+<ResponseField name="itens[].geometry" type="object">Geometria em GeoJSON (EPSG:4326). Omitida com `geometria=false`</ResponseField>
+<ResponseField name="itens[].atributos" type="object">Atributos da ocorrência, conforme a base de origem (campos abaixo)</ResponseField>
+<ResponseField name="truncado" type="boolean">Presente quando o retorno bateu no `limite`</ResponseField>
+
+### Atributos da ocorrência
+
+Os nomes seguem a base pública de origem.
+
+<ResponseField name="itens[].atributos.cnuc" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.nome" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.sigla_categoria" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.grupo" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.esfera" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.uf" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.bioma" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.area_ha" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.perimetro_m" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.criacao_ano" type="integer"></ResponseField>
+<ResponseField name="itens[].atributos.criacao_ato" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.demarcacao" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.cnuc_uc_id" type="integer"></ResponseField>
+<ResponseField name="itens[].atributos.categoria" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.categoria_iucn" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.org_gestor" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.wdpa_pid" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.objetivo" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.situacao" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.ato_criacao" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.ato_criacao_url" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.plano_manejo" type="boolean"></ResponseField>
+<ResponseField name="itens[].atributos.plano_manejo_nome" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.plano_manejo_url" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.plano_manejo_aprovacao" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.conselho_gestor_url" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.email_contato" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.site_oficial" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.municipios" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.biomas" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.area_amazonia" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.area_caatinga" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.area_cerrado" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.area_mata_atlantica" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.area_pampa" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.area_pantanal" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.area_marinho" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.cnuc_extra" type="object"></ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C47797F9B7B57/sobreposicoes/unidades-conservacao" \
+  -H "Authorization: Bearer $API_KEY"
+```
+</RequestExample>

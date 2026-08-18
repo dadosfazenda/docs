@@ -1,0 +1,24 @@
+---
+title: "Listar camadas"
+api: "GET /v2/camadas"
+description: "Camadas de sobreposição disponíveis para consulta por CAR"
+---
+
+## Descrição
+
+Descoberta programática: devolve as camadas que podem ser consultadas em
+`/v2/car/{codigo_car}/sobreposicoes/{camada}`.
+
+## Resposta
+
+<ResponseField name="camadas" type="array">Camadas disponíveis</ResponseField>
+<ResponseField name="camadas[].camada" type="string">Identificador para usar na URL</ResponseField>
+<ResponseField name="camadas[].descricao" type="string">Descrição da camada</ResponseField>
+<ResponseField name="camadas[].poligono" type="boolean">Se true, a camada é de polígono e o detalhe traz área de interseção</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://data.dadosfazenda.com.br/v2/camadas" \
+  -H "Authorization: Bearer $API_KEY"
+```
+</RequestExample>

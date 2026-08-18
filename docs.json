@@ -19,6 +19,32 @@
               "index",
               "autenticacao"
             ]
+          },
+          {
+            "group": "API v2 — Consultas por CAR",
+            "pages": [
+              "api-reference/v2/visao-geral",
+              "api-reference/v2/camadas",
+              "api-reference/v2/cadastro",
+              "api-reference/v2/sobreposicoes-resumo",
+              "api-reference/v2/sobreposicoes/aerodromos",
+              "api-reference/v2/sobreposicoes/armazens",
+              "api-reference/v2/sobreposicoes/assentamentos",
+              "api-reference/v2/sobreposicoes/autos-ibama",
+              "api-reference/v2/sobreposicoes/autos-icmbio",
+              "api-reference/v2/sobreposicoes/embargos-ibama",
+              "api-reference/v2/sobreposicoes/embargos-icmbio",
+              "api-reference/v2/sobreposicoes/florestas-publicas",
+              "api-reference/v2/sobreposicoes/mineracao",
+              "api-reference/v2/sobreposicoes/outorgas-subterraneas",
+              "api-reference/v2/sobreposicoes/outorgas-superficiais",
+              "api-reference/v2/sobreposicoes/pivos",
+              "api-reference/v2/sobreposicoes/prodes",
+              "api-reference/v2/sobreposicoes/quilombolas",
+              "api-reference/v2/sobreposicoes/sitios-arqueologicos",
+              "api-reference/v2/sobreposicoes/terras-indigenas",
+              "api-reference/v2/sobreposicoes/unidades-conservacao"
+            ]
           }
         ]
       },

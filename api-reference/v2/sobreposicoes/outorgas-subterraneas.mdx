@@ -1,0 +1,114 @@
+---
+title: "Outorgas subterrâneas por CAR"
+api: "GET /v2/car/{codigo_car}/sobreposicoes/outorgas-subterraneas"
+description: "Outorgas de captação subterrânea de água (ANA) dentro do imóvel"
+---
+
+## Descrição
+
+Outorgas de captação subterrânea de água (ANA) dentro do imóvel. Informe o código do CAR: a resposta diz se há ocorrência, traz cada uma com seus atributos e o polígono em GeoJSON.
+
+Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobreposições](/api-reference/v2/sobreposicoes-resumo), que responde todas as camadas de uma vez.
+
+<ParamField path="codigo_car" type="string" required>
+  Código do CAR. Exemplo: `GO-5211909-40A31261C76845DCBE6C47797F9B7B57`
+</ParamField>
+
+<ParamField query="geometria" type="boolean" default="true">
+  Incluir o polígono de cada ocorrência. Com `false`, a resposta cai de megabytes para kilobytes em camadas densas.
+</ParamField>
+
+<ParamField query="limite" type="integer" default="200">
+  Máximo de ocorrências (1 a 1000). Quando atinge o limite, a resposta traz `truncado: true`.
+</ParamField>
+
+## Resposta
+
+<ResponseField name="codigo_car" type="string">Código do CAR consultado</ResponseField>
+<ResponseField name="camada" type="string">Nome da camada</ResponseField>
+<ResponseField name="descricao" type="string">Descrição da camada</ResponseField>
+<ResponseField name="total" type="integer">Quantidade de ocorrências que intersectam o imóvel</ResponseField>
+<ResponseField name="itens" type="array">Ocorrências encontradas</ResponseField>
+<ResponseField name="itens[].geometry" type="object">Geometria em GeoJSON (EPSG:4326). Omitida com `geometria=false`</ResponseField>
+<ResponseField name="itens[].atributos" type="object">Atributos da ocorrência, conforme a base de origem (campos abaixo)</ResponseField>
+<ResponseField name="truncado" type="boolean">Presente quando o retorno bateu no `limite`</ResponseField>
+
+### Atributos da ocorrência
+
+Os nomes seguem a base pública de origem.
+
+<ResponseField name="itens[].atributos.dominio" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.objectid" type="integer"></ResponseField>
+<ResponseField name="itens[].atributos.int_nu_cnarh" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.longitude" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.latitude" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.emp_nm_empreendimento" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.emp_nm_responsavel" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.emp_nu_cpfcnpj" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.int_cd" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.int_nu_siagas" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.out_nu_ato" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.out_tp_ato" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.out_dt_outorgainicial" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.out_dt_outorgafinal" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.ing_nm_municipio" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.ing_sg_ufmunicipio" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.org_nm" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.org_uf" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.int_qt_vazaomedia" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.int_qt_volumeanual" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.ama_dt_analise" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.ama_dt_coleta" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.ama_nu_condutividadeeletrica" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.ama_qt_bicarbonato" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.ama_qt_calcio" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.ama_qt_carbonato" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.ama_qt_cloreto" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.ama_qt_coliformesfecais" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.ama_qt_coliformestotais" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.ama_qt_durezatotal" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.ama_qt_ferrototal" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.ama_qt_fluoretos" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.ama_qt_magnesio" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.ama_qt_nitratos" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.ama_qt_nitritos" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.ama_qt_ph" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.ama_qt_potassio" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.ama_qt_sodio" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.ama_qt_std" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.ama_qt_sulfato" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.ama_qt_temperatura" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.asb_dt_instalacao" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.asb_nu_alturabocatubo" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.asb_nu_base" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.asb_nu_cotaterreno" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.asb_nu_diametrofiltro" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.asb_nu_diametroperfuracao" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.asb_nu_profundidadefinal" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.asb_nu_topo" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.tst_dt" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.tst_ds_tempoduracao" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.tst_nu_coeficientearmazenament" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.tst_nu_condutividadehidraulica" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.tst_nu_nd" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.tst_nu_ne" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.tst_nu_permeabilidade" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.tst_nu_transmissividade" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.tst_vz_estabilizacao" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.tap_ds" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.tcq_ds" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.tfn_ds" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.tin_ds" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.tmi_ds" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.tnp_ds" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.tpa_ds" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.tpo_ds" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.tsp_ds" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.ttb_ds" type="string"></ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C47797F9B7B57/sobreposicoes/outorgas-subterraneas" \
+  -H "Authorization: Bearer $API_KEY"
+```
+</RequestExample>

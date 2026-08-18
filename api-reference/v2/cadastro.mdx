@@ -1,0 +1,35 @@
+---
+title: "Cadastro do imóvel"
+api: "GET /v2/car/{codigo_car}"
+description: "Dados cadastrais do imóvel no CAR, com a geometria do perímetro"
+---
+
+## Descrição
+
+Cadastro do imóvel rural no CAR: situação, condição, área, módulos fiscais e o
+polígono do perímetro.
+
+<ParamField path="codigo_car" type="string" required>
+  Código do CAR. Exemplo: `GO-5211909-40A31261C76845DCBE6C47797F9B7B57`
+</ParamField>
+
+## Resposta
+
+<ResponseField name="codigo_car" type="string">Código do imóvel</ResponseField>
+<ResponseField name="status" type="string">Situação do cadastro (AT ativo, PE pendente, CA cancelado, SU suspenso)</ResponseField>
+<ResponseField name="tipo" type="string">Tipo do imóvel (IRU rural, AST assentamento, PCT povos e comunidades tradicionais)</ResponseField>
+<ResponseField name="condicao" type="string">Condição da análise no órgão</ResponseField>
+<ResponseField name="municipio" type="string">Município</ResponseField>
+<ResponseField name="uf" type="string">UF</ResponseField>
+<ResponseField name="area_ha" type="number">Área declarada, em hectares</ResponseField>
+<ResponseField name="modulos_fiscais" type="number">Módulos fiscais</ResponseField>
+<ResponseField name="criado_em" type="string">Data de inscrição no CAR</ResponseField>
+<ResponseField name="atualizado_em" type="string">Última atualização do cadastro</ResponseField>
+<ResponseField name="geometry" type="object">Perímetro em GeoJSON (EPSG:4326)</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C47797F9B7B57" \
+  -H "Authorization: Bearer $API_KEY"
+```
+</RequestExample>

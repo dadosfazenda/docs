@@ -1,0 +1,73 @@
+---
+title: "Autos de infração IBAMA por CAR"
+api: "GET /v2/car/{codigo_car}/sobreposicoes/autos-ibama"
+description: "Autos de infração do IBAMA localizados no imóvel"
+---
+
+## Descrição
+
+Autos de infração do IBAMA localizados no imóvel. Informe o código do CAR: a resposta diz se há ocorrência, traz cada uma com seus atributos e o polígono em GeoJSON.
+
+Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobreposições](/api-reference/v2/sobreposicoes-resumo), que responde todas as camadas de uma vez.
+
+<ParamField path="codigo_car" type="string" required>
+  Código do CAR. Exemplo: `GO-5211909-40A31261C76845DCBE6C47797F9B7B57`
+</ParamField>
+
+<ParamField query="geometria" type="boolean" default="true">
+  Incluir o polígono de cada ocorrência. Com `false`, a resposta cai de megabytes para kilobytes em camadas densas.
+</ParamField>
+
+<ParamField query="limite" type="integer" default="200">
+  Máximo de ocorrências (1 a 1000). Quando atinge o limite, a resposta traz `truncado: true`.
+</ParamField>
+
+## Resposta
+
+<ResponseField name="codigo_car" type="string">Código do CAR consultado</ResponseField>
+<ResponseField name="camada" type="string">Nome da camada</ResponseField>
+<ResponseField name="descricao" type="string">Descrição da camada</ResponseField>
+<ResponseField name="total" type="integer">Quantidade de ocorrências que intersectam o imóvel</ResponseField>
+<ResponseField name="itens" type="array">Ocorrências encontradas</ResponseField>
+<ResponseField name="itens[].geometry" type="object">Geometria em GeoJSON (EPSG:4326). Omitida com `geometria=false`</ResponseField>
+<ResponseField name="itens[].atributos" type="object">Atributos da ocorrência, conforme a base de origem (campos abaixo)</ResponseField>
+<ResponseField name="truncado" type="boolean">Presente quando o retorno bateu no `limite`</ResponseField>
+
+### Atributos da ocorrência
+
+Os nomes seguem a base pública de origem.
+
+<ResponseField name="itens[].atributos.seq_auto_infracao" type="integer"></ResponseField>
+<ResponseField name="itens[].atributos.num_auto_infracao" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.serie" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.tipo_auto" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.tipo_multa" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.val_auto_infracao" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.gravidade" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.cod_infracao" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.des_infracao" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.tipo_infracao" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.dat_auto" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.ano" type="integer"></ResponseField>
+<ResponseField name="itens[].atributos.cod_municipio" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.municipio" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.uf" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.num_processo" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.tp_pessoa" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.cpf_cnpj" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.cpf_cnpj_limpo" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.nome_infrator" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.qt_area" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.unidade_conservacao" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.cd_termos_embargos" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.sit_cancelado" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.longitude" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.latitude" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.des_auto_infracao" type="string"></ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C47797F9B7B57/sobreposicoes/autos-ibama" \
+  -H "Authorization: Bearer $API_KEY"
+```
+</RequestExample>

@@ -1,0 +1,59 @@
+---
+title: "Terras indígenas por CAR"
+api: "GET /v2/car/{codigo_car}/sobreposicoes/terras-indigenas"
+description: "Terras indígenas (FUNAI) que intersectam o imóvel"
+---
+
+## Descrição
+
+Terras indígenas (FUNAI) que intersectam o imóvel. Informe o código do CAR: a resposta diz se há ocorrência, traz cada uma com seus atributos, a área de interseção com o imóvel e o polígono em GeoJSON.
+
+Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobreposições](/api-reference/v2/sobreposicoes-resumo), que responde todas as camadas de uma vez.
+
+<ParamField path="codigo_car" type="string" required>
+  Código do CAR. Exemplo: `GO-5211909-40A31261C76845DCBE6C47797F9B7B57`
+</ParamField>
+
+<ParamField query="geometria" type="boolean" default="true">
+  Incluir o polígono de cada ocorrência. Com `false`, a resposta cai de megabytes para kilobytes em camadas densas.
+</ParamField>
+
+<ParamField query="limite" type="integer" default="200">
+  Máximo de ocorrências (1 a 1000). Quando atinge o limite, a resposta traz `truncado: true`.
+</ParamField>
+
+## Resposta
+
+<ResponseField name="codigo_car" type="string">Código do CAR consultado</ResponseField>
+<ResponseField name="camada" type="string">Nome da camada</ResponseField>
+<ResponseField name="descricao" type="string">Descrição da camada</ResponseField>
+<ResponseField name="total" type="integer">Quantidade de ocorrências que intersectam o imóvel</ResponseField>
+<ResponseField name="area_sobreposta_ha" type="number">Soma das áreas de interseção com o imóvel, em hectares</ResponseField>
+<ResponseField name="itens" type="array">Ocorrências encontradas</ResponseField>
+<ResponseField name="itens[].area_sobreposta_ha" type="number">Área da INTERSEÇÃO desta ocorrência com o imóvel (não a área total da ocorrência)</ResponseField>
+<ResponseField name="itens[].geometry" type="object">Geometria em GeoJSON (EPSG:4326). Omitida com `geometria=false`</ResponseField>
+<ResponseField name="itens[].atributos" type="object">Atributos da ocorrência, conforme a base de origem (campos abaixo)</ResponseField>
+<ResponseField name="truncado" type="boolean">Presente quando o retorno bateu no `limite`</ResponseField>
+
+### Atributos da ocorrência
+
+Os nomes seguem a base pública de origem.
+
+<ResponseField name="itens[].atributos.terrai_codigo" type="integer"></ResponseField>
+<ResponseField name="itens[].atributos.terrai_nome" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.etnia_nome" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.municipio_nome" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.uf_sigla" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.superficie_ha" type="number"></ResponseField>
+<ResponseField name="itens[].atributos.fase" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.modalidade" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.cr" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.faixa_fronteira" type="string"></ResponseField>
+<ResponseField name="itens[].atributos.data_atualizacao" type="string"></ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C47797F9B7B57/sobreposicoes/terras-indigenas" \
+  -H "Authorization: Bearer $API_KEY"
+```
+</RequestExample>
