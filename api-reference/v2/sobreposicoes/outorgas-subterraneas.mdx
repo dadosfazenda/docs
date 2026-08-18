@@ -15,11 +15,11 @@ Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobr
 </ParamField>
 
 <ParamField query="geometria" type="boolean" default="true">
-  Incluir o polígono de cada ocorrência. Com `false`, a resposta cai de megabytes para kilobytes em camadas densas.
+  Incluir o polígono de cada ocorrência. Com `false`, a resposta fica muito menor em camadas densas.
 </ParamField>
 
 <ParamField query="limite" type="integer" default="200">
-  Máximo de ocorrências (1 a 1000). Quando atinge o limite, a resposta traz `truncado: true`.
+  Máximo de ocorrências (1 a 1000). Ao atingir o limite, a resposta traz `truncado: true`.
 </ParamField>
 
 ## Resposta
@@ -28,83 +28,86 @@ Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobr
 <ResponseField name="camada" type="string">Nome da camada</ResponseField>
 <ResponseField name="descricao" type="string">Descrição da camada</ResponseField>
 <ResponseField name="total" type="integer">Quantidade de ocorrências que intersectam o imóvel</ResponseField>
-<ResponseField name="itens" type="array">Ocorrências encontradas</ResponseField>
-<ResponseField name="itens[].geometry" type="object">Geometria em GeoJSON (EPSG:4326). Omitida com `geometria=false`</ResponseField>
-<ResponseField name="itens[].atributos" type="object">Atributos da ocorrência, conforme a base de origem (campos abaixo)</ResponseField>
-<ResponseField name="truncado" type="boolean">Presente quando o retorno bateu no `limite`</ResponseField>
-
-### Atributos da ocorrência
-
-Os nomes seguem a base pública de origem.
-
-<ResponseField name="itens[].atributos.dominio" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.objectid" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.int_nu_cnarh" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.longitude" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.latitude" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.emp_nm_empreendimento" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.emp_nm_responsavel" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.emp_nu_cpfcnpj" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.int_cd" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.int_nu_siagas" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.out_nu_ato" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.out_tp_ato" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.out_dt_outorgainicial" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.out_dt_outorgafinal" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.ing_nm_municipio" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.ing_sg_ufmunicipio" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.org_nm" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.org_uf" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.int_qt_vazaomedia" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.int_qt_volumeanual" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ama_dt_analise" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.ama_dt_coleta" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.ama_nu_condutividadeeletrica" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ama_qt_bicarbonato" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ama_qt_calcio" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ama_qt_carbonato" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ama_qt_cloreto" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ama_qt_coliformesfecais" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ama_qt_coliformestotais" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ama_qt_durezatotal" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ama_qt_ferrototal" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ama_qt_fluoretos" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ama_qt_magnesio" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ama_qt_nitratos" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ama_qt_nitritos" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ama_qt_ph" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ama_qt_potassio" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ama_qt_sodio" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ama_qt_std" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ama_qt_sulfato" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ama_qt_temperatura" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.asb_dt_instalacao" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.asb_nu_alturabocatubo" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.asb_nu_base" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.asb_nu_cotaterreno" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.asb_nu_diametrofiltro" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.asb_nu_diametroperfuracao" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.asb_nu_profundidadefinal" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.asb_nu_topo" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.tst_dt" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tst_ds_tempoduracao" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tst_nu_coeficientearmazenament" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.tst_nu_condutividadehidraulica" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.tst_nu_nd" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.tst_nu_ne" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.tst_nu_permeabilidade" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.tst_nu_transmissividade" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.tst_vz_estabilizacao" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.tap_ds" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tcq_ds" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tfn_ds" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tin_ds" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tmi_ds" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tnp_ds" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tpa_ds" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tpo_ds" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tsp_ds" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.ttb_ds" type="string"></ResponseField>
+<ResponseField name="itens" type="array">
+  Ocorrências encontradas
+  <Expandable title="item">
+    <ResponseField name="geometry" type="object">Geometria em GeoJSON (EPSG:4326). Omitida com `geometria=false`</ResponseField>
+    <ResponseField name="atributos" type="object">
+      Atributos da ocorrência, com os nomes da base pública de origem
+      <Expandable title="atributos">
+      <ResponseField name="dominio" type="string"></ResponseField>
+      <ResponseField name="objectid" type="integer"></ResponseField>
+      <ResponseField name="int_nu_cnarh" type="string"></ResponseField>
+      <ResponseField name="longitude" type="number"></ResponseField>
+      <ResponseField name="latitude" type="number"></ResponseField>
+      <ResponseField name="emp_nm_empreendimento" type="string"></ResponseField>
+      <ResponseField name="emp_nm_responsavel" type="string"></ResponseField>
+      <ResponseField name="emp_nu_cpfcnpj" type="string"></ResponseField>
+      <ResponseField name="int_cd" type="string"></ResponseField>
+      <ResponseField name="int_nu_siagas" type="string"></ResponseField>
+      <ResponseField name="out_nu_ato" type="string"></ResponseField>
+      <ResponseField name="out_tp_ato" type="string"></ResponseField>
+      <ResponseField name="out_dt_outorgainicial" type="string"></ResponseField>
+      <ResponseField name="out_dt_outorgafinal" type="string"></ResponseField>
+      <ResponseField name="ing_nm_municipio" type="string"></ResponseField>
+      <ResponseField name="ing_sg_ufmunicipio" type="string"></ResponseField>
+      <ResponseField name="org_nm" type="string"></ResponseField>
+      <ResponseField name="org_uf" type="string"></ResponseField>
+      <ResponseField name="int_qt_vazaomedia" type="number"></ResponseField>
+      <ResponseField name="int_qt_volumeanual" type="number"></ResponseField>
+      <ResponseField name="ama_dt_analise" type="string"></ResponseField>
+      <ResponseField name="ama_dt_coleta" type="string"></ResponseField>
+      <ResponseField name="ama_nu_condutividadeeletrica" type="number"></ResponseField>
+      <ResponseField name="ama_qt_bicarbonato" type="number"></ResponseField>
+      <ResponseField name="ama_qt_calcio" type="number"></ResponseField>
+      <ResponseField name="ama_qt_carbonato" type="number"></ResponseField>
+      <ResponseField name="ama_qt_cloreto" type="number"></ResponseField>
+      <ResponseField name="ama_qt_coliformesfecais" type="number"></ResponseField>
+      <ResponseField name="ama_qt_coliformestotais" type="number"></ResponseField>
+      <ResponseField name="ama_qt_durezatotal" type="number"></ResponseField>
+      <ResponseField name="ama_qt_ferrototal" type="number"></ResponseField>
+      <ResponseField name="ama_qt_fluoretos" type="number"></ResponseField>
+      <ResponseField name="ama_qt_magnesio" type="number"></ResponseField>
+      <ResponseField name="ama_qt_nitratos" type="number"></ResponseField>
+      <ResponseField name="ama_qt_nitritos" type="number"></ResponseField>
+      <ResponseField name="ama_qt_ph" type="number"></ResponseField>
+      <ResponseField name="ama_qt_potassio" type="number"></ResponseField>
+      <ResponseField name="ama_qt_sodio" type="number"></ResponseField>
+      <ResponseField name="ama_qt_std" type="number"></ResponseField>
+      <ResponseField name="ama_qt_sulfato" type="number"></ResponseField>
+      <ResponseField name="ama_qt_temperatura" type="number"></ResponseField>
+      <ResponseField name="asb_dt_instalacao" type="string"></ResponseField>
+      <ResponseField name="asb_nu_alturabocatubo" type="number"></ResponseField>
+      <ResponseField name="asb_nu_base" type="number"></ResponseField>
+      <ResponseField name="asb_nu_cotaterreno" type="number"></ResponseField>
+      <ResponseField name="asb_nu_diametrofiltro" type="number"></ResponseField>
+      <ResponseField name="asb_nu_diametroperfuracao" type="number"></ResponseField>
+      <ResponseField name="asb_nu_profundidadefinal" type="number"></ResponseField>
+      <ResponseField name="asb_nu_topo" type="number"></ResponseField>
+      <ResponseField name="tst_dt" type="string"></ResponseField>
+      <ResponseField name="tst_ds_tempoduracao" type="string"></ResponseField>
+      <ResponseField name="tst_nu_coeficientearmazenament" type="number"></ResponseField>
+      <ResponseField name="tst_nu_condutividadehidraulica" type="number"></ResponseField>
+      <ResponseField name="tst_nu_nd" type="number"></ResponseField>
+      <ResponseField name="tst_nu_ne" type="number"></ResponseField>
+      <ResponseField name="tst_nu_permeabilidade" type="number"></ResponseField>
+      <ResponseField name="tst_nu_transmissividade" type="number"></ResponseField>
+      <ResponseField name="tst_vz_estabilizacao" type="number"></ResponseField>
+      <ResponseField name="tap_ds" type="string"></ResponseField>
+      <ResponseField name="tcq_ds" type="string"></ResponseField>
+      <ResponseField name="tfn_ds" type="string"></ResponseField>
+      <ResponseField name="tin_ds" type="string"></ResponseField>
+      <ResponseField name="tmi_ds" type="string"></ResponseField>
+      <ResponseField name="tnp_ds" type="string"></ResponseField>
+      <ResponseField name="tpa_ds" type="string"></ResponseField>
+      <ResponseField name="tpo_ds" type="string"></ResponseField>
+      <ResponseField name="tsp_ds" type="string"></ResponseField>
+      <ResponseField name="ttb_ds" type="string"></ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="truncado" type="boolean">Presente quando o retorno atingiu o `limite`</ResponseField>
 
 <RequestExample>
 ```bash cURL
@@ -112,3 +115,105 @@ curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C477
   -H "Authorization: Bearer $API_KEY"
 ```
 </RequestExample>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "codigo_car": "GO-5211909-40A31261C76845DCBE6C47797F9B7B57",
+    "camada": "outorgas-subterraneas",
+    "descricao": "Outorgas de captação subterrânea de água (ANA) dentro do imóvel",
+    "total": 1,
+    "itens": [
+      {
+        "geometry": {"type": "MultiPolygon", "coordinates": [[[[-51.90, -17.40], [-51.89, -17.40], [-51.89, -17.41], [-51.90, -17.40]]]]},
+        "atributos": {
+          "dominio": "texto",
+          "objectid": 123,
+          "int_nu_cnarh": "texto",
+          "longitude": 12.34,
+          "latitude": 12.34,
+          "emp_nm_empreendimento": "texto",
+          "emp_nm_responsavel": "texto",
+          "emp_nu_cpfcnpj": "texto",
+          "int_cd": "texto",
+          "int_nu_siagas": "texto",
+          "out_nu_ato": "texto",
+          "out_tp_ato": "texto",
+          "out_dt_outorgainicial": "2024-05-10",
+          "out_dt_outorgafinal": "2024-05-10",
+          "ing_nm_municipio": "texto",
+          "ing_sg_ufmunicipio": "texto",
+          "org_nm": "texto",
+          "org_uf": "texto",
+          "int_qt_vazaomedia": 12.34,
+          "int_qt_volumeanual": 12.34,
+          "ama_dt_analise": "2024-05-10",
+          "ama_dt_coleta": "2024-05-10",
+          "ama_nu_condutividadeeletrica": 12.34,
+          "ama_qt_bicarbonato": 12.34,
+          "ama_qt_calcio": 12.34,
+          "ama_qt_carbonato": 12.34,
+          "ama_qt_cloreto": 12.34,
+          "ama_qt_coliformesfecais": 12.34,
+          "ama_qt_coliformestotais": 12.34,
+          "ama_qt_durezatotal": 12.34,
+          "ama_qt_ferrototal": 12.34,
+          "ama_qt_fluoretos": 12.34,
+          "ama_qt_magnesio": 12.34,
+          "ama_qt_nitratos": 12.34,
+          "ama_qt_nitritos": 12.34,
+          "ama_qt_ph": 12.34,
+          "ama_qt_potassio": 12.34,
+          "ama_qt_sodio": 12.34,
+          "ama_qt_std": 12.34,
+          "ama_qt_sulfato": 12.34,
+          "ama_qt_temperatura": 12.34,
+          "asb_dt_instalacao": "2024-05-10",
+          "asb_nu_alturabocatubo": 12.34,
+          "asb_nu_base": 12.34,
+          "asb_nu_cotaterreno": 12.34,
+          "asb_nu_diametrofiltro": 12.34,
+          "asb_nu_diametroperfuracao": 12.34,
+          "asb_nu_profundidadefinal": 12.34,
+          "asb_nu_topo": 12.34,
+          "tst_dt": "2024-05-10",
+          "tst_ds_tempoduracao": "texto",
+          "tst_nu_coeficientearmazenament": 12.34,
+          "tst_nu_condutividadehidraulica": 12.34,
+          "tst_nu_nd": 12.34,
+          "tst_nu_ne": 12.34,
+          "tst_nu_permeabilidade": 12.34,
+          "tst_nu_transmissividade": 12.34,
+          "tst_vz_estabilizacao": 12.34,
+          "tap_ds": "texto",
+          "tcq_ds": "texto",
+          "tfn_ds": "texto",
+          "tin_ds": "texto",
+          "tmi_ds": "texto",
+          "tnp_ds": "texto",
+          "tpa_ds": "texto",
+          "tpo_ds": "texto",
+          "tsp_ds": "texto",
+          "ttb_ds": "texto"
+        }
+      }
+    ]
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 404 - CAR não encontrado
+{ "success": false, "message": "CAR não encontrado", "data": null }
+```
+
+```json 422 - código de CAR inválido
+{ "success": false, "message": "Código de CAR inválido", "data": null }
+```
+</ResponseExample>

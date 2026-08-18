@@ -85,7 +85,7 @@ data = response.json()["data"]
 print(f"Total de areas desmatadas: {data['total']}")
 
 for d in data["desmatamentos"]:
-    print(f"  {d['year']} — {d['area_intersecao_ha']:.2f} ha ({d['percentual_sobre_propriedade']:.1f}%) — {d['biome']}")
+    print(f"  {d['year']} - {d['area_intersecao_ha']:.2f} ha ({d['percentual_sobre_propriedade']:.1f}%) - {d['biome']}")
 ```
 </RequestExample>
 

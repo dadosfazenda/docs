@@ -1,5 +1,5 @@
 ---
-title: "CNDIR — Débitos do Imóvel Rural"
+title: "CNDIR - Débitos do Imóvel Rural"
 api: "POST /v1/certidoes/cndir"
 description: "Certidão Negativa de Débitos do Imóvel Rural (ITR) pelo NIRF."
 ---
@@ -21,7 +21,7 @@ bem-sucedida consome **1 unidade** da cota mensal. Em erro de consulta a cota
 ## Parâmetros
 
 <ParamField body="nirf" type="string" required>
-  NIRF — código do imóvel rural na Receita Federal.
+  NIRF - código do imóvel rural na Receita Federal.
 </ParamField>
 
 ## Resposta
@@ -36,7 +36,7 @@ bem-sucedida consome **1 unidade** da cota mensal. Em erro de consulta a cota
 
 <ResponseField name="arquivos" type="array">
   Lista de arquivos oficiais. Cada item traz `filename`, `content_type`,
-  `kind`, `url` (assinada) e `expires_in` (segundos até expirar — 1800 = 30 min).
+  `kind`, `url` (assinada) e `expires_in` (segundos até expirar - 1800 = 30 min).
 </ResponseField>
 
 <RequestExample>
@@ -74,11 +74,11 @@ curl -X POST "https://data.dadosfazenda.com.br/v1/certidoes/cndir" \
 }
 ```
 
-```json 401 — API key inválida
+```json 401 - API key inválida
 { "detail": "API key invalida." }
 ```
 
-```json 429 — cota mensal atingida
+```json 429 - cota mensal atingida
 { "detail": "Limite mensal atingido. Reseta no proximo mes." }
 ```
 

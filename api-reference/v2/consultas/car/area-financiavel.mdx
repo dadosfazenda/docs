@@ -1,0 +1,495 @@
+---
+title: "Área Financiável (Crédito Rural)"
+api: "GET /v2/car/{codigo_car}/area-financiavel"
+description: "Calcula a área financiável de um CAR conforme regras do Manual de Crédito Rural (Bacen)"
+---
+
+## Descrição
+
+Calcula a parcela do imóvel rural que pode servir de base para projetos de **crédito rural**
+sob o **Manual de Crédito Rural (MCR)** do Banco Central. O número resultante é uma referência
+operacional para bancos, cooperativas e analistas estimarem limite de custeio, investimento e
+comercialização.
+
+A metodologia parte de uma base geométrica do CAR (idealmente o uso consolidado do SICAR)
+e subtrai sobreposições com camadas restritivas absolutas (Unidades de Conservação, Terras
+Indígenas, comunidades quilombolas tituladas e embargos IBAMA vigentes). Quando há
+detecção de PRODES pós-2019 em imóveis acima de 4 módulos fiscais (Resolução CMN 5.268/2025),
+o response sinaliza a **vedação regulatória** no campo `bloqueio` - mas o valor calculado
+de `area_financiavel_ha` é preservado, já que cada instituição/analista pode tratar
+casos de regularização (ASV/PRAD) de forma diferente.
+
+## Marco regulatório
+
+| Camada | Critério no MCR | Exceção |
+|---|---|---|
+| Embargo ambiental (IBAMA) | Sem crédito | - |
+| Unidade de Conservação | Sem crédito (registrada no CNUC) | Plano de Manejo aprovado |
+| Terra Indígena | Homologada/regularizada/Reserva | Proponente da própria comunidade |
+| Quilombola titulada | Sem crédito | Proponente da comunidade |
+| PRODES pós-31/07/2019 | Sem crédito (> 4 mod. fiscais a partir de 04/2026) | ASV ou PRAD aprovado |
+
+Fundamento: MCR 2-2-9, Lei 12.651/2012, Lei 4.504/64, Resoluções CMN 5.081, 5.267/2025 e 5.268/2025.
+
+## Fórmula
+
+```
+área_financiável = base − ( base ∩ ⋃ restrições )
+```
+
+A `base` é escolhida em cascata, da mais precisa para a mais grosseira:
+
+| Modo | Base usada | Quando ocorre | Precisão |
+|---|---|---|---|
+| `uso_consolidado` | `car_layers.uso_consolidado` (SICAR) | CAR tem polígono de uso consolidado | **alta** |
+| `area_aproveitavel` | `total − ( APP ∪ RL ∪ Vegetação Nativa )` | CAR sem uso consolidado mas com APP/RL/VN | **média** |
+| `area_total` | Polígono total do CAR | CAR sem nenhuma categoria delimitada | **baixa** |
+| `indisponivel` | - | CAR não encontrado | - |
+
+<Note>
+  O `ST_Union` das camadas restritivas evita dupla contagem quando há sobreposição entre
+  elas (ex: TI dentro de UC de uso sustentável). Cálculo de área em projeção métrica via
+  `ST_Area(geom::geography) / 10000`.
+</Note>
+
+## Parâmetros
+
+<ParamField path="codigo_car" type="string" required>
+  Código do CAR. Exemplo: `GO-5218805-52A8321D5912439C9E814F21BAA4058A`
+</ParamField>
+
+<ParamField query="include_geometry" type="boolean" default={false}>
+  Quando `true`, inclui o polígono GeoJSON da área financiável (base − união de restrições)
+  em `geometry_financiavel`. Tipicamente devolvido como `MultiPolygon` SRID 4326. Útil pra
+  renderizar no mapa o que é financiável vs o que está restrito.
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="codigo_car" type="string">
+      Código do CAR (uppercase).
+    </ResponseField>
+
+    <ResponseField name="area_total_ha" type="number">
+      Área total do CAR (todo o polígono do imóvel) em hectares. Útil pra dar contexto:
+      comparar quanto do imóvel é financiável vs total.
+    </ResponseField>
+
+    <ResponseField name="area_financiavel_ha" type="number">
+      O número calculado em hectares: `base_ha − exclusoes_ha`. **Sempre devolvido** quando o
+      CAR existe (mesmo quando há `bloqueio` - quem consome decide se acata a vedação ou
+      avalia caso a caso). `null` apenas quando o CAR não foi encontrado.
+    </ResponseField>
+
+    <ResponseField name="status_credito" type="string">
+      Indicador rápido de status. Valores possíveis:
+
+      - `livre` - sem restrições; `area_financiavel_ha` = `base_ha`
+      - `com_restricoes` - restrições parciais; alguma área foi excluída mas o crédito é viável
+      - `bloqueado` - vedação regulatória detectada (PRODES pós-2019 em imóvel > 4 mod. fiscais). Análise caso a caso
+      - `indisponivel` - não foi possível calcular (CAR não encontrado)
+    </ResponseField>
+
+    <ResponseField name="resumo_restricoes" type="object">
+      Lista os tipos de restrição que efetivamente tocam o CAR.
+
+      <Expandable title="resumo_restricoes">
+        <ResponseField name="total" type="number">Quantidade de tipos de restrição ativos.</ResponseField>
+        <ResponseField name="tipos" type="array">
+          Array de strings. Possíveis valores: `unidade_conservacao`, `terra_indigena`,
+          `quilombola`, `embargo_ibama`, `prodes_pos_2019`.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="bloqueio" type="object">
+      `null` quando não há vedação regulatória. Quando há (PRODES pós-2019 detectado em
+      imóvel > 4 mod. fiscais), traz contexto + caminhos de regularização exigidos pelo
+      MCR 2-2-9. **Não zera `area_financiavel_ha`** - é informativo.
+
+      <Expandable title="bloqueio">
+        <ResponseField name="motivo" type="string">Identificador do motivo (ex: `prodes_pos_2019`).</ResponseField>
+        <ResponseField name="descricao" type="string">Descrição em português com a área detectada.</ResponseField>
+        <ResponseField name="fundamento" type="string">Citação da norma aplicável.</ResponseField>
+        <ResponseField name="regularizacao" type="array">
+          Lista de caminhos pra destravar o crédito (ex: ASV, PRAD).
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="geometry_financiavel" type="object">
+      GeoJSON do polígono financiável (base − união de restrições). Só preenchido quando
+      `?include_geometry=true`. Tipicamente `MultiPolygon` SRID 4326.
+    </ResponseField>
+
+    <ResponseField name="detalhes" type="object">
+      Breakdown numérico. `null` quando o CAR não foi encontrado.
+
+      <Expandable title="detalhes">
+        <ResponseField name="base_ha" type="number">Área da base de cálculo do modo escolhido.</ResponseField>
+        <ResponseField name="exclusoes_ha" type="number">Total de exclusões em hectares (sem dupla contagem).</ResponseField>
+        <ResponseField name="modulos_fiscais" type="number">
+          Módulos fiscais do CAR. Usado como critério para aplicar PRODES pós-2019
+          (regra ativa quando > 4 a partir de 04/2026).
+        </ResponseField>
+        <ResponseField name="exclusoes" type="object">
+          Items detalhados por camada restritiva. Cada camada tem `ha` (total agregado) e
+          `items[]` (registros individuais com nome, código, esfera etc).
+
+          <Expandable title="exclusoes">
+            <ResponseField name="unidade_conservacao" type="object">
+              `{ ha, items }` - UCs federal/estadual/municipal que tocam o CAR.
+            </ResponseField>
+            <ResponseField name="terra_indigena" type="object">
+              `{ ha, items }` - TIs (qualquer fase: homologada, declarada, em estudo).
+            </ResponseField>
+            <ResponseField name="quilombola" type="object">
+              `{ ha, items }` - Apenas `fase IN ('TITULADO', 'TITULO PARCIAL')`.
+            </ResponseField>
+            <ResponseField name="embargo_ibama" type="object">
+              `{ ha, items }` - Apenas embargos vigentes (`sit_desembargo IS NULL`).
+            </ResponseField>
+            <ResponseField name="prodes_pos_2019" type="object">
+              `{ ha, items, aplicada, criterio }` - Sempre presente. Campo `aplicada` indica
+              se entrou na fórmula (true quando `mod_fiscal > 4`). `criterio` cita a CMN.
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="metodologia" type="object">
+      Texto explicativo do modo escolhido + premissas + nível de precisão.
+
+      <Expandable title="metodologia">
+        <ResponseField name="modo" type="string">`uso_consolidado` | `area_aproveitavel` | `area_total` | `indisponivel`.</ResponseField>
+        <ResponseField name="base" type="string">Nome legível da base usada.</ResponseField>
+        <ResponseField name="descricao" type="string">Parágrafo explicando o cálculo.</ResponseField>
+        <ResponseField name="premissas" type="array">Lista de premissas adotadas.</ResponseField>
+        <ResponseField name="precisao" type="string">`alta` | `media` | `baixa` | `null`.</ResponseField>
+        <ResponseField name="fundamento_legal" type="string">
+          Presente apenas no modo `area_aproveitavel`: cita Lei 4.504/64 + Lei 12.651/2012.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="version" type="string">
+      Versão da metodologia (atual: `v1`). Útil pra consumidores tratarem mudanças incrementais.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Cenários
+
+<AccordionGroup>
+  <Accordion title="1. CAR sem sobreposições (livre)">
+    `area_financiavel_ha = base_ha`, `status_credito = livre`, `resumo_restricoes.total = 0`.
+  </Accordion>
+
+  <Accordion title="2. CAR com restrições parciais (com_restricoes)">
+    UC, TI, quilombola titulada ou embargo IBAMA com sobreposição. `area_financiavel_ha`
+    é reduzido proporcionalmente, sem bloqueio.
+  </Accordion>
+
+  <Accordion title="3. PRODES detectado em imóvel pequeno (≤ 4 mod. fiscais)">
+    `detalhes.exclusoes.prodes_pos_2019.aplicada = false`. A área detectada vem como
+    informação, mas **não** entra na fórmula. `status_credito` continua `livre` ou
+    `com_restricoes` conforme outras camadas.
+  </Accordion>
+
+  <Accordion title="4. PRODES detectado em imóvel > 4 mod. fiscais (vedação regulatória)">
+    `status_credito = bloqueado`, `bloqueio` populado com `motivo`, `descricao`,
+    `fundamento` e caminhos de `regularizacao` (ASV ou PRAD). **`area_financiavel_ha`
+    continua com o valor calculado** - quem consome decide acatar a vedação ou avaliar
+    caso a caso (ex: ASV em curso, PRAD aprovado).
+  </Accordion>
+
+  <Accordion title="5. CAR sem uso consolidado mas com APP/RL/VN (fallback)">
+    `metodologia.modo = area_aproveitavel`. Base = `total − (APP ∪ RL ∪ VN)`.
+    Conservador: subtrai integralmente, sem considerar consolidação pré-2008 dentro de APP/RL.
+  </Accordion>
+
+  <Accordion title="6. CAR existe mas sem categorias do SICAR (degradado)">
+    `metodologia.modo = area_total`, `precisao = baixa`. Tende a superestimar o financiável -
+    sinalizado explicitamente. Recomendado complementar com delimitação pelo produtor.
+  </Accordion>
+
+  <Accordion title="7. CAR não encontrado">
+    `area_financiavel_ha = null`, `status_credito = indisponivel`,
+    `metodologia.modo = indisponivel`. Outros campos numéricos vêm `null`.
+  </Accordion>
+</AccordionGroup>
+
+## Limitações
+
+- **Não substitui análise jurídica** - o cálculo é referência operacional. A decisão final
+  de financiamento exige checagem caso a caso (Plano de Manejo, ADA, parecer técnico).
+- **Plano de Manejo de UC** - UCs são subtraídas integralmente; v1 não checa PM aprovado.
+- **Floresta Pública Não Destinada** - não está na v1 (camada não disponível localmente).
+- **Atualização das fontes** - frequência de update das tabelas (FUNAI, ICMBio, INCRA,
+  IBAMA, INPE) não é diária. O endpoint reflete o estado das tabelas locais.
+- **Pequenas divergências de borda** podem gerar exclusões fracionadas por imprecisão de
+  digitalização; aceitável.
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://data.dadosfazenda.com.br/car/GO-5218805-52A8321D5912439C9E814F21BAA4058A/area-financiavel" \
+  -H "Authorization: Bearer SEU_TOKEN_API"
+```
+
+```bash cURL com geometria
+curl -X GET "https://data.dadosfazenda.com.br/car/GO-5218805-52A8321D5912439C9E814F21BAA4058A/area-financiavel?include_geometry=true" \
+  -H "Authorization: Bearer SEU_TOKEN_API"
+```
+
+```python Python
+import httpx
+
+response = httpx.get(
+    "https://data.dadosfazenda.com.br/car/GO-5218805-52A8321D5912439C9E814F21BAA4058A/area-financiavel",
+    headers={"Authorization": "Bearer SEU_TOKEN"},
+)
+data = response.json()["data"]
+
+print(f"Status:           {data['status_credito']}")
+print(f"Área total:       {data['area_total_ha']} ha")
+print(f"Área financiável: {data['area_financiavel_ha']} ha")
+
+if data.get("bloqueio"):
+    b = data["bloqueio"]
+    print(f"\n🚫 BLOQUEADO: {b['motivo']}")
+    print(f"   {b['descricao']}")
+    print(f"   Regularização:")
+    for caminho in b["regularizacao"]:
+        print(f"     - {caminho}")
+elif data["resumo_restricoes"]["total"] > 0:
+    print(f"\n⚠️ Restrições: {', '.join(data['resumo_restricoes']['tipos'])}")
+    for tipo, info in data["detalhes"]["exclusoes"].items():
+        if info["ha"] > 0:
+            print(f"   {tipo}: {info['ha']} ha")
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 - Livre (sem restrições)
+{
+  "success": true,
+  "data": {
+    "codigo_car": "AC-1200013-001F0594BF9D428F8E9D280171D6C6C8",
+    "area_total_ha": 56.21,
+    "area_financiavel_ha": 47.1561,
+    "status_credito": "livre",
+    "resumo_restricoes": { "total": 0, "tipos": [] },
+    "bloqueio": null,
+    "geometry_financiavel": null,
+    "detalhes": {
+      "base_ha": 47.1561,
+      "exclusoes_ha": 0,
+      "modulos_fiscais": 0.71,
+      "exclusoes": {
+        "unidade_conservacao": { "ha": 0, "items": [] },
+        "terra_indigena": { "ha": 0, "items": [] },
+        "quilombola": { "ha": 0, "items": [] },
+        "embargo_ibama": { "ha": 0, "items": [] },
+        "prodes_pos_2019": {
+          "ha": 0,
+          "items": [],
+          "aplicada": false,
+          "criterio": "mod_fiscal > 4 (CMN 5.268/2025, vigente desde 04/2026)"
+        }
+      }
+    },
+    "metodologia": {
+      "modo": "uso_consolidado",
+      "base": "Uso Consolidado do SICAR",
+      "descricao": "Cálculo a partir do polígono de uso consolidado registrado no SICAR ...",
+      "premissas": [
+        "Quilombola entra apenas com fase IN (TITULADO, TITULO PARCIAL).",
+        "Embargo entra apenas se vigente (sit_desembargo IS NULL).",
+        "UC subtraída integralmente, sem checar Plano de Manejo aprovado.",
+        "PRODES pós-2019 entra na fórmula apenas se mod_fiscal > 4 (CMN 5.268/2025).",
+        "ST_Union das restrições evita dupla contagem entre camadas."
+      ],
+      "precisao": "alta"
+    },
+    "version": "v1"
+  }
+}
+```
+
+```json 200 - Com restrições parciais
+{
+  "success": true,
+  "data": {
+    "codigo_car": "PR-1234567-...",
+    "area_total_ha": 280.50,
+    "area_financiavel_ha": 145.32,
+    "status_credito": "com_restricoes",
+    "resumo_restricoes": {
+      "total": 3,
+      "tipos": ["unidade_conservacao", "terra_indigena", "embargo_ibama"]
+    },
+    "bloqueio": null,
+    "geometry_financiavel": null,
+    "detalhes": {
+      "base_ha": 180.50,
+      "exclusoes_ha": 35.18,
+      "modulos_fiscais": 6.50,
+      "exclusoes": {
+        "unidade_conservacao": {
+          "ha": 12.30,
+          "items": [
+            {
+              "cnuc": "0000.27.0001",
+              "nome": "FLONA Tapajós",
+              "esfera": "Federal",
+              "categoria": "FLONA",
+              "ha": 12.30
+            }
+          ]
+        },
+        "terra_indigena": {
+          "ha": 8.50,
+          "items": [
+            {
+              "terrai_codigo": 26201,
+              "nome": "Mamoadate",
+              "fase": "Regularizada",
+              "modalidade": "Tradicionalmente ocupada",
+              "ha": 8.50
+            }
+          ]
+        },
+        "quilombola": { "ha": 0, "items": [] },
+        "embargo_ibama": {
+          "ha": 14.38,
+          "items": [
+            {
+              "num_tad": "...",
+              "tipo_area": "...",
+              "dat_embargo": "2021-03-15",
+              "ha": 14.38
+            }
+          ]
+        },
+        "prodes_pos_2019": { "ha": 0, "items": [], "aplicada": true, "criterio": "..." }
+      }
+    },
+    "metodologia": { "modo": "uso_consolidado", "precisao": "alta", "...": "..." },
+    "version": "v1"
+  }
+}
+```
+
+```json 200 - Com vedação regulatória (PRODES pós-2019)
+{
+  "success": true,
+  "data": {
+    "codigo_car": "GO-5218805-52A8321D5912439C9E814F21BAA4058A",
+    "area_total_ha": 1043.6057,
+    "area_financiavel_ha": 893.4394,
+    "status_credito": "bloqueado",
+    "resumo_restricoes": {
+      "total": 1,
+      "tipos": ["prodes_pos_2019"]
+    },
+    "bloqueio": {
+      "motivo": "prodes_pos_2019",
+      "descricao": "Detectada supressão de vegetação nativa após 31/07/2019 (11.97 ha) dentro do imóvel. Conforme MCR 2-2-9, o empreendimento fica impedido de receber crédito rural enquanto não regularizado.",
+      "fundamento": "MCR 2-2-9 (Resolução CMN 5.268/2025, vigente desde 04/2026)",
+      "regularizacao": [
+        "Apresentar Autorização de Supressão de Vegetação (ASV) emitida pelo órgão ambiental competente.",
+        "Apresentar comprovação de execução de Projeto de Recuperação de Área Degradada (PRAD) aprovado."
+      ]
+    },
+    "geometry_financiavel": null,
+    "detalhes": {
+      "base_ha": 905.4072,
+      "exclusoes_ha": 11.9678,
+      "modulos_fiscais": 34.7613,
+      "exclusoes": {
+        "unidade_conservacao": { "ha": 0, "items": [] },
+        "terra_indigena": { "ha": 0, "items": [] },
+        "quilombola": { "ha": 0, "items": [] },
+        "embargo_ibama": { "ha": 0, "items": [] },
+        "prodes_pos_2019": {
+          "ha": 11.9678,
+          "items": [
+            {
+              "image_date": "2020-08-08",
+              "class_name": "DESMATAMENTO",
+              "biome": "Cerrado",
+              "state": "GO",
+              "ha": 11.97
+            }
+          ],
+          "aplicada": true,
+          "criterio": "mod_fiscal > 4 (CMN 5.268/2025, vigente desde 04/2026)"
+        }
+      }
+    },
+    "metodologia": { "modo": "uso_consolidado", "precisao": "alta", "...": "..." },
+    "version": "v1"
+  }
+}
+```
+
+```json 200 - Fallback area_aproveitavel
+{
+  "success": true,
+  "data": {
+    "codigo_car": "MG-3120904-A733B814F0064F99BA07AA336D752BFB",
+    "area_total_ha": 282.15,
+    "area_financiavel_ha": 272.92,
+    "status_credito": "livre",
+    "resumo_restricoes": { "total": 0, "tipos": [] },
+    "bloqueio": null,
+    "geometry_financiavel": null,
+    "detalhes": {
+      "base_ha": 272.92,
+      "exclusoes_ha": 0,
+      "modulos_fiscais": 9.40,
+      "exclusoes": { "...": "..." }
+    },
+    "metodologia": {
+      "modo": "area_aproveitavel",
+      "base": "Área aproveitável (Estatuto da Terra / Código Florestal)",
+      "descricao": "O CAR não delimitou o polígono de uso consolidado, então usamos o conceito legal de **área aproveitável** ...",
+      "premissas": [
+        "Conservador: subtrai APP/RL/VN integralmente - não considera consolidação pré-2008 dentro de APP/RL.",
+        "..."
+      ],
+      "precisao": "media",
+      "fundamento_legal": "Lei 4.504/64 (Estatuto da Terra) + Lei 12.651/2012 (Código Florestal)."
+    },
+    "version": "v1"
+  }
+}
+```
+
+```json 200 - CAR não encontrado
+{
+  "success": true,
+  "data": {
+    "codigo_car": "XX-9999999-DEADBEEF...",
+    "area_total_ha": null,
+    "area_financiavel_ha": null,
+    "status_credito": "indisponivel",
+    "resumo_restricoes": { "total": 0, "tipos": [] },
+    "bloqueio": null,
+    "geometry_financiavel": null,
+    "detalhes": null,
+    "metodologia": {
+      "modo": "indisponivel",
+      "base": null,
+      "descricao": "CAR não encontrado no banco de dados ou sem polígono cadastrado. Não é possível calcular a área financiável.",
+      "premissas": [],
+      "precisao": null
+    },
+    "version": "v1"
+  }
+}
+```
+</ResponseExample>

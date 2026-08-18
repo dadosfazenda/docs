@@ -15,11 +15,11 @@ Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobr
 </ParamField>
 
 <ParamField query="geometria" type="boolean" default="true">
-  Incluir o polígono de cada ocorrência. Com `false`, a resposta cai de megabytes para kilobytes em camadas densas.
+  Incluir o polígono de cada ocorrência. Com `false`, a resposta fica muito menor em camadas densas.
 </ParamField>
 
 <ParamField query="limite" type="integer" default="200">
-  Máximo de ocorrências (1 a 1000). Quando atinge o limite, a resposta traz `truncado: true`.
+  Máximo de ocorrências (1 a 1000). Ao atingir o limite, a resposta traz `truncado: true`.
 </ParamField>
 
 ## Resposta
@@ -28,29 +28,32 @@ Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobr
 <ResponseField name="camada" type="string">Nome da camada</ResponseField>
 <ResponseField name="descricao" type="string">Descrição da camada</ResponseField>
 <ResponseField name="total" type="integer">Quantidade de ocorrências que intersectam o imóvel</ResponseField>
-<ResponseField name="area_sobreposta_ha" type="number">Soma das áreas de interseção com o imóvel, em hectares</ResponseField>
-<ResponseField name="itens" type="array">Ocorrências encontradas</ResponseField>
-<ResponseField name="itens[].area_sobreposta_ha" type="number">Área da INTERSEÇÃO desta ocorrência com o imóvel (não a área total da ocorrência)</ResponseField>
-<ResponseField name="itens[].geometry" type="object">Geometria em GeoJSON (EPSG:4326). Omitida com `geometria=false`</ResponseField>
-<ResponseField name="itens[].atributos" type="object">Atributos da ocorrência, conforme a base de origem (campos abaixo)</ResponseField>
-<ResponseField name="truncado" type="boolean">Presente quando o retorno bateu no `limite`</ResponseField>
-
-### Atributos da ocorrência
-
-Os nomes seguem a base pública de origem.
-
-<ResponseField name="itens[].atributos.cd_quilomb" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.cd_sr" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.nr_process" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.nm_comunid" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.nm_municip" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.cd_uf" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.dt_publica" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.nr_familia" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.nr_area_ha" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.fase" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.esfera" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.responsave" type="string"></ResponseField>
+<ResponseField name="area_sobreposta_ha" type="number">Soma das áreas de interseção da camada com o imóvel</ResponseField>
+<ResponseField name="itens" type="array">
+  Ocorrências encontradas
+  <Expandable title="item">
+    <ResponseField name="area_sobreposta_ha" type="number">Área da interseção desta ocorrência com o imóvel, em hectares (não a área total da ocorrência)</ResponseField>
+    <ResponseField name="geometry" type="object">Geometria em GeoJSON (EPSG:4326). Omitida com `geometria=false`</ResponseField>
+    <ResponseField name="atributos" type="object">
+      Atributos da ocorrência, com os nomes da base pública de origem
+      <Expandable title="atributos">
+      <ResponseField name="cd_quilomb" type="string"></ResponseField>
+      <ResponseField name="cd_sr" type="string"></ResponseField>
+      <ResponseField name="nr_process" type="string"></ResponseField>
+      <ResponseField name="nm_comunid" type="string"></ResponseField>
+      <ResponseField name="nm_municip" type="string"></ResponseField>
+      <ResponseField name="cd_uf" type="string"></ResponseField>
+      <ResponseField name="dt_publica" type="string"></ResponseField>
+      <ResponseField name="nr_familia" type="integer"></ResponseField>
+      <ResponseField name="nr_area_ha" type="number"></ResponseField>
+      <ResponseField name="fase" type="string"></ResponseField>
+      <ResponseField name="esfera" type="string"></ResponseField>
+      <ResponseField name="responsave" type="string"></ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="truncado" type="boolean">Presente quando o retorno atingiu o `limite`</ResponseField>
 
 <RequestExample>
 ```bash cURL
@@ -58,3 +61,51 @@ curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C477
   -H "Authorization: Bearer $API_KEY"
 ```
 </RequestExample>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "codigo_car": "GO-5211909-40A31261C76845DCBE6C47797F9B7B57",
+    "camada": "quilombolas",
+    "descricao": "Territórios quilombolas (INCRA) que intersectam o imóvel",
+    "total": 1,
+    "area_sobreposta_ha": 55.5275,
+    "itens": [
+      {
+        "area_sobreposta_ha": 55.5275,
+        "geometry": {"type": "MultiPolygon", "coordinates": [[[[-51.90, -17.40], [-51.89, -17.40], [-51.89, -17.41], [-51.90, -17.40]]]]},
+        "atributos": {
+          "cd_quilomb": "texto",
+          "cd_sr": "texto",
+          "nr_process": "texto",
+          "nm_comunid": "texto",
+          "nm_municip": "texto",
+          "cd_uf": "texto",
+          "dt_publica": "2024-05-10",
+          "nr_familia": 123,
+          "nr_area_ha": 12.34,
+          "fase": "texto",
+          "esfera": "texto",
+          "responsave": "texto"
+        }
+      }
+    ]
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 404 - CAR não encontrado
+{ "success": false, "message": "CAR não encontrado", "data": null }
+```
+
+```json 422 - código de CAR inválido
+{ "success": false, "message": "Código de CAR inválido", "data": null }
+```
+</ResponseExample>

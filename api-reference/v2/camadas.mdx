@@ -11,10 +11,14 @@ Descoberta programática: devolve as camadas que podem ser consultadas em
 
 ## Resposta
 
-<ResponseField name="camadas" type="array">Camadas disponíveis</ResponseField>
-<ResponseField name="camadas[].camada" type="string">Identificador para usar na URL</ResponseField>
-<ResponseField name="camadas[].descricao" type="string">Descrição da camada</ResponseField>
-<ResponseField name="camadas[].poligono" type="boolean">Se true, a camada é de polígono e o detalhe traz área de interseção</ResponseField>
+<ResponseField name="camadas" type="array">
+  Camadas disponíveis
+  <Expandable title="item">
+    <ResponseField name="camada" type="string">Identificador para usar na URL</ResponseField>
+    <ResponseField name="descricao" type="string">Descrição da camada</ResponseField>
+    <ResponseField name="poligono" type="boolean">Se true, a camada é de polígono e o detalhe traz área de interseção</ResponseField>
+  </Expandable>
+</ResponseField>
 
 <RequestExample>
 ```bash cURL
@@ -22,3 +26,23 @@ curl "https://data.dadosfazenda.com.br/v2/camadas" \
   -H "Authorization: Bearer $API_KEY"
 ```
 </RequestExample>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "camadas": [
+      { "camada": "mineracao", "descricao": "Processos minerários ativos (ANM/SIGMINE)", "poligono": true },
+      { "camada": "embargos-ibama", "descricao": "Áreas embargadas (IBAMA)", "poligono": true },
+      { "camada": "aerodromos", "descricao": "Aeródromos (ANAC)", "poligono": false }
+    ]
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+</ResponseExample>

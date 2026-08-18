@@ -1,0 +1,109 @@
+---
+title: "Temperatura por CAR"
+api: "GET /v2/weather/temperature/car/{codigo_car}"
+description: "Historico de temperatura diaria (maxima e minima) para um CAR"
+---
+
+## Descricao
+
+Retorna o historico de temperatura diaria (maxima e minima em graus Celsius) para o centroide de uma propriedade rural
+a partir do codigo CAR.
+
+**Periodo maximo permitido: 12 meses (366 dias).**
+
+<ParamField path="codigo_car" type="string" required>
+  Codigo do CAR. Exemplo: `GO-5205513-DAF91DDC4B054D37919111EA3E7322D3`
+</ParamField>
+
+<ParamField query="start_date" type="string" required>
+  Data inicio no formato `YYYY-MM-DD`.
+</ParamField>
+
+<ParamField query="end_date" type="string" required>
+  Data fim no formato `YYYY-MM-DD`. O intervalo entre `start_date` e `end_date` nao pode exceder 12 meses.
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="dates" type="array">
+      Array de datas no formato `YYYY-MM-DD`.
+    </ResponseField>
+
+    <ResponseField name="temperature_max" type="array">
+      Array de temperaturas maximas diarias em graus Celsius.
+    </ResponseField>
+
+    <ResponseField name="temperature_min" type="array">
+      Array de temperaturas minimas diarias em graus Celsius.
+    </ResponseField>
+
+    <ResponseField name="car" type="object">
+      Dados do CAR consultado.
+
+      <Expandable title="car">
+        <ResponseField name="codigo" type="string">Codigo do CAR.</ResponseField>
+        <ResponseField name="municipio" type="string">Municipio.</ResponseField>
+        <ResponseField name="estado" type="string">UF.</ResponseField>
+        <ResponseField name="area_ha" type="number">Area em hectares.</ResponseField>
+        <ResponseField name="centroid" type="object">
+          <Expandable title="centroid">
+            <ResponseField name="latitude" type="number">Latitude do centroide.</ResponseField>
+            <ResponseField name="longitude" type="number">Longitude do centroide.</ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://data.dadosfazenda.com.br/weather/temperature/car/GO-5205513-DAF91DDC4B054D37919111EA3E7322D3?start_date=2025-01-01&end_date=2025-03-01" \
+  -H "Authorization: Bearer SEU_TOKEN_API"
+```
+
+```python Python
+import httpx
+
+response = httpx.get(
+    "https://data.dadosfazenda.com.br/weather/temperature/car/GO-5205513-DAF91DDC4B054D37919111EA3E7322D3",
+    params={"start_date": "2025-01-01", "end_date": "2025-03-01"},
+    headers={"Authorization": "Bearer SEU_TOKEN"}
+)
+data = response.json()["data"]
+for i, dt in enumerate(data["dates"]):
+    print(f"{dt}: {data['temperature_min'][i]}C - {data['temperature_max'][i]}C")
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 - Sucesso
+{
+  "success": true,
+  "data": {
+    "dates": ["2025-01-01", "2025-01-02", "2025-01-03"],
+    "temperature_max": [32.5, 33.1, 31.8],
+    "temperature_min": [21.3, 22.0, 20.5],
+    "car": {
+      "codigo": "GO-5205513-DAF91DDC4B054D37919111EA3E7322D3",
+      "municipio": "Jussara",
+      "estado": "GO",
+      "area_ha": 1234.56,
+      "centroid": {
+        "latitude": -15.87,
+        "longitude": -50.86
+      }
+    }
+  }
+}
+```
+
+```json 400 - Periodo excedido
+{
+  "success": false,
+  "message": "O periodo maximo permitido e de 12 meses (366 dias). Periodo solicitado: 2024-01-01 a 2025-06-01."
+}
+```
+</ResponseExample>

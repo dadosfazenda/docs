@@ -15,7 +15,7 @@ A metodologia parte de uma base geométrica do CAR (idealmente o uso consolidado
 e subtrai sobreposições com camadas restritivas absolutas (Unidades de Conservação, Terras
 Indígenas, comunidades quilombolas tituladas e embargos IBAMA vigentes). Quando há
 detecção de PRODES pós-2019 em imóveis acima de 4 módulos fiscais (Resolução CMN 5.268/2025),
-o response sinaliza a **vedação regulatória** no campo `bloqueio` — mas o valor calculado
+o response sinaliza a **vedação regulatória** no campo `bloqueio` - mas o valor calculado
 de `area_financiavel_ha` é preservado, já que cada instituição/analista pode tratar
 casos de regularização (ASV/PRAD) de forma diferente.
 
@@ -23,7 +23,7 @@ casos de regularização (ASV/PRAD) de forma diferente.
 
 | Camada | Critério no MCR | Exceção |
 |---|---|---|
-| Embargo ambiental (IBAMA) | Sem crédito | — |
+| Embargo ambiental (IBAMA) | Sem crédito | - |
 | Unidade de Conservação | Sem crédito (registrada no CNUC) | Plano de Manejo aprovado |
 | Terra Indígena | Homologada/regularizada/Reserva | Proponente da própria comunidade |
 | Quilombola titulada | Sem crédito | Proponente da comunidade |
@@ -44,7 +44,7 @@ A `base` é escolhida em cascata, da mais precisa para a mais grosseira:
 | `uso_consolidado` | `car_layers.uso_consolidado` (SICAR) | CAR tem polígono de uso consolidado | **alta** |
 | `area_aproveitavel` | `total − ( APP ∪ RL ∪ Vegetação Nativa )` | CAR sem uso consolidado mas com APP/RL/VN | **média** |
 | `area_total` | Polígono total do CAR | CAR sem nenhuma categoria delimitada | **baixa** |
-| `indisponivel` | — | CAR não encontrado | — |
+| `indisponivel` | - | CAR não encontrado | - |
 
 <Note>
   O `ST_Union` das camadas restritivas evita dupla contagem quando há sobreposição entre
@@ -79,17 +79,17 @@ A `base` é escolhida em cascata, da mais precisa para a mais grosseira:
 
     <ResponseField name="area_financiavel_ha" type="number">
       O número calculado em hectares: `base_ha − exclusoes_ha`. **Sempre devolvido** quando o
-      CAR existe (mesmo quando há `bloqueio` — quem consome decide se acata a vedação ou
+      CAR existe (mesmo quando há `bloqueio` - quem consome decide se acata a vedação ou
       avalia caso a caso). `null` apenas quando o CAR não foi encontrado.
     </ResponseField>
 
     <ResponseField name="status_credito" type="string">
       Indicador rápido de status. Valores possíveis:
 
-      - `livre` — sem restrições; `area_financiavel_ha` = `base_ha`
-      - `com_restricoes` — restrições parciais; alguma área foi excluída mas o crédito é viável
-      - `bloqueado` — vedação regulatória detectada (PRODES pós-2019 em imóvel > 4 mod. fiscais). Análise caso a caso
-      - `indisponivel` — não foi possível calcular (CAR não encontrado)
+      - `livre` - sem restrições; `area_financiavel_ha` = `base_ha`
+      - `com_restricoes` - restrições parciais; alguma área foi excluída mas o crédito é viável
+      - `bloqueado` - vedação regulatória detectada (PRODES pós-2019 em imóvel > 4 mod. fiscais). Análise caso a caso
+      - `indisponivel` - não foi possível calcular (CAR não encontrado)
     </ResponseField>
 
     <ResponseField name="resumo_restricoes" type="object">
@@ -107,7 +107,7 @@ A `base` é escolhida em cascata, da mais precisa para a mais grosseira:
     <ResponseField name="bloqueio" type="object">
       `null` quando não há vedação regulatória. Quando há (PRODES pós-2019 detectado em
       imóvel > 4 mod. fiscais), traz contexto + caminhos de regularização exigidos pelo
-      MCR 2-2-9. **Não zera `area_financiavel_ha`** — é informativo.
+      MCR 2-2-9. **Não zera `area_financiavel_ha`** - é informativo.
 
       <Expandable title="bloqueio">
         <ResponseField name="motivo" type="string">Identificador do motivo (ex: `prodes_pos_2019`).</ResponseField>
@@ -140,19 +140,19 @@ A `base` é escolhida em cascata, da mais precisa para a mais grosseira:
 
           <Expandable title="exclusoes">
             <ResponseField name="unidade_conservacao" type="object">
-              `{ ha, items }` — UCs federal/estadual/municipal que tocam o CAR.
+              `{ ha, items }` - UCs federal/estadual/municipal que tocam o CAR.
             </ResponseField>
             <ResponseField name="terra_indigena" type="object">
-              `{ ha, items }` — TIs (qualquer fase: homologada, declarada, em estudo).
+              `{ ha, items }` - TIs (qualquer fase: homologada, declarada, em estudo).
             </ResponseField>
             <ResponseField name="quilombola" type="object">
-              `{ ha, items }` — Apenas `fase IN ('TITULADO', 'TITULO PARCIAL')`.
+              `{ ha, items }` - Apenas `fase IN ('TITULADO', 'TITULO PARCIAL')`.
             </ResponseField>
             <ResponseField name="embargo_ibama" type="object">
-              `{ ha, items }` — Apenas embargos vigentes (`sit_desembargo IS NULL`).
+              `{ ha, items }` - Apenas embargos vigentes (`sit_desembargo IS NULL`).
             </ResponseField>
             <ResponseField name="prodes_pos_2019" type="object">
-              `{ ha, items, aplicada, criterio }` — Sempre presente. Campo `aplicada` indica
+              `{ ha, items, aplicada, criterio }` - Sempre presente. Campo `aplicada` indica
               se entrou na fórmula (true quando `mod_fiscal > 4`). `criterio` cita a CMN.
             </ResponseField>
           </Expandable>
@@ -202,7 +202,7 @@ A `base` é escolhida em cascata, da mais precisa para a mais grosseira:
   <Accordion title="4. PRODES detectado em imóvel > 4 mod. fiscais (vedação regulatória)">
     `status_credito = bloqueado`, `bloqueio` populado com `motivo`, `descricao`,
     `fundamento` e caminhos de `regularizacao` (ASV ou PRAD). **`area_financiavel_ha`
-    continua com o valor calculado** — quem consome decide acatar a vedação ou avaliar
+    continua com o valor calculado** - quem consome decide acatar a vedação ou avaliar
     caso a caso (ex: ASV em curso, PRAD aprovado).
   </Accordion>
 
@@ -212,7 +212,7 @@ A `base` é escolhida em cascata, da mais precisa para a mais grosseira:
   </Accordion>
 
   <Accordion title="6. CAR existe mas sem categorias do SICAR (degradado)">
-    `metodologia.modo = area_total`, `precisao = baixa`. Tende a superestimar o financiável —
+    `metodologia.modo = area_total`, `precisao = baixa`. Tende a superestimar o financiável -
     sinalizado explicitamente. Recomendado complementar com delimitação pelo produtor.
   </Accordion>
 
@@ -224,11 +224,11 @@ A `base` é escolhida em cascata, da mais precisa para a mais grosseira:
 
 ## Limitações
 
-- **Não substitui análise jurídica** — o cálculo é referência operacional. A decisão final
+- **Não substitui análise jurídica** - o cálculo é referência operacional. A decisão final
   de financiamento exige checagem caso a caso (Plano de Manejo, ADA, parecer técnico).
-- **Plano de Manejo de UC** — UCs são subtraídas integralmente; v1 não checa PM aprovado.
-- **Floresta Pública Não Destinada** — não está na v1 (camada não disponível localmente).
-- **Atualização das fontes** — frequência de update das tabelas (FUNAI, ICMBio, INCRA,
+- **Plano de Manejo de UC** - UCs são subtraídas integralmente; v1 não checa PM aprovado.
+- **Floresta Pública Não Destinada** - não está na v1 (camada não disponível localmente).
+- **Atualização das fontes** - frequência de update das tabelas (FUNAI, ICMBio, INCRA,
   IBAMA, INPE) não é diária. O endpoint reflete o estado das tabelas locais.
 - **Pequenas divergências de borda** podem gerar exclusões fracionadas por imprecisão de
   digitalização; aceitável.
@@ -458,7 +458,7 @@ elif data["resumo_restricoes"]["total"] > 0:
       "base": "Área aproveitável (Estatuto da Terra / Código Florestal)",
       "descricao": "O CAR não delimitou o polígono de uso consolidado, então usamos o conceito legal de **área aproveitável** ...",
       "premissas": [
-        "Conservador: subtrai APP/RL/VN integralmente — não considera consolidação pré-2008 dentro de APP/RL.",
+        "Conservador: subtrai APP/RL/VN integralmente - não considera consolidação pré-2008 dentro de APP/RL.",
         "..."
       ],
       "precisao": "media",

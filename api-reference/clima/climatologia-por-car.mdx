@@ -10,30 +10,80 @@ Temperatura e chuva mês a mês do município: médias, faixas e balanço chuva 
 
 <ParamField path="codigo_car" type="string" required>Código do CAR</ParamField>
 
-
-
 ## Resposta
 
-Campos observados na resposta real:
-
 <ResponseField name="geocodigo" type="string"></ResponseField>
-<ResponseField name="meses[]" type="array"></ResponseField>
-<ResponseField name="meses[].balanco" type="number"></ResponseField>
-<ResponseField name="meses[].chuva_faixa" type="number"></ResponseField>
-<ResponseField name="meses[].chuva_media" type="number"></ResponseField>
-<ResponseField name="meses[].chuva_p10" type="number"></ResponseField>
-<ResponseField name="meses[].chuva_p90" type="number"></ResponseField>
-<ResponseField name="meses[].et0" type="number"></ResponseField>
-<ResponseField name="meses[].mes" type="integer"></ResponseField>
-<ResponseField name="meses[].t_faixa" type="number"></ResponseField>
-<ResponseField name="meses[].t_max" type="number"></ResponseField>
-<ResponseField name="meses[].t_med" type="number"></ResponseField>
-<ResponseField name="meses[].t_min" type="number"></ResponseField>
-<ResponseField name="periodo.anos" type="integer"></ResponseField>
-<ResponseField name="periodo.ate" type="integer"></ResponseField>
-<ResponseField name="periodo.de" type="integer"></ResponseField>
-<ResponseField name="resumo.chuva_anual" type="integer"></ResponseField>
-<ResponseField name="resumo.et0_anual" type="integer"></ResponseField>
-<ResponseField name="resumo.meses_deficit" type="integer"></ResponseField>
-<ResponseField name="resumo.t_max_ano" type="number"></ResponseField>
-<ResponseField name="resumo.t_min_ano" type="number"></ResponseField>
+<ResponseField name="meses" type="array">
+  <Expandable title="item">
+    <ResponseField name="balanco" type="number"></ResponseField>
+    <ResponseField name="chuva_faixa" type="number"></ResponseField>
+    <ResponseField name="chuva_media" type="number"></ResponseField>
+    <ResponseField name="chuva_p10" type="number"></ResponseField>
+    <ResponseField name="chuva_p90" type="number"></ResponseField>
+    <ResponseField name="et0" type="number"></ResponseField>
+    <ResponseField name="mes" type="integer"></ResponseField>
+    <ResponseField name="t_faixa" type="number"></ResponseField>
+    <ResponseField name="t_max" type="number"></ResponseField>
+    <ResponseField name="t_med" type="number"></ResponseField>
+    <ResponseField name="t_min" type="number"></ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="periodo" type="object">
+  <ResponseField name="anos" type="integer"></ResponseField>
+  <ResponseField name="ate" type="integer"></ResponseField>
+  <ResponseField name="de" type="integer"></ResponseField>
+</ResponseField>
+<ResponseField name="resumo" type="object">
+  <ResponseField name="chuva_anual" type="integer"></ResponseField>
+  <ResponseField name="et0_anual" type="integer"></ResponseField>
+  <ResponseField name="meses_deficit" type="integer"></ResponseField>
+  <ResponseField name="t_max_ano" type="number"></ResponseField>
+  <ResponseField name="t_min_ano" type="number"></ResponseField>
+</ResponseField>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "geocodigo": "texto",
+    "meses": [
+      {
+        "balanco": 12.34,
+        "chuva_faixa": 12.34,
+        "chuva_media": 12.34,
+        "chuva_p10": 12.34,
+        "chuva_p90": 12.34,
+        "et0": 12.34,
+        "mes": 123,
+        "t_faixa": 12.34,
+        "t_max": 12.34,
+        "t_med": 12.34,
+        "t_min": 12.34
+      }
+    ],
+    "periodo": {
+      "anos": 123,
+      "ate": 123,
+      "de": 123
+    },
+    "resumo": {
+      "chuva_anual": 123,
+      "et0_anual": 123,
+      "meses_deficit": 123,
+      "t_max_ano": 12.34,
+      "t_min_ano": 12.34
+    }
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 404 - CAR não encontrado
+{ "success": false, "message": "CAR não encontrado", "data": null }
+```
+</ResponseExample>

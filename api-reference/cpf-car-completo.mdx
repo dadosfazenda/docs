@@ -15,8 +15,17 @@ Propriedades do titular enriquecidas com uso consolidado, sobreposições com ou
 
 Mesmos campos da [busca simples](/api-reference/busca-por-cpf), e para cada CAR:
 
-<ResponseField name="cars[].area_uso_consolidado_ha" type="number">Área de uso consolidado (SICAR), com ST_Union aplicado — polígonos sobrepostos não contam em dobro</ResponseField>
-<ResponseField name="cars[].sobreposicoes" type="array">Outros CARs que se sobrepõem ao alvo</ResponseField>
-<ResponseField name="cars[].sobreposicoes[].codigo_car" type="string"></ResponseField>
-<ResponseField name="cars[].sobreposicoes[].area_sobreposta_ha" type="number"></ResponseField>
-<ResponseField name="cars[].geometry" type="object">Polígono GeoJSON (apenas com include_geometry=true)</ResponseField>
+<ResponseField name="cars" type="array">
+  Propriedades do titular, cada uma com os campos da busca simples e mais:
+  <Expandable title="item">
+    <ResponseField name="area_uso_consolidado_ha" type="number">Área de uso consolidado (SICAR), com ST_Union aplicado; polígonos sobrepostos não contam em dobro</ResponseField>
+    <ResponseField name="sobreposicoes" type="array">
+      Outros CARs que se sobrepõem ao alvo
+      <Expandable title="item">
+        <ResponseField name="codigo_car" type="string"></ResponseField>
+        <ResponseField name="area_sobreposta_ha" type="number"></ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="geometry" type="object">Polígono GeoJSON (apenas com include_geometry=true)</ResponseField>
+  </Expandable>
+</ResponseField>

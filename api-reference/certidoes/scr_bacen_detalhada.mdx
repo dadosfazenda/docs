@@ -1,5 +1,5 @@
 ---
-title: "SCR Detalhada — Resumo BACEN"
+title: "SCR Detalhada - Resumo BACEN"
 api: "POST /v1/certidoes/scr_bacen_detalhada"
 description: "Posição detalhada do SCR do Banco Central por CPF ou CNPJ: responsabilidade total, score, faixa de risco, carteira (limite, a vencer, vencido, prejuízo) e operações por modalidade, com comprovante oficial em PDF."
 ---
@@ -36,7 +36,7 @@ bem-sucedida consome **1 unidade** da cota mensal. Em erro de consulta a cota
 
 <ResponseField name="arquivos" type="array">
   Lista de arquivos oficiais. Cada item traz `filename`, `content_type`,
-  `kind`, `url` (assinada) e `expires_in` (segundos até expirar — 1800 = 30 min).
+  `kind`, `url` (assinada) e `expires_in` (segundos até expirar - 1800 = 30 min).
 </ResponseField>
 
 <RequestExample>
@@ -74,11 +74,11 @@ curl -X POST "https://data.dadosfazenda.com.br/v1/certidoes/scr_bacen_detalhada"
 }
 ```
 
-```json 401 — API key inválida
+```json 401 - API key inválida
 { "detail": "API key invalida." }
 ```
 
-```json 429 — cota mensal atingida
+```json 429 - cota mensal atingida
 { "detail": "Limite mensal atingido. Reseta no proximo mes." }
 ```
 

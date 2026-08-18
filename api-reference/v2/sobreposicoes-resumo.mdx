@@ -20,17 +20,38 @@ apenas das camadas com ocorrência.
 <ResponseField name="sobreposicoes" type="object">Mapa camada → quantidade de ocorrências</ResponseField>
 <ResponseField name="camadas_com_ocorrencia" type="array">Atalho: só as camadas com contagem maior que zero</ResponseField>
 
-```json Exemplo
-{
-  "codigo_car": "GO-5211909-40A31261C76845DCBE6C47797F9B7B57",
-  "sobreposicoes": { "mineracao": 1, "pivos": 1, "prodes": 10, "terras-indigenas": 0 },
-  "camadas_com_ocorrencia": ["mineracao", "pivos", "prodes"]
-}
-```
-
 <RequestExample>
 ```bash cURL
 curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C47797F9B7B57/sobreposicoes" \
   -H "Authorization: Bearer $API_KEY"
 ```
 </RequestExample>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "codigo_car": "GO-5211909-40A31261C76845DCBE6C47797F9B7B57",
+    "sobreposicoes": {
+      "mineracao": 1, "outorgas-superficiais": 1, "outorgas-subterraneas": 0,
+      "terras-indigenas": 0, "quilombolas": 0, "assentamentos": 0,
+      "unidades-conservacao": 0, "sitios-arqueologicos": 0, "aerodromos": 0,
+      "florestas-publicas": 0, "pivos": 1, "embargos-ibama": 0,
+      "embargos-icmbio": 0, "autos-ibama": 0, "autos-icmbio": 0,
+      "prodes": 10, "armazens": 0
+    },
+    "camadas_com_ocorrencia": ["mineracao", "outorgas-superficiais", "pivos", "prodes"]
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 404 - CAR não encontrado
+{ "success": false, "message": "CAR não encontrado", "data": null }
+```
+</ResponseExample>

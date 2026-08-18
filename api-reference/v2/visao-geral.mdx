@@ -1,10 +1,10 @@
 ---
-title: "API v2 — Visão geral"
+title: "API v2 - Visão geral"
 description: "Consultas self-service por CAR: um endpoint por cruzamento, contrato estável"
 ---
 
 A API v2 é a superfície de consulta por CAR para integração: você informa o
-código do imóvel e recebe, camada a camada, o que intersecta a propriedade —
+código do imóvel e recebe, camada a camada, o que intersecta a propriedade -
 com atributos, área de interseção e polígonos em GeoJSON.
 
 ## Autenticação
@@ -18,16 +18,16 @@ curl "https://data.dadosfazenda.com.br/v2/camadas" \
 
 ## Fluxo típico
 
-1. `GET /v2/camadas` — descubra as camadas disponíveis.
-2. `GET /v2/car/{codigo_car}/sobreposicoes` — uma chamada responde quantas
+1. `GET /v2/camadas` - descubra as camadas disponíveis.
+2. `GET /v2/car/{codigo_car}/sobreposicoes` - uma chamada responde quantas
    ocorrências de CADA camada tocam o imóvel.
-3. `GET /v2/car/{codigo_car}/sobreposicoes/{camada}` — detalhe da camada que
+3. `GET /v2/car/{codigo_car}/sobreposicoes/{camada}` - detalhe da camada que
    interessar, com `?geometria=false` quando os polígonos não forem necessários.
 
 ## Convenções
 
 - Geometria sempre em GeoJSON, EPSG:4326.
-- `area_sobreposta_ha` é a área da **interseção** com o imóvel — um embargo de
+- `area_sobreposta_ha` é a área da **interseção** com o imóvel - um embargo de
   10.000 ha que encosta 2 ha na fazenda reporta 2.
 - Datas em ISO 8601.
 - Erros: 401 sem chave, 404 CAR ou camada inexistente, 422 código de CAR malformado.

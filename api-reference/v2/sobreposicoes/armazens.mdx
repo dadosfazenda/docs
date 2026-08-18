@@ -15,11 +15,11 @@ Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobr
 </ParamField>
 
 <ParamField query="geometria" type="boolean" default="true">
-  Incluir o polígono de cada ocorrência. Com `false`, a resposta cai de megabytes para kilobytes em camadas densas.
+  Incluir o polígono de cada ocorrência. Com `false`, a resposta fica muito menor em camadas densas.
 </ParamField>
 
 <ParamField query="limite" type="integer" default="200">
-  Máximo de ocorrências (1 a 1000). Quando atinge o limite, a resposta traz `truncado: true`.
+  Máximo de ocorrências (1 a 1000). Ao atingir o limite, a resposta traz `truncado: true`.
 </ParamField>
 
 ## Resposta
@@ -28,31 +28,34 @@ Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobr
 <ResponseField name="camada" type="string">Nome da camada</ResponseField>
 <ResponseField name="descricao" type="string">Descrição da camada</ResponseField>
 <ResponseField name="total" type="integer">Quantidade de ocorrências que intersectam o imóvel</ResponseField>
-<ResponseField name="itens" type="array">Ocorrências encontradas</ResponseField>
-<ResponseField name="itens[].geometry" type="object">Geometria em GeoJSON (EPSG:4326). Omitida com `geometria=false`</ResponseField>
-<ResponseField name="itens[].atributos" type="object">Atributos da ocorrência, conforme a base de origem (campos abaixo)</ResponseField>
-<ResponseField name="truncado" type="boolean">Presente quando o retorno bateu no `limite`</ResponseField>
-
-### Atributos da ocorrência
-
-Os nomes seguem a base pública de origem.
-
-<ResponseField name="itens[].atributos.identificacao_armazem" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.especie" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tipo" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tipo_entidade" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tipo_pessoa" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.municipio" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.cod_ibge" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.uf" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.capacidade_estatica_t" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.capacidade_expedicao_t" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.capacidade_recepcao_t" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.latitude" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.longitude" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.nome_armazenador" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.endereco" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.email" type="string"></ResponseField>
+<ResponseField name="itens" type="array">
+  Ocorrências encontradas
+  <Expandable title="item">
+    <ResponseField name="geometry" type="object">Geometria em GeoJSON (EPSG:4326). Omitida com `geometria=false`</ResponseField>
+    <ResponseField name="atributos" type="object">
+      Atributos da ocorrência, com os nomes da base pública de origem
+      <Expandable title="atributos">
+      <ResponseField name="identificacao_armazem" type="string"></ResponseField>
+      <ResponseField name="especie" type="string"></ResponseField>
+      <ResponseField name="tipo" type="string"></ResponseField>
+      <ResponseField name="tipo_entidade" type="string"></ResponseField>
+      <ResponseField name="tipo_pessoa" type="string"></ResponseField>
+      <ResponseField name="municipio" type="string"></ResponseField>
+      <ResponseField name="cod_ibge" type="string"></ResponseField>
+      <ResponseField name="uf" type="string"></ResponseField>
+      <ResponseField name="capacidade_estatica_t" type="number"></ResponseField>
+      <ResponseField name="capacidade_expedicao_t" type="number"></ResponseField>
+      <ResponseField name="capacidade_recepcao_t" type="number"></ResponseField>
+      <ResponseField name="latitude" type="number"></ResponseField>
+      <ResponseField name="longitude" type="number"></ResponseField>
+      <ResponseField name="nome_armazenador" type="string"></ResponseField>
+      <ResponseField name="endereco" type="string"></ResponseField>
+      <ResponseField name="email" type="string"></ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="truncado" type="boolean">Presente quando o retorno atingiu o `limite`</ResponseField>
 
 <RequestExample>
 ```bash cURL
@@ -60,3 +63,53 @@ curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C477
   -H "Authorization: Bearer $API_KEY"
 ```
 </RequestExample>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "codigo_car": "GO-5211909-40A31261C76845DCBE6C47797F9B7B57",
+    "camada": "armazens",
+    "descricao": "Armazéns cadastrados na CONAB dentro do imóvel",
+    "total": 1,
+    "itens": [
+      {
+        "geometry": {"type": "MultiPolygon", "coordinates": [[[[-51.90, -17.40], [-51.89, -17.40], [-51.89, -17.41], [-51.90, -17.40]]]]},
+        "atributos": {
+          "identificacao_armazem": "texto",
+          "especie": "texto",
+          "tipo": "texto",
+          "tipo_entidade": "texto",
+          "tipo_pessoa": "texto",
+          "municipio": "texto",
+          "cod_ibge": "texto",
+          "uf": "texto",
+          "capacidade_estatica_t": 12.34,
+          "capacidade_expedicao_t": 12.34,
+          "capacidade_recepcao_t": 12.34,
+          "latitude": 12.34,
+          "longitude": 12.34,
+          "nome_armazenador": "texto",
+          "endereco": "texto",
+          "email": "texto"
+        }
+      }
+    ]
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 404 - CAR não encontrado
+{ "success": false, "message": "CAR não encontrado", "data": null }
+```
+
+```json 422 - código de CAR inválido
+{ "success": false, "message": "Código de CAR inválido", "data": null }
+```
+</ResponseExample>

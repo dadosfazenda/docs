@@ -1,0 +1,74 @@
+---
+title: "Consulta Lista Suja"
+api: "GET /v2/trabalho-escravo/cpf/{cpf_cnpj}"
+description: "Consulta se um CPF ou CNPJ consta no Cadastro de Empregadores (Lista Suja - Trabalho Escravo)"
+---
+
+## Descricao
+
+Verifica se um CPF ou CNPJ consta no Cadastro de Empregadores que submeteram trabalhadores a condicoes analogas a de escravo, mantido pelo Ministerio do Trabalho e Emprego (MTE).
+
+Retorna `consta_lista: true` se encontrado, com detalhes da autuacao: empregador, endereco do estabelecimento, quantidade de trabalhadores envolvidos, CNAE, ano da acao fiscal e data de inclusao no cadastro.
+
+<ParamField path="cpf_cnpj" type="string" required>
+  CPF (11 digitos) ou CNPJ (14 digitos). Aceita com ou sem formatacao.
+  Exemplos: `12345678000190`, `123.456.780/0001-90`, `12345678901`
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="cpf_cnpj" type="string">
+      CPF/CNPJ consultado (apenas numeros).
+    </ResponseField>
+
+    <ResponseField name="consta_lista" type="boolean">
+      `true` se o CPF/CNPJ consta no cadastro, `false` caso contrario.
+    </ResponseField>
+
+    <ResponseField name="total_registros" type="integer">
+      Quantidade de registros encontrados (pode haver mais de um por reincidencia).
+    </ResponseField>
+
+    <ResponseField name="total_trabalhadores_envolvidos" type="integer">
+      Soma de trabalhadores envolvidos em todas as autuacoes.
+    </ResponseField>
+
+    <ResponseField name="registros" type="array">
+      <Expandable title="registro">
+        <ResponseField name="ano_acao_fiscal" type="integer">
+          Ano da acao fiscal que originou a autuacao.
+        </ResponseField>
+        <ResponseField name="uf" type="string">
+          UF onde ocorreu a acao fiscal.
+        </ResponseField>
+        <ResponseField name="empregador" type="string">
+          Nome/razao social do empregador.
+        </ResponseField>
+        <ResponseField name="cnpj_cpf" type="string">
+          CNPJ ou CPF formatado.
+        </ResponseField>
+        <ResponseField name="estabelecimento" type="string">
+          Endereco do estabelecimento autuado.
+        </ResponseField>
+        <ResponseField name="trabalhadores_envolvidos" type="integer">
+          Quantidade de trabalhadores em condicoes analogas a escravidao.
+        </ResponseField>
+        <ResponseField name="cnae" type="string">
+          Codigo CNAE da atividade economica.
+        </ResponseField>
+        <ResponseField name="decisao_administrativa" type="string">
+          Data da decisao administrativa de procedencia.
+        </ResponseField>
+        <ResponseField name="inclusao_cadastro" type="string">
+          Data de inclusao no Cadastro de Empregadores.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Fonte dos dados
+
+Ministerio do Trabalho e Emprego (MTE) - Cadastro de Empregadores que submeteram trabalhadores a condicoes analogas a de escravo (Lista Suja). Atualizado periodicamente.

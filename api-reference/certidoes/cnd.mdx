@@ -1,5 +1,5 @@
 ---
-title: "CND — Certidão Negativa de Débitos"
+title: "CND - Certidão Negativa de Débitos"
 api: "POST /v1/certidoes/cnd"
 description: "Certidão Negativa de Débitos por UF."
 ---
@@ -40,7 +40,7 @@ bem-sucedida consome **1 unidade** da cota mensal. Em erro de consulta a cota
 
 <ResponseField name="arquivos" type="array">
   Lista de arquivos oficiais. Cada item traz `filename`, `content_type`,
-  `kind`, `url` (assinada) e `expires_in` (segundos até expirar — 1800 = 30 min).
+  `kind`, `url` (assinada) e `expires_in` (segundos até expirar - 1800 = 30 min).
 </ResponseField>
 
 <RequestExample>
@@ -79,11 +79,11 @@ curl -X POST "https://data.dadosfazenda.com.br/v1/certidoes/cnd" \
 }
 ```
 
-```json 401 — API key inválida
+```json 401 - API key inválida
 { "detail": "API key invalida." }
 ```
 
-```json 429 — cota mensal atingida
+```json 429 - cota mensal atingida
 { "detail": "Limite mensal atingido. Reseta no proximo mes." }
 ```
 

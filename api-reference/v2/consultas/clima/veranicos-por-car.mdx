@@ -1,0 +1,71 @@
+---
+title: "Veranicos por CAR"
+api: "GET /v2/secas/veranicos/car/{codigo_car}"
+description: "Maior sequência de dias secos por mês no município do imóvel, climatologia de 44 anos"
+---
+
+## Descrição
+
+Maior sequência de dias secos por mês no município do imóvel, climatologia de 44 anos.
+
+<ParamField path="codigo_car" type="string" required>Código do CAR</ParamField>
+
+## Resposta
+
+<ResponseField name="climatologia" type="array">
+  <Expandable title="item">
+    <ResponseField name="media_dias_secos" type="number"></ResponseField>
+    <ResponseField name="mes" type="integer"></ResponseField>
+    <ResponseField name="pior_dias_secos" type="number"></ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="geocodigo" type="string"></ResponseField>
+<ResponseField name="periodo" type="object">
+  <ResponseField name="anos" type="integer"></ResponseField>
+  <ResponseField name="ate" type="integer"></ResponseField>
+  <ResponseField name="de" type="integer"></ResponseField>
+</ResponseField>
+<ResponseField name="piores_anos" type="array">
+  <Expandable title="item">
+    <ResponseField name="ano" type="integer"></ResponseField>
+    <ResponseField name="dias_secos" type="number"></ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "climatologia": [
+      {
+        "media_dias_secos": 12.34,
+        "mes": 123,
+        "pior_dias_secos": 12.34
+      }
+    ],
+    "geocodigo": "texto",
+    "periodo": {
+      "anos": 123,
+      "ate": 123,
+      "de": 123
+    },
+    "piores_anos": [
+      {
+        "ano": 123,
+        "dias_secos": 12.34
+      }
+    ]
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 404 - CAR não encontrado
+{ "success": false, "message": "CAR não encontrado", "data": null }
+```
+</ResponseExample>

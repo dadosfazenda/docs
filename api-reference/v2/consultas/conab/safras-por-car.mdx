@@ -1,0 +1,84 @@
+---
+title: "Histórico de culturas por CAR"
+api: "GET /v2/conab/safras/car/{codigo_car}"
+description: "Culturas plantadas no imóvel por cruzamento espacial com os mapeamentos de safra da CONAB"
+---
+
+## Descrição
+
+Culturas plantadas no imóvel por cruzamento espacial com os mapeamentos de safra da CONAB.
+
+<ParamField path="codigo_car" type="string" required>Código do CAR</ParamField>
+
+## Resposta
+
+<ResponseField name="items" type="array">
+  <Expandable title="item">
+    <ResponseField name="area_intersecao_ha" type="number"></ResponseField>
+    <ResponseField name="cultura" type="string"></ResponseField>
+    <ResponseField name="cultura_label" type="string"></ResponseField>
+    <ResponseField name="municipio_ibge" type="string"></ResponseField>
+    <ResponseField name="municipio_nome" type="string"></ResponseField>
+    <ResponseField name="percentual_sobre_imovel" type="number"></ResponseField>
+    <ResponseField name="polygons_count" type="integer"></ResponseField>
+    <ResponseField name="safra" type="string"></ResponseField>
+    <ResponseField name="source_layer" type="string"></ResponseField>
+    <ResponseField name="uf" type="string"></ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="summary" type="array">
+  <Expandable title="item">
+    <ResponseField name="area_total_ha" type="number"></ResponseField>
+    <ResponseField name="cultura" type="string"></ResponseField>
+    <ResponseField name="cultura_label" type="string"></ResponseField>
+    <ResponseField name="safras" type="array">
+    </ResponseField>
+    <ResponseField name="safras_count" type="integer"></ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="total_culturas" type="integer"></ResponseField>
+<ResponseField name="total_safras" type="integer"></ResponseField>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "items": [
+      {
+        "area_intersecao_ha": 12.34,
+        "cultura": "texto",
+        "cultura_label": "texto",
+        "municipio_ibge": "texto",
+        "municipio_nome": "texto",
+        "percentual_sobre_imovel": 12.34,
+        "polygons_count": 123,
+        "safra": "texto",
+        "source_layer": "texto",
+        "uf": "texto"
+      }
+    ],
+    "summary": [
+      {
+        "area_total_ha": 12.34,
+        "cultura": "texto",
+        "cultura_label": "texto",
+        "safras": [],
+        "safras_count": 123
+      }
+    ],
+    "total_culturas": 123,
+    "total_safras": 123
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 404 - CAR não encontrado
+{ "success": false, "message": "CAR não encontrado", "data": null }
+```
+</ResponseExample>

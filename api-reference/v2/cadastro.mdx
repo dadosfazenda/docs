@@ -33,3 +33,33 @@ curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C477
   -H "Authorization: Bearer $API_KEY"
 ```
 </RequestExample>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "codigo_car": "GO-5211909-40A31261C76845DCBE6C47797F9B7B57",
+    "status": "AT",
+    "tipo": "IRU",
+    "condicao": "Aguardando análise",
+    "municipio": "Jataí",
+    "uf": "GO",
+    "area_ha": 587.3,
+    "modulos_fiscais": 8.39,
+    "criado_em": "2016-10-18",
+    "atualizado_em": "2024-03-02",
+    "geometry": { "type": "MultiPolygon", "coordinates": [[[[-51.90, -17.40], [-51.89, -17.40], [-51.89, -17.41], [-51.90, -17.40]]]] }
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 404 - CAR não encontrado
+{ "success": false, "message": "CAR não encontrado", "data": null }
+```
+</ResponseExample>

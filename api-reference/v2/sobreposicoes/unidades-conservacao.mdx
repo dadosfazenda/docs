@@ -15,11 +15,11 @@ Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobr
 </ParamField>
 
 <ParamField query="geometria" type="boolean" default="true">
-  Incluir o polígono de cada ocorrência. Com `false`, a resposta cai de megabytes para kilobytes em camadas densas.
+  Incluir o polígono de cada ocorrência. Com `false`, a resposta fica muito menor em camadas densas.
 </ParamField>
 
 <ParamField query="limite" type="integer" default="200">
-  Máximo de ocorrências (1 a 1000). Quando atinge o limite, a resposta traz `truncado: true`.
+  Máximo de ocorrências (1 a 1000). Ao atingir o limite, a resposta traz `truncado: true`.
 </ParamField>
 
 ## Resposta
@@ -28,55 +28,58 @@ Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobr
 <ResponseField name="camada" type="string">Nome da camada</ResponseField>
 <ResponseField name="descricao" type="string">Descrição da camada</ResponseField>
 <ResponseField name="total" type="integer">Quantidade de ocorrências que intersectam o imóvel</ResponseField>
-<ResponseField name="area_sobreposta_ha" type="number">Soma das áreas de interseção com o imóvel, em hectares</ResponseField>
-<ResponseField name="itens" type="array">Ocorrências encontradas</ResponseField>
-<ResponseField name="itens[].area_sobreposta_ha" type="number">Área da INTERSEÇÃO desta ocorrência com o imóvel (não a área total da ocorrência)</ResponseField>
-<ResponseField name="itens[].geometry" type="object">Geometria em GeoJSON (EPSG:4326). Omitida com `geometria=false`</ResponseField>
-<ResponseField name="itens[].atributos" type="object">Atributos da ocorrência, conforme a base de origem (campos abaixo)</ResponseField>
-<ResponseField name="truncado" type="boolean">Presente quando o retorno bateu no `limite`</ResponseField>
-
-### Atributos da ocorrência
-
-Os nomes seguem a base pública de origem.
-
-<ResponseField name="itens[].atributos.cnuc" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.nome" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.sigla_categoria" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.grupo" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.esfera" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.uf" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.bioma" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.area_ha" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.perimetro_m" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.criacao_ano" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.criacao_ato" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.demarcacao" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.cnuc_uc_id" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.categoria" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.categoria_iucn" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.org_gestor" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.wdpa_pid" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.objetivo" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.situacao" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.ato_criacao" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.ato_criacao_url" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.plano_manejo" type="boolean"></ResponseField>
-<ResponseField name="itens[].atributos.plano_manejo_nome" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.plano_manejo_url" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.plano_manejo_aprovacao" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.conselho_gestor_url" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.email_contato" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.site_oficial" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.municipios" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.biomas" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.area_amazonia" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.area_caatinga" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.area_cerrado" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.area_mata_atlantica" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.area_pampa" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.area_pantanal" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.area_marinho" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.cnuc_extra" type="object"></ResponseField>
+<ResponseField name="area_sobreposta_ha" type="number">Soma das áreas de interseção da camada com o imóvel</ResponseField>
+<ResponseField name="itens" type="array">
+  Ocorrências encontradas
+  <Expandable title="item">
+    <ResponseField name="area_sobreposta_ha" type="number">Área da interseção desta ocorrência com o imóvel, em hectares (não a área total da ocorrência)</ResponseField>
+    <ResponseField name="geometry" type="object">Geometria em GeoJSON (EPSG:4326). Omitida com `geometria=false`</ResponseField>
+    <ResponseField name="atributos" type="object">
+      Atributos da ocorrência, com os nomes da base pública de origem
+      <Expandable title="atributos">
+      <ResponseField name="cnuc" type="string"></ResponseField>
+      <ResponseField name="nome" type="string"></ResponseField>
+      <ResponseField name="sigla_categoria" type="string"></ResponseField>
+      <ResponseField name="grupo" type="string"></ResponseField>
+      <ResponseField name="esfera" type="string"></ResponseField>
+      <ResponseField name="uf" type="string"></ResponseField>
+      <ResponseField name="bioma" type="string"></ResponseField>
+      <ResponseField name="area_ha" type="number"></ResponseField>
+      <ResponseField name="perimetro_m" type="number"></ResponseField>
+      <ResponseField name="criacao_ano" type="integer"></ResponseField>
+      <ResponseField name="criacao_ato" type="string"></ResponseField>
+      <ResponseField name="demarcacao" type="string"></ResponseField>
+      <ResponseField name="cnuc_uc_id" type="integer"></ResponseField>
+      <ResponseField name="categoria" type="string"></ResponseField>
+      <ResponseField name="categoria_iucn" type="string"></ResponseField>
+      <ResponseField name="org_gestor" type="string"></ResponseField>
+      <ResponseField name="wdpa_pid" type="string"></ResponseField>
+      <ResponseField name="objetivo" type="string"></ResponseField>
+      <ResponseField name="situacao" type="string"></ResponseField>
+      <ResponseField name="ato_criacao" type="string"></ResponseField>
+      <ResponseField name="ato_criacao_url" type="string"></ResponseField>
+      <ResponseField name="plano_manejo" type="boolean"></ResponseField>
+      <ResponseField name="plano_manejo_nome" type="string"></ResponseField>
+      <ResponseField name="plano_manejo_url" type="string"></ResponseField>
+      <ResponseField name="plano_manejo_aprovacao" type="string"></ResponseField>
+      <ResponseField name="conselho_gestor_url" type="string"></ResponseField>
+      <ResponseField name="email_contato" type="string"></ResponseField>
+      <ResponseField name="site_oficial" type="string"></ResponseField>
+      <ResponseField name="municipios" type="string"></ResponseField>
+      <ResponseField name="biomas" type="string"></ResponseField>
+      <ResponseField name="area_amazonia" type="number"></ResponseField>
+      <ResponseField name="area_caatinga" type="number"></ResponseField>
+      <ResponseField name="area_cerrado" type="number"></ResponseField>
+      <ResponseField name="area_mata_atlantica" type="number"></ResponseField>
+      <ResponseField name="area_pampa" type="number"></ResponseField>
+      <ResponseField name="area_pantanal" type="number"></ResponseField>
+      <ResponseField name="area_marinho" type="number"></ResponseField>
+      <ResponseField name="cnuc_extra" type="object"></ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="truncado" type="boolean">Presente quando o retorno atingiu o `limite`</ResponseField>
 
 <RequestExample>
 ```bash cURL
@@ -84,3 +87,77 @@ curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C477
   -H "Authorization: Bearer $API_KEY"
 ```
 </RequestExample>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "codigo_car": "GO-5211909-40A31261C76845DCBE6C47797F9B7B57",
+    "camada": "unidades-conservacao",
+    "descricao": "Unidades de conservação (CNUC/MMA) que intersectam o imóvel",
+    "total": 1,
+    "area_sobreposta_ha": 55.5275,
+    "itens": [
+      {
+        "area_sobreposta_ha": 55.5275,
+        "geometry": {"type": "MultiPolygon", "coordinates": [[[[-51.90, -17.40], [-51.89, -17.40], [-51.89, -17.41], [-51.90, -17.40]]]]},
+        "atributos": {
+          "cnuc": "texto",
+          "nome": "texto",
+          "sigla_categoria": "texto",
+          "grupo": "texto",
+          "esfera": "texto",
+          "uf": "texto",
+          "bioma": "texto",
+          "area_ha": 12.34,
+          "perimetro_m": 12.34,
+          "criacao_ano": 123,
+          "criacao_ato": "texto",
+          "demarcacao": "texto",
+          "cnuc_uc_id": 123,
+          "categoria": "texto",
+          "categoria_iucn": "texto",
+          "org_gestor": "texto",
+          "wdpa_pid": "texto",
+          "objetivo": "texto",
+          "situacao": "texto",
+          "ato_criacao": "texto",
+          "ato_criacao_url": "texto",
+          "plano_manejo": true,
+          "plano_manejo_nome": "texto",
+          "plano_manejo_url": "texto",
+          "plano_manejo_aprovacao": "texto",
+          "conselho_gestor_url": "texto",
+          "email_contato": "texto",
+          "site_oficial": "texto",
+          "municipios": "texto",
+          "biomas": "texto",
+          "area_amazonia": 12.34,
+          "area_caatinga": 12.34,
+          "area_cerrado": 12.34,
+          "area_mata_atlantica": 12.34,
+          "area_pampa": 12.34,
+          "area_pantanal": 12.34,
+          "area_marinho": 12.34,
+          "cnuc_extra": {}
+        }
+      }
+    ]
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 404 - CAR não encontrado
+{ "success": false, "message": "CAR não encontrado", "data": null }
+```
+
+```json 422 - código de CAR inválido
+{ "success": false, "message": "Código de CAR inválido", "data": null }
+```
+</ResponseExample>

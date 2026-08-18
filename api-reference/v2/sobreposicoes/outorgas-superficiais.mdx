@@ -15,11 +15,11 @@ Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobr
 </ParamField>
 
 <ParamField query="geometria" type="boolean" default="true">
-  Incluir o polígono de cada ocorrência. Com `false`, a resposta cai de megabytes para kilobytes em camadas densas.
+  Incluir o polígono de cada ocorrência. Com `false`, a resposta fica muito menor em camadas densas.
 </ParamField>
 
 <ParamField query="limite" type="integer" default="200">
-  Máximo de ocorrências (1 a 1000). Quando atinge o limite, a resposta traz `truncado: true`.
+  Máximo de ocorrências (1 a 1000). Ao atingir o limite, a resposta traz `truncado: true`.
 </ParamField>
 
 ## Resposta
@@ -28,98 +28,101 @@ Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobr
 <ResponseField name="camada" type="string">Nome da camada</ResponseField>
 <ResponseField name="descricao" type="string">Descrição da camada</ResponseField>
 <ResponseField name="total" type="integer">Quantidade de ocorrências que intersectam o imóvel</ResponseField>
-<ResponseField name="itens" type="array">Ocorrências encontradas</ResponseField>
-<ResponseField name="itens[].geometry" type="object">Geometria em GeoJSON (EPSG:4326). Omitida com `geometria=false`</ResponseField>
-<ResponseField name="itens[].atributos" type="object">Atributos da ocorrência, conforme a base de origem (campos abaixo)</ResponseField>
-<ResponseField name="truncado" type="boolean">Presente quando o retorno bateu no `limite`</ResponseField>
-
-### Atributos da ocorrência
-
-Os nomes seguem a base pública de origem.
-
-<ResponseField name="itens[].atributos.dominio" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.objectid" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.int_nu_cnarh" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.longitude" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.latitude" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.emp_nm_empreendimento" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.emp_nm_responsavel" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.emp_nu_cpfcnpj" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.int_cd" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.int_cd_declaracao" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.int_nu_siagas" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.out_nu_ato" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.out_nu_processo" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.out_tp_ato" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.outorga_valida" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.dt_outorgainicial" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.dt_outorgafinal" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.out_dt_outorgainicial" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.out_dt_outorgafinal" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.int_nm_corpohidrico" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.int_nm_corpohidricoalterado" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.ing_cd_ottobacia_trecho" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.ing_nm_comiteestadual" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.ing_nm_comitefederal" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.ing_nm_regiao_hidro" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.ing_nm_municipio" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.ing_sg_ufmunicipio" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.org_nm" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.org_uf" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.int_qt_vazaomaxima" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.int_qt_vazaomedia" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.int_qt_volumeanual" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.int_tch_cd" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.int_tdm_cd" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.int_tin_cd" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.int_tod_cd" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.int_tsf_cd" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.int_tsu_cd" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.tch_ds" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tdm_ds" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tfn_ds" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tin_ds" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tod_ds" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tpo_ds" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tsf_ds" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tsp_ds" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tsu_ds" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.jan_dad_qt_dia" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.jan_dad_qt_horas" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.jan_dad_qt_vazaodia" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.fev_dad_qt_dia" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.fev_dad_qt_horas" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.fev_dad_qt_vazaodia" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.mar_dad_qt_dia" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.mar_dad_qt_horas" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.mar_dad_qt_vazaodia" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.abr_dad_qt_dia" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.abr_dad_qt_horas" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.abr_dad_qt_vazaodia" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.mai_dad_qt_dia" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.mai_dad_qt_horas" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.mai_dad_qt_vazaodia" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.jun_dad_qt_dia" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.jun_dad_qt_horas" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.jun_dad_qt_vazaodia" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.jul_dad_qt_dia" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.jul_dad_qt_horas" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.jul_dad_qt_vazaodia" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.ago_dad_qt_dia" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.ago_dad_qt_horas" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.ago_dad_qt_vazaodia" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.set_dad_qt_dia" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.set_dad_qt_horas" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.set_dad_qt_vazaodia" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.out_dad_qt_dia" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.out_dad_qt_horas" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.out_dad_qt_vazaodia" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.nov_dad_qt_dia" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.nov_dad_qt_horas" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.nov_dad_qt_vazaodia" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.dez_dad_qt_dia" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.dez_dad_qt_horas" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.dez_dad_qt_vazaodia" type="number"></ResponseField>
+<ResponseField name="itens" type="array">
+  Ocorrências encontradas
+  <Expandable title="item">
+    <ResponseField name="geometry" type="object">Geometria em GeoJSON (EPSG:4326). Omitida com `geometria=false`</ResponseField>
+    <ResponseField name="atributos" type="object">
+      Atributos da ocorrência, com os nomes da base pública de origem
+      <Expandable title="atributos">
+      <ResponseField name="dominio" type="string"></ResponseField>
+      <ResponseField name="objectid" type="integer"></ResponseField>
+      <ResponseField name="int_nu_cnarh" type="string"></ResponseField>
+      <ResponseField name="longitude" type="number"></ResponseField>
+      <ResponseField name="latitude" type="number"></ResponseField>
+      <ResponseField name="emp_nm_empreendimento" type="string"></ResponseField>
+      <ResponseField name="emp_nm_responsavel" type="string"></ResponseField>
+      <ResponseField name="emp_nu_cpfcnpj" type="string"></ResponseField>
+      <ResponseField name="int_cd" type="string"></ResponseField>
+      <ResponseField name="int_cd_declaracao" type="string"></ResponseField>
+      <ResponseField name="int_nu_siagas" type="string"></ResponseField>
+      <ResponseField name="out_nu_ato" type="string"></ResponseField>
+      <ResponseField name="out_nu_processo" type="string"></ResponseField>
+      <ResponseField name="out_tp_ato" type="string"></ResponseField>
+      <ResponseField name="outorga_valida" type="integer"></ResponseField>
+      <ResponseField name="dt_outorgainicial" type="string"></ResponseField>
+      <ResponseField name="dt_outorgafinal" type="string"></ResponseField>
+      <ResponseField name="out_dt_outorgainicial" type="string"></ResponseField>
+      <ResponseField name="out_dt_outorgafinal" type="string"></ResponseField>
+      <ResponseField name="int_nm_corpohidrico" type="string"></ResponseField>
+      <ResponseField name="int_nm_corpohidricoalterado" type="string"></ResponseField>
+      <ResponseField name="ing_cd_ottobacia_trecho" type="string"></ResponseField>
+      <ResponseField name="ing_nm_comiteestadual" type="string"></ResponseField>
+      <ResponseField name="ing_nm_comitefederal" type="string"></ResponseField>
+      <ResponseField name="ing_nm_regiao_hidro" type="string"></ResponseField>
+      <ResponseField name="ing_nm_municipio" type="string"></ResponseField>
+      <ResponseField name="ing_sg_ufmunicipio" type="string"></ResponseField>
+      <ResponseField name="org_nm" type="string"></ResponseField>
+      <ResponseField name="org_uf" type="string"></ResponseField>
+      <ResponseField name="int_qt_vazaomaxima" type="number"></ResponseField>
+      <ResponseField name="int_qt_vazaomedia" type="number"></ResponseField>
+      <ResponseField name="int_qt_volumeanual" type="number"></ResponseField>
+      <ResponseField name="int_tch_cd" type="integer"></ResponseField>
+      <ResponseField name="int_tdm_cd" type="integer"></ResponseField>
+      <ResponseField name="int_tin_cd" type="integer"></ResponseField>
+      <ResponseField name="int_tod_cd" type="integer"></ResponseField>
+      <ResponseField name="int_tsf_cd" type="integer"></ResponseField>
+      <ResponseField name="int_tsu_cd" type="integer"></ResponseField>
+      <ResponseField name="tch_ds" type="string"></ResponseField>
+      <ResponseField name="tdm_ds" type="string"></ResponseField>
+      <ResponseField name="tfn_ds" type="string"></ResponseField>
+      <ResponseField name="tin_ds" type="string"></ResponseField>
+      <ResponseField name="tod_ds" type="string"></ResponseField>
+      <ResponseField name="tpo_ds" type="string"></ResponseField>
+      <ResponseField name="tsf_ds" type="string"></ResponseField>
+      <ResponseField name="tsp_ds" type="string"></ResponseField>
+      <ResponseField name="tsu_ds" type="string"></ResponseField>
+      <ResponseField name="jan_dad_qt_dia" type="integer"></ResponseField>
+      <ResponseField name="jan_dad_qt_horas" type="integer"></ResponseField>
+      <ResponseField name="jan_dad_qt_vazaodia" type="number"></ResponseField>
+      <ResponseField name="fev_dad_qt_dia" type="integer"></ResponseField>
+      <ResponseField name="fev_dad_qt_horas" type="integer"></ResponseField>
+      <ResponseField name="fev_dad_qt_vazaodia" type="number"></ResponseField>
+      <ResponseField name="mar_dad_qt_dia" type="integer"></ResponseField>
+      <ResponseField name="mar_dad_qt_horas" type="integer"></ResponseField>
+      <ResponseField name="mar_dad_qt_vazaodia" type="number"></ResponseField>
+      <ResponseField name="abr_dad_qt_dia" type="integer"></ResponseField>
+      <ResponseField name="abr_dad_qt_horas" type="integer"></ResponseField>
+      <ResponseField name="abr_dad_qt_vazaodia" type="number"></ResponseField>
+      <ResponseField name="mai_dad_qt_dia" type="integer"></ResponseField>
+      <ResponseField name="mai_dad_qt_horas" type="integer"></ResponseField>
+      <ResponseField name="mai_dad_qt_vazaodia" type="number"></ResponseField>
+      <ResponseField name="jun_dad_qt_dia" type="integer"></ResponseField>
+      <ResponseField name="jun_dad_qt_horas" type="integer"></ResponseField>
+      <ResponseField name="jun_dad_qt_vazaodia" type="number"></ResponseField>
+      <ResponseField name="jul_dad_qt_dia" type="integer"></ResponseField>
+      <ResponseField name="jul_dad_qt_horas" type="integer"></ResponseField>
+      <ResponseField name="jul_dad_qt_vazaodia" type="number"></ResponseField>
+      <ResponseField name="ago_dad_qt_dia" type="integer"></ResponseField>
+      <ResponseField name="ago_dad_qt_horas" type="integer"></ResponseField>
+      <ResponseField name="ago_dad_qt_vazaodia" type="number"></ResponseField>
+      <ResponseField name="set_dad_qt_dia" type="integer"></ResponseField>
+      <ResponseField name="set_dad_qt_horas" type="integer"></ResponseField>
+      <ResponseField name="set_dad_qt_vazaodia" type="number"></ResponseField>
+      <ResponseField name="out_dad_qt_dia" type="integer"></ResponseField>
+      <ResponseField name="out_dad_qt_horas" type="integer"></ResponseField>
+      <ResponseField name="out_dad_qt_vazaodia" type="number"></ResponseField>
+      <ResponseField name="nov_dad_qt_dia" type="integer"></ResponseField>
+      <ResponseField name="nov_dad_qt_horas" type="integer"></ResponseField>
+      <ResponseField name="nov_dad_qt_vazaodia" type="number"></ResponseField>
+      <ResponseField name="dez_dad_qt_dia" type="integer"></ResponseField>
+      <ResponseField name="dez_dad_qt_horas" type="integer"></ResponseField>
+      <ResponseField name="dez_dad_qt_vazaodia" type="number"></ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="truncado" type="boolean">Presente quando o retorno atingiu o `limite`</ResponseField>
 
 <RequestExample>
 ```bash cURL
@@ -127,3 +130,120 @@ curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C477
   -H "Authorization: Bearer $API_KEY"
 ```
 </RequestExample>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "codigo_car": "GO-5211909-40A31261C76845DCBE6C47797F9B7B57",
+    "camada": "outorgas-superficiais",
+    "descricao": "Outorgas de captação superficial de água (ANA) dentro do imóvel",
+    "total": 1,
+    "itens": [
+      {
+        "geometry": {"type": "MultiPolygon", "coordinates": [[[[-51.90, -17.40], [-51.89, -17.40], [-51.89, -17.41], [-51.90, -17.40]]]]},
+        "atributos": {
+          "dominio": "texto",
+          "objectid": 123,
+          "int_nu_cnarh": "texto",
+          "longitude": 12.34,
+          "latitude": 12.34,
+          "emp_nm_empreendimento": "texto",
+          "emp_nm_responsavel": "texto",
+          "emp_nu_cpfcnpj": "texto",
+          "int_cd": "texto",
+          "int_cd_declaracao": "texto",
+          "int_nu_siagas": "texto",
+          "out_nu_ato": "texto",
+          "out_nu_processo": "texto",
+          "out_tp_ato": "texto",
+          "outorga_valida": 123,
+          "dt_outorgainicial": "2024-05-10",
+          "dt_outorgafinal": "2024-05-10",
+          "out_dt_outorgainicial": "2024-05-10",
+          "out_dt_outorgafinal": "2024-05-10",
+          "int_nm_corpohidrico": "texto",
+          "int_nm_corpohidricoalterado": "texto",
+          "ing_cd_ottobacia_trecho": "texto",
+          "ing_nm_comiteestadual": "texto",
+          "ing_nm_comitefederal": "texto",
+          "ing_nm_regiao_hidro": "texto",
+          "ing_nm_municipio": "texto",
+          "ing_sg_ufmunicipio": "texto",
+          "org_nm": "texto",
+          "org_uf": "texto",
+          "int_qt_vazaomaxima": 12.34,
+          "int_qt_vazaomedia": 12.34,
+          "int_qt_volumeanual": 12.34,
+          "int_tch_cd": 123,
+          "int_tdm_cd": 123,
+          "int_tin_cd": 123,
+          "int_tod_cd": 123,
+          "int_tsf_cd": 123,
+          "int_tsu_cd": 123,
+          "tch_ds": "texto",
+          "tdm_ds": "texto",
+          "tfn_ds": "texto",
+          "tin_ds": "texto",
+          "tod_ds": "texto",
+          "tpo_ds": "texto",
+          "tsf_ds": "texto",
+          "tsp_ds": "texto",
+          "tsu_ds": "texto",
+          "jan_dad_qt_dia": 123,
+          "jan_dad_qt_horas": 123,
+          "jan_dad_qt_vazaodia": 12.34,
+          "fev_dad_qt_dia": 123,
+          "fev_dad_qt_horas": 123,
+          "fev_dad_qt_vazaodia": 12.34,
+          "mar_dad_qt_dia": 123,
+          "mar_dad_qt_horas": 123,
+          "mar_dad_qt_vazaodia": 12.34,
+          "abr_dad_qt_dia": 123,
+          "abr_dad_qt_horas": 123,
+          "abr_dad_qt_vazaodia": 12.34,
+          "mai_dad_qt_dia": 123,
+          "mai_dad_qt_horas": 123,
+          "mai_dad_qt_vazaodia": 12.34,
+          "jun_dad_qt_dia": 123,
+          "jun_dad_qt_horas": 123,
+          "jun_dad_qt_vazaodia": 12.34,
+          "jul_dad_qt_dia": 123,
+          "jul_dad_qt_horas": 123,
+          "jul_dad_qt_vazaodia": 12.34,
+          "ago_dad_qt_dia": 123,
+          "ago_dad_qt_horas": 123,
+          "ago_dad_qt_vazaodia": 12.34,
+          "set_dad_qt_dia": 123,
+          "set_dad_qt_horas": 123,
+          "set_dad_qt_vazaodia": 12.34,
+          "out_dad_qt_dia": 123,
+          "out_dad_qt_horas": 123,
+          "out_dad_qt_vazaodia": 12.34,
+          "nov_dad_qt_dia": 123,
+          "nov_dad_qt_horas": 123,
+          "nov_dad_qt_vazaodia": 12.34,
+          "dez_dad_qt_dia": 123,
+          "dez_dad_qt_horas": 123,
+          "dez_dad_qt_vazaodia": 12.34
+        }
+      }
+    ]
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 404 - CAR não encontrado
+{ "success": false, "message": "CAR não encontrado", "data": null }
+```
+
+```json 422 - código de CAR inválido
+{ "success": false, "message": "Código de CAR inválido", "data": null }
+```
+</ResponseExample>

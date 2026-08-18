@@ -65,7 +65,7 @@ A resposta retorna dados basicos de cada imovel, o CAR vinculado quando encontra
 
           <Expandable title="cafir">
             <ResponseField name="nirf" type="string">
-              NIRF — Numero do imovel na Receita Federal (8 caracteres alfanumericos).
+              NIRF - Numero do imovel na Receita Federal (8 caracteres alfanumericos).
             </ResponseField>
             <ResponseField name="nome" type="string">
               Nome do imovel registrado na RF.
@@ -83,7 +83,7 @@ A resposta retorna dados basicos de cada imovel, o CAR vinculado quando encontra
               CEP do imovel.
             </ResponseField>
             <ResponseField name="situacao" type="string">
-              Situacao fiscal do imovel — valores possiveis: `ativo`, `cancelado_*` (12 motivos), `pendencia_*` (7 motivos).
+              Situacao fiscal do imovel - valores possiveis: `ativo`, `cancelado_*` (12 motivos), `pendencia_*` (7 motivos).
             </ResponseField>
             <ResponseField name="situacao_codigo" type="integer">
               Codigo numerico da situacao (2=ativo, 46-59=cancelamentos, 83-98=pendencias). Ver [docs/CAFIR.md](https://github.com/dadosfazenda/dadosfazenda-data-api/blob/main/docs/CAFIR.md).
@@ -92,7 +92,7 @@ A resposta retorna dados basicos de cada imovel, o CAR vinculado quando encontra
               `true` se o imovel e imune ou isento de ITR (igrejas, escolas, fundacoes sem fins lucrativos).
             </ResponseField>
             <ResponseField name="sncr_status" type="string">
-              Status da vinculacao com o INCRA — valores possiveis: `vinculacao_provisoria`, `vinculacao_confirmada`, `desvinculado`, `descaracterizacao_rural`.
+              Status da vinculacao com o INCRA - valores possiveis: `vinculacao_provisoria`, `vinculacao_confirmada`, `desvinculado`, `descaracterizacao_rural`.
             </ResponseField>
             <ResponseField name="sncr_codigo" type="integer">
               Codigo numerico do status SNCR (1-4).

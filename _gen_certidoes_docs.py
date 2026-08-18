@@ -53,45 +53,45 @@ FIELDS = {
 
 TITLES = {
     "apf_rural": "APF Rural",
-    "ccd_pf": "CCD-PF — Certidão Conjunta de Débitos (PF)",
-    "ccd_pj": "CCD-PJ — Certidão Conjunta de Débitos (PJ)",
-    "cnd": "CND — Certidão Negativa de Débitos",
-    "cndir": "CNDIR — Débitos do Imóvel Rural",
-    "cndm": "CNDM — Certidão Negativa Municipal",
-    "ibama_debitos": "IBAMA — Certidão Negativa de Débitos",
-    "ibama_embargos": "IBAMA — Certidão Negativa de Embargos",
-    "mpf": "MPF — Certidão Negativa",
-    "tcu": "TCU — Certidão Negativa de Processo",
-    "trf": "TRF — Certidão Cível/Eleitoral/Criminal",
-    "trt": "TRT — Certidão Trabalhista",
-    "tse": "TSE — Quitação Eleitoral",
-    "tst": "TST — Débitos Trabalhistas",
-    "dap": "DAP — Declaração de Aptidão ao Pronaf",
-    "cnj_improbidade": "CNJ — Condenações por Improbidade",
-    "lista_suja_trabalho_escravo": "Lista Suja — Trabalho Escravo",
+    "ccd_pf": "CCD-PF - Certidão Conjunta de Débitos (PF)",
+    "ccd_pj": "CCD-PJ - Certidão Conjunta de Débitos (PJ)",
+    "cnd": "CND - Certidão Negativa de Débitos",
+    "cndir": "CNDIR - Débitos do Imóvel Rural",
+    "cndm": "CNDM - Certidão Negativa Municipal",
+    "ibama_debitos": "IBAMA - Certidão Negativa de Débitos",
+    "ibama_embargos": "IBAMA - Certidão Negativa de Embargos",
+    "mpf": "MPF - Certidão Negativa",
+    "tcu": "TCU - Certidão Negativa de Processo",
+    "trf": "TRF - Certidão Cível/Eleitoral/Criminal",
+    "trt": "TRT - Certidão Trabalhista",
+    "tse": "TSE - Quitação Eleitoral",
+    "tst": "TST - Débitos Trabalhistas",
+    "dap": "DAP - Declaração de Aptidão ao Pronaf",
+    "cnj_improbidade": "CNJ - Condenações por Improbidade",
+    "lista_suja_trabalho_escravo": "Lista Suja - Trabalho Escravo",
     "titularidade_car": "Titularidade por CAR",
     "imoveis_por_titular": "Imóveis Rurais por Titular",
     "processos_por_titular": "Processos Judiciais por Titular",
-    "ccir_consulta": "CCIR — Certificado de Cadastro de Imóvel Rural",
+    "ccir_consulta": "CCIR - Certificado de Cadastro de Imóvel Rural",
     "recibo_car": "Recibo do CAR",
     "sicor_creditos_car": "Crédito Rural por CAR (SICOR)",
     "autos_infracao_por_titular": "Autos de Infração Ambiental (IBAMA)",
-    "caf_pf": "CAF-PF — Cadastro Nacional da Agricultura Familiar (PF)",
-    "caf_pj": "CAF-PJ — Cadastro Nacional da Agricultura Familiar (PJ)",
-    "protestos_nacional": "Protestos Nacional — IEPTB",
-    "tcu_consolidada_pj": "TCU — Consulta Consolidada (PJ)",
-    "tj_certidao": "TJ — Certidão Cível, Criminal e Fiscal",
-    "tj_processos": "TJ — Processos",
-    "tse_situacao": "TSE — Situação Eleitoral",
-    "pf_antecedentes": "Polícia Federal — Antecedentes Criminais",
+    "caf_pf": "CAF-PF - Cadastro Nacional da Agricultura Familiar (PF)",
+    "caf_pj": "CAF-PJ - Cadastro Nacional da Agricultura Familiar (PJ)",
+    "protestos_nacional": "Protestos Nacional - IEPTB",
+    "tcu_consolidada_pj": "TCU - Consulta Consolidada (PJ)",
+    "tj_certidao": "TJ - Certidão Cível, Criminal e Fiscal",
+    "tj_processos": "TJ - Processos",
+    "tse_situacao": "TSE - Situação Eleitoral",
+    "pf_antecedentes": "Polícia Federal - Antecedentes Criminais",
     "veicular": "Consulta Veicular",
     "vinculos_societarios": "Vínculos Societários e de Parentesco",
     "boa_vista_credito": "Relatório de Crédito",
-    "cnh": "CNH — Situação",
-    "sintegra": "SINTEGRA — Inscrição Estadual",
+    "cnh": "CNH - Situação",
+    "sintegra": "SINTEGRA - Inscrição Estadual",
     "veicular_frotas": "Frota Veicular por Titular",
-    "scr_bacen": "SCR Analítico — Resumo BACEN",
-    "scr_bacen_detalhada": "SCR Detalhada — Resumo BACEN",
+    "scr_bacen": "SCR Analítico - Resumo BACEN",
+    "scr_bacen_detalhada": "SCR Detalhada - Resumo BACEN",
 }
 
 DESCRIPTIONS = {
@@ -144,7 +144,7 @@ FIELD_META = {
     "cpf": ("CPF do titular (apenas dígitos, 11 caracteres).", "12345678909"),
     "cnpj": ("CNPJ do titular (apenas dígitos, 14 caracteres).", "12345678000190"),
     "uf": ("Sigla da UF (2 letras).", "MG"),
-    "nirf": ("NIRF — código do imóvel rural na Receita Federal.", "1234567"),
+    "nirf": ("NIRF - código do imóvel rural na Receita Federal.", "1234567"),
     "municipio_ibge": ("Código IBGE do município (7 dígitos).", "3106200"),
     "regiao_trf": ("Número da região do TRF (1 a 6).", "1"),
     "regiao_trt": ("Número da região do TRT (1 a 24).", "3"),
@@ -223,7 +223,7 @@ bem-sucedida consome **1 unidade** da cota mensal. Em erro de consulta a cota
 
 <ResponseField name="arquivos" type="array">
   Lista de arquivos oficiais. Cada item traz `filename`, `content_type`,
-  `kind`, `url` (assinada) e `expires_in` (segundos até expirar — 1800 = 30 min).
+  `kind`, `url` (assinada) e `expires_in` (segundos até expirar - 1800 = 30 min).
 </ResponseField>
 
 <RequestExample>
@@ -259,11 +259,11 @@ curl -X POST "{BASE}/v1/certidoes/{key}" \\
 }}
 ```
 
-```json 401 — API key inválida
+```json 401 - API key inválida
 {{ "detail": "API key invalida." }}
 ```
 
-```json 429 — cota mensal atingida
+```json 429 - cota mensal atingida
 {{ "detail": "Limite mensal atingido. Reseta no proximo mes." }}
 ```
 

@@ -10,14 +10,40 @@ Titulares do imóvel na base local, sem custo de consulta externa.
 
 <ParamField path="codigo_car" type="string" required>Código do CAR</ParamField>
 
-
-
 ## Resposta
 
-Campos observados na resposta real:
-
 <ResponseField name="codigo_car" type="string"></ResponseField>
-<ResponseField name="proprietarios[]" type="array"></ResponseField>
-<ResponseField name="proprietarios[].documento" type="string"></ResponseField>
-<ResponseField name="proprietarios[].nome" type="string"></ResponseField>
-<ResponseField name="proprietarios[].tipo" type="string"></ResponseField>
+<ResponseField name="proprietarios" type="array">
+  <Expandable title="item">
+    <ResponseField name="documento" type="string"></ResponseField>
+    <ResponseField name="nome" type="string"></ResponseField>
+    <ResponseField name="tipo" type="string"></ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "codigo_car": "texto",
+    "proprietarios": [
+      {
+        "documento": "texto",
+        "nome": "texto",
+        "tipo": "texto"
+      }
+    ]
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 404 - CAR não encontrado
+{ "success": false, "message": "CAR não encontrado", "data": null }
+```
+</ResponseExample>

@@ -174,6 +174,70 @@
                 ]
               },
               {
+                "group": "Propriedade Rural",
+                "pages": [
+                  "api-reference/v2/consultas/busca-por-cpf",
+                  "api-reference/v2/consultas/cpf-car-completo",
+                  "api-reference/v2/consultas/detalhes-imovel",
+                  "api-reference/v2/consultas/car/busca-coordenadas",
+                  "api-reference/v2/consultas/car/info",
+                  "api-reference/v2/consultas/car/demonstrativo",
+                  "api-reference/v2/consultas/car/proprietarios",
+                  "api-reference/v2/consultas/car/proprietarios-local"
+                ]
+              },
+              {
+                "group": "Embargos",
+                "pages": [
+                  "api-reference/v2/consultas/ambiental/por-car"
+                ]
+              },
+              {
+                "group": "Clima / Solo",
+                "pages": [
+                  "api-reference/v2/consultas/solo/propriedades-por-car",
+                  "api-reference/v2/consultas/weather/precipitacao-por-car",
+                  "api-reference/v2/consultas/weather/temperatura-por-car",
+                  "api-reference/v2/consultas/clima/climatologia-por-car",
+                  "api-reference/v2/consultas/clima/secas-por-car",
+                  "api-reference/v2/consultas/clima/veranicos-por-car"
+                ]
+              },
+              {
+                "group": "Safras e ZARC",
+                "pages": [
+                  "api-reference/v2/consultas/conab/safras-por-car",
+                  "api-reference/v2/consultas/zarc/culturas-por-car",
+                  "api-reference/v2/consultas/zarc/tabua-por-car"
+                ]
+              },
+              {
+                "group": "Credito Rural (BCB)",
+                "pages": [
+                  "api-reference/v2/consultas/car/area-financiavel",
+                  "api-reference/v2/consultas/sicor/creditos-por-car",
+                  "api-reference/v2/consultas/sicor/creditos-por-cpf"
+                ]
+              },
+              {
+                "group": "Trabalho Escravo",
+                "pages": [
+                  "api-reference/v2/consultas/trabalho-escravo/busca-por-cpf"
+                ]
+              },
+              {
+                "group": "Desmatamento (PRODES)",
+                "pages": [
+                  "api-reference/v2/consultas/prodes/desmatamento-por-car"
+                ]
+              },
+              {
+                "group": "Satelite",
+                "pages": [
+                  "api-reference/v2/consultas/ndvi/serie-temporal-por-car"
+                ]
+              },
+              {
                 "group": "Sobreposições por CAR",
                 "pages": [
                   "api-reference/v2/sobreposicoes/aerodromos",

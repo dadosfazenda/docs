@@ -15,11 +15,11 @@ Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobr
 </ParamField>
 
 <ParamField query="geometria" type="boolean" default="true">
-  Incluir o polígono de cada ocorrência. Com `false`, a resposta cai de megabytes para kilobytes em camadas densas.
+  Incluir o polígono de cada ocorrência. Com `false`, a resposta fica muito menor em camadas densas.
 </ParamField>
 
 <ParamField query="limite" type="integer" default="200">
-  Máximo de ocorrências (1 a 1000). Quando atinge o limite, a resposta traz `truncado: true`.
+  Máximo de ocorrências (1 a 1000). Ao atingir o limite, a resposta traz `truncado: true`.
 </ParamField>
 
 ## Resposta
@@ -28,42 +28,45 @@ Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobr
 <ResponseField name="camada" type="string">Nome da camada</ResponseField>
 <ResponseField name="descricao" type="string">Descrição da camada</ResponseField>
 <ResponseField name="total" type="integer">Quantidade de ocorrências que intersectam o imóvel</ResponseField>
-<ResponseField name="itens" type="array">Ocorrências encontradas</ResponseField>
-<ResponseField name="itens[].geometry" type="object">Geometria em GeoJSON (EPSG:4326). Omitida com `geometria=false`</ResponseField>
-<ResponseField name="itens[].atributos" type="object">Atributos da ocorrência, conforme a base de origem (campos abaixo)</ResponseField>
-<ResponseField name="truncado" type="boolean">Presente quando o retorno bateu no `limite`</ResponseField>
-
-### Atributos da ocorrência
-
-Os nomes seguem a base pública de origem.
-
-<ResponseField name="itens[].atributos.seq_auto_infracao" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.num_auto_infracao" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.serie" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tipo_auto" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tipo_multa" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.val_auto_infracao" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.gravidade" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.cod_infracao" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.des_infracao" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tipo_infracao" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.dat_auto" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.ano" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.cod_municipio" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.municipio" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.uf" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.num_processo" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.tp_pessoa" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.cpf_cnpj" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.cpf_cnpj_limpo" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.nome_infrator" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.qt_area" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.unidade_conservacao" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.cd_termos_embargos" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.sit_cancelado" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.longitude" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.latitude" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.des_auto_infracao" type="string"></ResponseField>
+<ResponseField name="itens" type="array">
+  Ocorrências encontradas
+  <Expandable title="item">
+    <ResponseField name="geometry" type="object">Geometria em GeoJSON (EPSG:4326). Omitida com `geometria=false`</ResponseField>
+    <ResponseField name="atributos" type="object">
+      Atributos da ocorrência, com os nomes da base pública de origem
+      <Expandable title="atributos">
+      <ResponseField name="seq_auto_infracao" type="integer"></ResponseField>
+      <ResponseField name="num_auto_infracao" type="string"></ResponseField>
+      <ResponseField name="serie" type="string"></ResponseField>
+      <ResponseField name="tipo_auto" type="string"></ResponseField>
+      <ResponseField name="tipo_multa" type="string"></ResponseField>
+      <ResponseField name="val_auto_infracao" type="number"></ResponseField>
+      <ResponseField name="gravidade" type="string"></ResponseField>
+      <ResponseField name="cod_infracao" type="string"></ResponseField>
+      <ResponseField name="des_infracao" type="string"></ResponseField>
+      <ResponseField name="tipo_infracao" type="string"></ResponseField>
+      <ResponseField name="dat_auto" type="string"></ResponseField>
+      <ResponseField name="ano" type="integer"></ResponseField>
+      <ResponseField name="cod_municipio" type="string"></ResponseField>
+      <ResponseField name="municipio" type="string"></ResponseField>
+      <ResponseField name="uf" type="string"></ResponseField>
+      <ResponseField name="num_processo" type="string"></ResponseField>
+      <ResponseField name="tp_pessoa" type="string"></ResponseField>
+      <ResponseField name="cpf_cnpj" type="string"></ResponseField>
+      <ResponseField name="cpf_cnpj_limpo" type="string"></ResponseField>
+      <ResponseField name="nome_infrator" type="string"></ResponseField>
+      <ResponseField name="qt_area" type="number"></ResponseField>
+      <ResponseField name="unidade_conservacao" type="string"></ResponseField>
+      <ResponseField name="cd_termos_embargos" type="string"></ResponseField>
+      <ResponseField name="sit_cancelado" type="string"></ResponseField>
+      <ResponseField name="longitude" type="number"></ResponseField>
+      <ResponseField name="latitude" type="number"></ResponseField>
+      <ResponseField name="des_auto_infracao" type="string"></ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="truncado" type="boolean">Presente quando o retorno atingiu o `limite`</ResponseField>
 
 <RequestExample>
 ```bash cURL
@@ -71,3 +74,64 @@ curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C477
   -H "Authorization: Bearer $API_KEY"
 ```
 </RequestExample>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "codigo_car": "GO-5211909-40A31261C76845DCBE6C47797F9B7B57",
+    "camada": "autos-ibama",
+    "descricao": "Autos de infração do IBAMA localizados no imóvel",
+    "total": 1,
+    "itens": [
+      {
+        "geometry": {"type": "MultiPolygon", "coordinates": [[[[-51.90, -17.40], [-51.89, -17.40], [-51.89, -17.41], [-51.90, -17.40]]]]},
+        "atributos": {
+          "seq_auto_infracao": 123,
+          "num_auto_infracao": "texto",
+          "serie": "texto",
+          "tipo_auto": "texto",
+          "tipo_multa": "texto",
+          "val_auto_infracao": 12.34,
+          "gravidade": "texto",
+          "cod_infracao": "texto",
+          "des_infracao": "texto",
+          "tipo_infracao": "texto",
+          "dat_auto": "2024-05-10T12:00:00Z",
+          "ano": 123,
+          "cod_municipio": "texto",
+          "municipio": "texto",
+          "uf": "texto",
+          "num_processo": "texto",
+          "tp_pessoa": "texto",
+          "cpf_cnpj": "texto",
+          "cpf_cnpj_limpo": "texto",
+          "nome_infrator": "texto",
+          "qt_area": 12.34,
+          "unidade_conservacao": "texto",
+          "cd_termos_embargos": "texto",
+          "sit_cancelado": "texto",
+          "longitude": 12.34,
+          "latitude": 12.34,
+          "des_auto_infracao": "texto"
+        }
+      }
+    ]
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 404 - CAR não encontrado
+{ "success": false, "message": "CAR não encontrado", "data": null }
+```
+
+```json 422 - código de CAR inválido
+{ "success": false, "message": "Código de CAR inválido", "data": null }
+```
+</ResponseExample>

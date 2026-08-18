@@ -1,5 +1,5 @@
 ---
-title: "ZARC — tábua de risco"
+title: "ZARC - tábua de risco"
 api: "GET /zarc/tabua/{codigo_car}"
 description: "Janelas de plantio por decêndio, safra a safra, com filtros de solo, ciclo e manejo"
 ---
@@ -16,19 +16,68 @@ Janelas de plantio por decêndio, safra a safra, com filtros de solo, ciclo e ma
 
 ## Resposta
 
-Campos observados na resposta real:
-
 <ResponseField name="cultura" type="string"></ResponseField>
-<ResponseField name="filtros.ciclo" type="string"></ResponseField>
-<ResponseField name="filtros.manejo" type="string"></ResponseField>
-<ResponseField name="filtros.solo" type="string"></ResponseField>
+<ResponseField name="filtros" type="object">
+  <ResponseField name="ciclo" type="string"></ResponseField>
+  <ResponseField name="manejo" type="string"></ResponseField>
+  <ResponseField name="solo" type="string"></ResponseField>
+</ResponseField>
 <ResponseField name="geocodigo" type="string"></ResponseField>
-<ResponseField name="opcoes.ciclos[]" type="string"></ResponseField>
-<ResponseField name="opcoes.manejos[]" type="string"></ResponseField>
-<ResponseField name="opcoes.solos[]" type="string"></ResponseField>
-<ResponseField name="safras[]" type="array"></ResponseField>
-<ResponseField name="safras[].combinacoes" type="integer"></ResponseField>
-<ResponseField name="safras[].portaria" type="string"></ResponseField>
-<ResponseField name="safras[].riscos[]" type="integer"></ResponseField>
-<ResponseField name="safras[].safra" type="string"></ResponseField>
-<ResponseField name="safras[].safra_ini" type="integer"></ResponseField>
+<ResponseField name="opcoes" type="object">
+  <ResponseField name="ciclos" type="array">
+  </ResponseField>
+  <ResponseField name="manejos" type="array">
+  </ResponseField>
+  <ResponseField name="solos" type="array">
+  </ResponseField>
+</ResponseField>
+<ResponseField name="safras" type="array">
+  <Expandable title="item">
+    <ResponseField name="combinacoes" type="integer"></ResponseField>
+    <ResponseField name="portaria" type="string"></ResponseField>
+    <ResponseField name="riscos" type="array">
+    </ResponseField>
+    <ResponseField name="safra" type="string"></ResponseField>
+    <ResponseField name="safra_ini" type="integer"></ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "cultura": "texto",
+    "filtros": {
+      "ciclo": null,
+      "manejo": null,
+      "solo": null
+    },
+    "geocodigo": "texto",
+    "opcoes": {
+      "ciclos": [],
+      "manejos": [],
+      "solos": []
+    },
+    "safras": [
+      {
+        "combinacoes": 123,
+        "portaria": "texto",
+        "riscos": [],
+        "safra": "texto",
+        "safra_ini": 123
+      }
+    ]
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 404 - CAR não encontrado
+{ "success": false, "message": "CAR não encontrado", "data": null }
+```
+</ResponseExample>

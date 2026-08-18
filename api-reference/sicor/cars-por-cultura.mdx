@@ -102,9 +102,9 @@ data = response.json()["data"]
 print(f"Total de CARs com SOJA: {data['total']}")
 
 for car in data["cars"]:
-    print(f"\n{car['codigo_car']} — {car['uf']} — {car['anos_com_credito']} anos")
+    print(f"\n{car['codigo_car']} - {car['uf']} - {car['anos_com_credito']} anos")
     for h in car["historico"]:
-        print(f"  {h['ano']}: {h['finalidade']} — R$ {h['valor_credito']:,.2f} — {h['area_financiada_ha']} ha")
+        print(f"  {h['ano']}: {h['finalidade']} - R$ {h['valor_credito']:,.2f} - {h['area_financiada_ha']} ha")
 ```
 </RequestExample>
 

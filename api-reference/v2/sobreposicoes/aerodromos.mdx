@@ -15,11 +15,11 @@ Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobr
 </ParamField>
 
 <ParamField query="geometria" type="boolean" default="true">
-  Incluir o polígono de cada ocorrência. Com `false`, a resposta cai de megabytes para kilobytes em camadas densas.
+  Incluir o polígono de cada ocorrência. Com `false`, a resposta fica muito menor em camadas densas.
 </ParamField>
 
 <ParamField query="limite" type="integer" default="200">
-  Máximo de ocorrências (1 a 1000). Quando atinge o limite, a resposta traz `truncado: true`.
+  Máximo de ocorrências (1 a 1000). Ao atingir o limite, a resposta traz `truncado: true`.
 </ParamField>
 
 ## Resposta
@@ -28,41 +28,44 @@ Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobr
 <ResponseField name="camada" type="string">Nome da camada</ResponseField>
 <ResponseField name="descricao" type="string">Descrição da camada</ResponseField>
 <ResponseField name="total" type="integer">Quantidade de ocorrências que intersectam o imóvel</ResponseField>
-<ResponseField name="itens" type="array">Ocorrências encontradas</ResponseField>
-<ResponseField name="itens[].geometry" type="object">Geometria em GeoJSON (EPSG:4326). Omitida com `geometria=false`</ResponseField>
-<ResponseField name="itens[].atributos" type="object">Atributos da ocorrência, conforme a base de origem (campos abaixo)</ResponseField>
-<ResponseField name="truncado" type="boolean">Presente quando o retorno bateu no `limite`</ResponseField>
-
-### Atributos da ocorrência
-
-Os nomes seguem a base pública de origem.
-
-<ResponseField name="itens[].atributos.openaip_id" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.name" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.icao_code" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.iata_code" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.alt_identifier" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.type" type="integer"></ResponseField>
-<ResponseField name="itens[].atributos.type_label" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.country" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.elevation_m" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.magnetic_declination" type="number"></ResponseField>
-<ResponseField name="itens[].atributos.traffic_type" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.ppr" type="boolean"></ResponseField>
-<ResponseField name="itens[].atributos.private_use" type="boolean"></ResponseField>
-<ResponseField name="itens[].atributos.skydive_activity" type="boolean"></ResponseField>
-<ResponseField name="itens[].atributos.winch_only" type="boolean"></ResponseField>
-<ResponseField name="itens[].atributos.runways" type="object"></ResponseField>
-<ResponseField name="itens[].atributos.frequencies" type="object"></ResponseField>
-<ResponseField name="itens[].atributos.services" type="object"></ResponseField>
-<ResponseField name="itens[].atributos.hours_of_operation" type="object"></ResponseField>
-<ResponseField name="itens[].atributos.images" type="object"></ResponseField>
-<ResponseField name="itens[].atributos.telephone_services" type="object"></ResponseField>
-<ResponseField name="itens[].atributos.contact" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.remarks" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.source_created_at" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.source_updated_at" type="string"></ResponseField>
-<ResponseField name="itens[].atributos.attrs" type="object"></ResponseField>
+<ResponseField name="itens" type="array">
+  Ocorrências encontradas
+  <Expandable title="item">
+    <ResponseField name="geometry" type="object">Geometria em GeoJSON (EPSG:4326). Omitida com `geometria=false`</ResponseField>
+    <ResponseField name="atributos" type="object">
+      Atributos da ocorrência, com os nomes da base pública de origem
+      <Expandable title="atributos">
+      <ResponseField name="openaip_id" type="string"></ResponseField>
+      <ResponseField name="name" type="string"></ResponseField>
+      <ResponseField name="icao_code" type="string"></ResponseField>
+      <ResponseField name="iata_code" type="string"></ResponseField>
+      <ResponseField name="alt_identifier" type="string"></ResponseField>
+      <ResponseField name="type" type="integer"></ResponseField>
+      <ResponseField name="type_label" type="string"></ResponseField>
+      <ResponseField name="country" type="string"></ResponseField>
+      <ResponseField name="elevation_m" type="number"></ResponseField>
+      <ResponseField name="magnetic_declination" type="number"></ResponseField>
+      <ResponseField name="traffic_type" type="string"></ResponseField>
+      <ResponseField name="ppr" type="boolean"></ResponseField>
+      <ResponseField name="private_use" type="boolean"></ResponseField>
+      <ResponseField name="skydive_activity" type="boolean"></ResponseField>
+      <ResponseField name="winch_only" type="boolean"></ResponseField>
+      <ResponseField name="runways" type="object"></ResponseField>
+      <ResponseField name="frequencies" type="object"></ResponseField>
+      <ResponseField name="services" type="object"></ResponseField>
+      <ResponseField name="hours_of_operation" type="object"></ResponseField>
+      <ResponseField name="images" type="object"></ResponseField>
+      <ResponseField name="telephone_services" type="object"></ResponseField>
+      <ResponseField name="contact" type="string"></ResponseField>
+      <ResponseField name="remarks" type="string"></ResponseField>
+      <ResponseField name="source_created_at" type="string"></ResponseField>
+      <ResponseField name="source_updated_at" type="string"></ResponseField>
+      <ResponseField name="attrs" type="object"></ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="truncado" type="boolean">Presente quando o retorno atingiu o `limite`</ResponseField>
 
 <RequestExample>
 ```bash cURL
@@ -70,3 +73,63 @@ curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C477
   -H "Authorization: Bearer $API_KEY"
 ```
 </RequestExample>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "codigo_car": "GO-5211909-40A31261C76845DCBE6C47797F9B7B57",
+    "camada": "aerodromos",
+    "descricao": "Aeródromos (ANAC) dentro do imóvel",
+    "total": 1,
+    "itens": [
+      {
+        "geometry": {"type": "MultiPolygon", "coordinates": [[[[-51.90, -17.40], [-51.89, -17.40], [-51.89, -17.41], [-51.90, -17.40]]]]},
+        "atributos": {
+          "openaip_id": "texto",
+          "name": "texto",
+          "icao_code": "texto",
+          "iata_code": "texto",
+          "alt_identifier": "texto",
+          "type": 123,
+          "type_label": "texto",
+          "country": "texto",
+          "elevation_m": 12.34,
+          "magnetic_declination": 12.34,
+          "traffic_type": "texto",
+          "ppr": true,
+          "private_use": true,
+          "skydive_activity": true,
+          "winch_only": true,
+          "runways": {},
+          "frequencies": {},
+          "services": {},
+          "hours_of_operation": {},
+          "images": {},
+          "telephone_services": {},
+          "contact": "texto",
+          "remarks": "texto",
+          "source_created_at": "2024-05-10T12:00:00Z",
+          "source_updated_at": "2024-05-10T12:00:00Z",
+          "attrs": {}
+        }
+      }
+    ]
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 404 - CAR não encontrado
+{ "success": false, "message": "CAR não encontrado", "data": null }
+```
+
+```json 422 - código de CAR inválido
+{ "success": false, "message": "Código de CAR inválido", "data": null }
+```
+</ResponseExample>

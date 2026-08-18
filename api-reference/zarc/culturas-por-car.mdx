@@ -1,5 +1,5 @@
 ---
-title: "ZARC — culturas do município"
+title: "ZARC - culturas do município"
 api: "GET /zarc/culturas/{codigo_car}"
 description: "Culturas com tábua de risco ZARC publicada para o município do imóvel"
 ---
@@ -10,15 +10,42 @@ Culturas com tábua de risco ZARC publicada para o município do imóvel.
 
 <ParamField path="codigo_car" type="string" required>Código do CAR</ParamField>
 
-
-
 ## Resposta
 
-Campos observados na resposta real:
-
-<ResponseField name="culturas[]" type="array"></ResponseField>
-<ResponseField name="culturas[].cultura" type="string"></ResponseField>
-<ResponseField name="culturas[].safras" type="integer"></ResponseField>
+<ResponseField name="culturas" type="array">
+  <Expandable title="item">
+    <ResponseField name="cultura" type="string"></ResponseField>
+    <ResponseField name="safras" type="integer"></ResponseField>
+  </Expandable>
+</ResponseField>
 <ResponseField name="geocodigo" type="string"></ResponseField>
 <ResponseField name="municipio" type="string"></ResponseField>
 <ResponseField name="uf" type="string"></ResponseField>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "culturas": [
+      {
+        "cultura": "texto",
+        "safras": 123
+      }
+    ],
+    "geocodigo": "texto",
+    "municipio": "texto",
+    "uf": "texto"
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 404 - CAR não encontrado
+{ "success": false, "message": "CAR não encontrado", "data": null }
+```
+</ResponseExample>

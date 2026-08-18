@@ -1,0 +1,87 @@
+---
+title: "Histórico de secas por CAR"
+api: "GET /v2/secas/car/{codigo_car}"
+description: "Severidade de seca no imóvel mês a mês desde 2014 (Monitor de Secas), com episódios mais severos"
+---
+
+## Descrição
+
+Severidade de seca no imóvel mês a mês desde 2014 (Monitor de Secas), com episódios mais severos.
+
+<ParamField path="codigo_car" type="string" required>Código do CAR</ParamField>
+
+## Resposta
+
+<ResponseField name="codigo_car" type="string"></ResponseField>
+<ResponseField name="episodios" type="array">
+  <Expandable title="item">
+    <ResponseField name="fim" type="string"></ResponseField>
+    <ResponseField name="inicio" type="string"></ResponseField>
+    <ResponseField name="meses" type="integer"></ResponseField>
+    <ResponseField name="pico" type="integer"></ResponseField>
+    <ResponseField name="rotulo_pico" type="string"></ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="resumo" type="object">
+  <ResponseField name="meses_com_seca" type="integer"></ResponseField>
+  <ResponseField name="meses_totais" type="integer"></ResponseField>
+  <ResponseField name="pct_com_seca" type="number"></ResponseField>
+  <ResponseField name="pior_rotulo" type="string"></ResponseField>
+  <ResponseField name="pior_valor" type="integer"></ResponseField>
+</ResponseField>
+<ResponseField name="serie" type="array">
+  <Expandable title="item">
+    <ResponseField name="ano" type="integer"></ResponseField>
+    <ResponseField name="classe" type="string"></ResponseField>
+    <ResponseField name="data" type="string"></ResponseField>
+    <ResponseField name="mes" type="integer"></ResponseField>
+    <ResponseField name="rotulo" type="string"></ResponseField>
+    <ResponseField name="valor" type="integer"></ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "codigo_car": "texto",
+    "episodios": [
+      {
+        "fim": "texto",
+        "inicio": "texto",
+        "meses": 123,
+        "pico": 123,
+        "rotulo_pico": "texto"
+      }
+    ],
+    "resumo": {
+      "meses_com_seca": 123,
+      "meses_totais": 123,
+      "pct_com_seca": 12.34,
+      "pior_rotulo": "texto",
+      "pior_valor": 123
+    },
+    "serie": [
+      {
+        "ano": 123,
+        "classe": null,
+        "data": "texto",
+        "mes": 123,
+        "rotulo": "texto",
+        "valor": 123
+      }
+    ]
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 404 - CAR não encontrado
+{ "success": false, "message": "CAR não encontrado", "data": null }
+```
+</ResponseExample>

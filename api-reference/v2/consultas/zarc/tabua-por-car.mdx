@@ -1,0 +1,83 @@
+---
+title: "ZARC - tábua de risco"
+api: "GET /v2/zarc/tabua/{codigo_car}"
+description: "Janelas de plantio por decêndio, safra a safra, com filtros de solo, ciclo e manejo"
+---
+
+## Descrição
+
+Janelas de plantio por decêndio, safra a safra, com filtros de solo, ciclo e manejo.
+
+<ParamField path="codigo_car" type="string" required>Código do CAR</ParamField>
+<ParamField query="cultura" type="string" required>Nome exato da cultura (obtido em /zarc/culturas)</ParamField>
+<ParamField query="solo" type="string">Código do solo (1-3 textura; 11-16 classes de água disponível AD1-AD6)</ParamField>
+<ParamField query="ciclo" type="string">Grupo de ciclo da cultivar (20=Grupo I, 21=II, 22=III, 24=IV)</ParamField>
+<ParamField query="manejo" type="string">Sequeiro ou Irrigado</ParamField>
+
+## Resposta
+
+<ResponseField name="cultura" type="string"></ResponseField>
+<ResponseField name="filtros" type="object">
+  <ResponseField name="ciclo" type="string"></ResponseField>
+  <ResponseField name="manejo" type="string"></ResponseField>
+  <ResponseField name="solo" type="string"></ResponseField>
+</ResponseField>
+<ResponseField name="geocodigo" type="string"></ResponseField>
+<ResponseField name="opcoes" type="object">
+  <ResponseField name="ciclos" type="array">
+  </ResponseField>
+  <ResponseField name="manejos" type="array">
+  </ResponseField>
+  <ResponseField name="solos" type="array">
+  </ResponseField>
+</ResponseField>
+<ResponseField name="safras" type="array">
+  <Expandable title="item">
+    <ResponseField name="combinacoes" type="integer"></ResponseField>
+    <ResponseField name="portaria" type="string"></ResponseField>
+    <ResponseField name="riscos" type="array">
+    </ResponseField>
+    <ResponseField name="safra" type="string"></ResponseField>
+    <ResponseField name="safra_ini" type="integer"></ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "cultura": "texto",
+    "filtros": {
+      "ciclo": null,
+      "manejo": null,
+      "solo": null
+    },
+    "geocodigo": "texto",
+    "opcoes": {
+      "ciclos": [],
+      "manejos": [],
+      "solos": []
+    },
+    "safras": [
+      {
+        "combinacoes": 123,
+        "portaria": "texto",
+        "riscos": [],
+        "safra": "texto",
+        "safra_ini": 123
+      }
+    ]
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 404 - CAR não encontrado
+{ "success": false, "message": "CAR não encontrado", "data": null }
+```
+</ResponseExample>

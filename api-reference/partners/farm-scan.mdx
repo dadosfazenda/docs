@@ -75,7 +75,7 @@ Validacoes que falham (telefone invalido, CAR inexistente) **nao consomem cota**
 
 <RequestExample>
 
-```bash cURL — por coordenada
+```bash cURL - por coordenada
 curl -X POST "https://data.dadosfazenda.com.br/internal/partners/farm-scan?lat=-19.7894&lng=-43.7847" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -H "Content-Type: application/json" \
@@ -86,7 +86,7 @@ curl -X POST "https://data.dadosfazenda.com.br/internal/partners/farm-scan?lat=-
   }'
 ```
 
-```bash cURL — por CAR
+```bash cURL - por CAR
 curl -X POST "https://data.dadosfazenda.com.br/internal/partners/farm-scan?codigo_car=MG-3111507-DBEB9FF072D2402FA066E8AF2F60CF71" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -H "Content-Type: application/json" \
@@ -114,7 +114,7 @@ curl -X POST "https://data.dadosfazenda.com.br/internal/partners/farm-scan?codig
 }
 ```
 
-```json 422 — phone invalido
+```json 422 - phone invalido
 {
   "success": false,
   "message": "phone deve ter entre 10 e 13 digitos numericos.",
@@ -122,7 +122,7 @@ curl -X POST "https://data.dadosfazenda.com.br/internal/partners/farm-scan?codig
 }
 ```
 
-```json 422 — parametros incoerentes
+```json 422 - parametros incoerentes
 {
   "success": false,
   "message": "Informe lat+lng OU codigo_car (nao ambos, nao nenhum).",
@@ -130,7 +130,7 @@ curl -X POST "https://data.dadosfazenda.com.br/internal/partners/farm-scan?codig
 }
 ```
 
-```json 404 — CAR nao localizado
+```json 404 - CAR nao localizado
 {
   "success": false,
   "message": "Nenhum CAR encontrado em (lat, lng).",
@@ -143,6 +143,6 @@ curl -X POST "https://data.dadosfazenda.com.br/internal/partners/farm-scan?codig
 ## Boas praticas
 
 - **Verifique se o destinatario consente em receber o relatorio antes de chamar a rota.** O envio via template e proativo (fora da janela de 24h) e segue as regras da Meta para mensagens transacionais.
-- **Use lat/lng quando o CAR nao for conhecido.** A API faz o lookup espacial localmente — sem custo extra.
-- **Idempotencia:** chamadas repetidas com mesmo CAR + telefone disparam multiplos envios. O parceiro paga por chamada — implemente dedupe do seu lado se necessario.
+- **Use lat/lng quando o CAR nao for conhecido.** A API faz o lookup espacial localmente - sem custo extra.
+- **Idempotencia:** chamadas repetidas com mesmo CAR + telefone disparam multiplos envios. O parceiro paga por chamada - implemente dedupe do seu lado se necessario.
 - **Falhas pos-envio:** se a Meta rejeitar o template (numero invalido, opt-out, etc.), o erro fica nos logs internos. A cota ja foi debitada nesse caso.

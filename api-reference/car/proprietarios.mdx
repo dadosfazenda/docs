@@ -101,9 +101,9 @@ print(f"Imóvel: {data['dados_car'].get('denominacao', '-')}")
 print(f"Matrícula: {data['dados_car'].get('matricula', '-')}")
 
 for t in data["dados_titulares"]:
-    print(f"{t['nome']} — CPF: {t['cpf_cnpj']}")
+    print(f"{t['nome']} - CPF: {t['cpf_cnpj']}")
     for tel in t.get("telefones", []):
-        print(f"  ({tel['ddd']}) {tel['telefone']} — {tel['tipo']}")
+        print(f"  ({tel['ddd']}) {tel['telefone']} - {tel['tipo']}")
 ```
 </RequestExample>
 

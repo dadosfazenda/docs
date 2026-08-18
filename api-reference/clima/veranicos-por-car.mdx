@@ -10,20 +10,62 @@ Maior sequência de dias secos por mês no município do imóvel, climatologia d
 
 <ParamField path="codigo_car" type="string" required>Código do CAR</ParamField>
 
-
-
 ## Resposta
 
-Campos observados na resposta real:
-
-<ResponseField name="climatologia[]" type="array"></ResponseField>
-<ResponseField name="climatologia[].media_dias_secos" type="number"></ResponseField>
-<ResponseField name="climatologia[].mes" type="integer"></ResponseField>
-<ResponseField name="climatologia[].pior_dias_secos" type="number"></ResponseField>
+<ResponseField name="climatologia" type="array">
+  <Expandable title="item">
+    <ResponseField name="media_dias_secos" type="number"></ResponseField>
+    <ResponseField name="mes" type="integer"></ResponseField>
+    <ResponseField name="pior_dias_secos" type="number"></ResponseField>
+  </Expandable>
+</ResponseField>
 <ResponseField name="geocodigo" type="string"></ResponseField>
-<ResponseField name="periodo.anos" type="integer"></ResponseField>
-<ResponseField name="periodo.ate" type="integer"></ResponseField>
-<ResponseField name="periodo.de" type="integer"></ResponseField>
-<ResponseField name="piores_anos[]" type="array"></ResponseField>
-<ResponseField name="piores_anos[].ano" type="integer"></ResponseField>
-<ResponseField name="piores_anos[].dias_secos" type="number"></ResponseField>
+<ResponseField name="periodo" type="object">
+  <ResponseField name="anos" type="integer"></ResponseField>
+  <ResponseField name="ate" type="integer"></ResponseField>
+  <ResponseField name="de" type="integer"></ResponseField>
+</ResponseField>
+<ResponseField name="piores_anos" type="array">
+  <Expandable title="item">
+    <ResponseField name="ano" type="integer"></ResponseField>
+    <ResponseField name="dias_secos" type="number"></ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "climatologia": [
+      {
+        "media_dias_secos": 12.34,
+        "mes": 123,
+        "pior_dias_secos": 12.34
+      }
+    ],
+    "geocodigo": "texto",
+    "periodo": {
+      "anos": 123,
+      "ate": 123,
+      "de": 123
+    },
+    "piores_anos": [
+      {
+        "ano": 123,
+        "dias_secos": 12.34
+      }
+    ]
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 404 - CAR não encontrado
+{ "success": false, "message": "CAR não encontrado", "data": null }
+```
+</ResponseExample>

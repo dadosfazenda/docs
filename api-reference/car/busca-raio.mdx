@@ -92,7 +92,7 @@ response = httpx.get(
 data = response.json()["data"]
 print(f"Total: {data['total']} CARs encontrados")
 for car in data["cars"]:
-    print(f"{car['codigo']} — {car['area_ha']} ha — {car['distancia_km']} km")
+    print(f"{car['codigo']} - {car['area_ha']} ha - {car['distancia_km']} km")
 ```
 </RequestExample>
 
