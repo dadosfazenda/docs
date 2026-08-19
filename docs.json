@@ -116,6 +116,7 @@
                   "api-reference/certidoes/processos_por_titular",
                   "api-reference/certidoes/protestos_nacional",
                   "api-reference/certidoes/recibo_car",
+                  "api-reference/certidoes/faturamento_cnpj",
                   "api-reference/certidoes/scr_bacen",
                   "api-reference/certidoes/scr_bacen_detalhada",
                   "api-reference/certidoes/sicor_creditos_car",

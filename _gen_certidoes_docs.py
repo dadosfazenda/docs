@@ -47,6 +47,7 @@ FIELDS = {
     "cnh": ["cpf"],
     "sintegra": ["cpf_cnpj", "uf", "ie"],
     "veicular_frotas": ["cpf_cnpj"],
+    "faturamento_cnpj": ["cnpj"],
     "scr_bacen": ["cpf_cnpj"],
     "scr_bacen_detalhada": ["cpf_cnpj"],
 }
@@ -92,6 +93,7 @@ TITLES = {
     "veicular_frotas": "Frota Veicular por Titular",
     "scr_bacen": "SCR Analítico - Resumo BACEN",
     "scr_bacen_detalhada": "SCR Detalhada - Resumo BACEN",
+    "faturamento_cnpj": "Faixa de Faturamento por CNPJ",
 }
 
 DESCRIPTIONS = {
@@ -135,6 +137,7 @@ DESCRIPTIONS = {
     "vinculos_societarios": "Mapa de relacionamentos de um CPF ou CNPJ: participações societárias e vínculos de parentesco, com a rede de relacionamentos em até três níveis e indicadores de PEP e óbito.",
     "scr_bacen": "Resumo analítico do Sistema de Informações de Crédito (SCR) do Banco Central por CPF ou CNPJ: score, classe de risco, volume, carteira a vencer e vencida, e distribuição do endividamento por categoria, prazo e modalidade.",
     "scr_bacen_detalhada": "Posição detalhada do SCR do Banco Central por CPF ou CNPJ: responsabilidade total, score, faixa de risco, carteira (limite, a vencer, vencido, prejuízo) e operações por modalidade, com comprovante oficial em PDF.",
+    "faturamento_cnpj": "Cadastro completo do CNPJ com faixa de faturamento, faturamento presumido, porte, CNAEs, quadro societário, filiais e contatos.",
 }
 
 FIELD_META = {
@@ -143,6 +146,7 @@ FIELD_META = {
     "cnpj_cpf": ("CNPJ ou CPF do titular (apenas dígitos).", "12345678000190"),
     "cpf": ("CPF do titular (apenas dígitos, 11 caracteres).", "12345678909"),
     "cnpj": ("CNPJ do titular (apenas dígitos, 14 caracteres).", "12345678000190"),
+    "mesano": ("Competência (MMyyyy). Informada, retorna o SCR daquele mês; omitida, retorna a competência mais recente.", "062026"),
     "uf": ("Sigla da UF (2 letras).", "MG"),
     "nirf": ("NIRF - código do imóvel rural na Receita Federal.", "1234567"),
     "municipio_ibge": ("Código IBGE do município (7 dígitos).", "3106200"),
@@ -150,7 +154,7 @@ FIELD_META = {
     "regiao_trt": ("Número da região do TRT (1 a 24).", "3"),
     "nome_completo": ("Nome completo do titular.", "João da Silva"),
     "data_nascimento": ("Data de nascimento (AAAA-MM-DD).", "1980-05-15"),
-    "codigo_car": ("Código SICAR do imóvel.", "MG-3111507-DBEB9FF072D2402FA066E8AF2F60CF71"),
+    "codigo_car": ("Código SICAR do imóvel.", "MG-3111507-0718293A4B5C6D7E8F90A1B2C3D4E5F6"),
     "codigo_imovel": ("Código do imóvel rural no INCRA (número do CCIR/SNCR, apenas dígitos).", "9990125869208"),
     "placa": ("Placa do veículo (padrão antigo ABC1234 ou Mercosul ABC1D23).", "ABC1D23"),
     "tipo_tj": ("Natureza da certidão. Valores: Cível, Criminal, Fiscal, FinsEleitorais, FalênciaRecuperação, Família, Militar.", "Cível"),
@@ -161,6 +165,11 @@ BASE = "https://data.dadosfazenda.com.br"
 
 # Bloco opcional (Markdown) injetado após a seção "Parâmetros" de certidões específicas.
 # Mantém o template genérico pros demais; só quem estiver no dict ganha o bloco extra.
+# Campos opcionais por certidão (renderizados sem `required`).
+OPTIONAL_FIELDS = {
+    "scr_bacen_detalhada": ["mesano"],
+}
+
 EXTRA_BODY = {
     "tj_certidao": (
         "<Note>\n"
@@ -184,6 +193,8 @@ def mdx(key: str) -> str:
         f'<ParamField body="{f}" type="string" required>\n  {FIELD_META[f][0]}\n</ParamField>'
         for f in fields
     )
+    for opt in OPTIONAL_FIELDS.get(key, []):
+        params += f'\n\n<ParamField body="{opt}" type="string">\n  {FIELD_META[opt][0]}\n</ParamField>' 
     extra = EXTRA_BODY.get(key)
     params_block = params + ("\n\n" + extra if extra else "")
     body_example = "{\n" + ",\n".join(f'    "{f}": "{FIELD_META[f][1]}"' for f in fields) + "\n  }"
