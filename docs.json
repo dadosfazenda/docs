@@ -71,7 +71,8 @@
                   "api-reference/sicor/creditos-por-car",
                   "api-reference/sicor/creditos-por-cpf",
                   "api-reference/scr/consulta-scr",
-                  "api-reference/pj/consulta-completa-pj"
+                  "api-reference/pj/consulta-completa-pj",
+                  "api-reference/score/classificacao-risco"
                 ]
               },
               {
@@ -217,7 +218,8 @@
                   "api-reference/v2/consultas/sicor/creditos-por-car",
                   "api-reference/v2/consultas/sicor/creditos-por-cpf",
                   "api-reference/v2/consultas/scr/consulta-scr",
-                  "api-reference/v2/consultas/pj/consulta-completa-pj"
+                  "api-reference/v2/consultas/pj/consulta-completa-pj",
+                  "api-reference/v2/consultas/score/classificacao-risco"
                 ]
               },
               {

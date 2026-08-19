@@ -1,0 +1,102 @@
+---
+title: "Classificação de Risco"
+api: "GET /v2/score/{cpf_cnpj}"
+description: "Score de crédito por CPF ou CNPJ, com faixa de risco, motivos e indicadores de negócio"
+---
+
+## Descrição
+
+Classificação de risco de crédito por CPF ou CNPJ: score, faixa de risco,
+motivos que compõem a pontuação e indicadores de comportamento de crédito
+(pontualidade, gravidade de atrasos, endividamento, busca por crédito).
+
+A resposta traz o bloco `pessoaFisica` preenchido em consultas por CPF e o
+bloco `pessoaJuridica` em consultas por CNPJ; o outro vem `null`.
+
+<ParamField path="cpf_cnpj" type="string" required>
+  CPF (11 dígitos) ou CNPJ (14), com ou sem formatação
+</ParamField>
+
+## Resposta
+
+<ResponseField name="dataConsulta" type="string">Data e hora da consulta</ResponseField>
+<ResponseField name="documentoConsultado" type="string">CPF/CNPJ consultado, formatado</ResponseField>
+<ResponseField name="observacao" type="string | null"></ResponseField>
+<ResponseField name="pessoaFisica" type="object | null">
+  Preenchido em consultas por CPF; `null` em consultas por CNPJ
+  <Expandable title="pessoaFisica">
+    <ResponseField name="score" type="integer">Pontuação de crédito</ResponseField>
+    <ResponseField name="faixaScore" type="string">Faixa de risco correspondente ao score</ResponseField>
+    <ResponseField name="motivos" type="array">Lista de motivos que compõem a pontuação</ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="pessoaJuridica" type="object | null">
+  Preenchido em consultas por CNPJ; `null` em consultas por CPF
+  <Expandable title="pessoaJuridica">
+    <ResponseField name="score" type="integer">Pontuação de crédito</ResponseField>
+    <ResponseField name="faixaScore" type="string">Faixa de risco correspondente ao score</ResponseField>
+    <ResponseField name="motivos" type="array">Lista de motivos que compõem a pontuação</ResponseField>
+    <ResponseField name="indicadoresNegocio" type="array">
+      Indicadores de comportamento de crédito
+      <Expandable title="item">
+        <ResponseField name="indicador" type="string">Nome do indicador (Pontualidade de Pagamento, Gravidade em Atrasos, Uso Emergencial, Endividamento, Risco do Perfil de Contratação, Busca por Crédito Mensal)</ResponseField>
+        <ResponseField name="status" type="string | null"></ResponseField>
+        <ResponseField name="risco" type="string | null"></ResponseField>
+        <ResponseField name="observacao" type="string | null">Vem preenchida quando não há dado suficiente para o indicador</ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://data.dadosfazenda.com.br/v2/score/12345678000190" \
+  -H "Authorization: Bearer $API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": "Success",
+  "data": {
+    "dataConsulta": "19/08/2026 08:24:10",
+    "documentoConsultado": "12.345.678/0001-90",
+    "observacao": null,
+    "pessoaFisica": null,
+    "pessoaJuridica": {
+      "score": 415,
+      "faixaScore": "Alto índice de inadimplência",
+      "motivos": [
+        "Possui atrasos de parcelas/faturas em contratos recentes",
+        "Possui poucas contratações de produtos de crédito recentemente",
+        "Possui atrasos e/ou pendencias financeiras ativas"
+      ],
+      "indicadoresNegocio": [
+        {
+          "indicador": "Pontualidade de Pagamento",
+          "status": "Atrasos frequentes",
+          "risco": "Alto",
+          "observacao": null
+        },
+        {
+          "indicador": "Busca por Crédito Mensal (Quantidade de Novas Contratações)",
+          "status": null,
+          "risco": null,
+          "observacao": "Não há informações suficientes para o cálculo do indicador na base."
+        }
+      ]
+    }
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 502 - falha na consulta externa
+{ "success": false, "message": "Erro ao consultar o score.", "data": null }
+```
+</ResponseExample>
