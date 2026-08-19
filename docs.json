@@ -278,9 +278,11 @@
     }
   },
   "api": {
-    "baseUrl": "https://data.dadosfazenda.com.br",
-    "auth": {
-      "method": "bearer"
+    "mdx": {
+      "server": "https://data.dadosfazenda.com.br",
+      "auth": {
+        "method": "bearer"
+      }
     }
   },
   "footer": {
