@@ -8,7 +8,8 @@ description: "As propriedades do titular com geometria, embargos, APP, sobreposi
 
 Tudo da [busca simples](/api-reference/v2/consultas/busca-por-cpf) e, para cada
 CAR do titular, o pacote completo de análise: geometria do perímetro, área
-elegível para financiamento, embargos IBAMA e ICMBio, APP com polígono,
+elegível para financiamento, embargos IBAMA e ICMBio, APP e Reserva Legal
+com polígono,
 sobreposição com áreas restritas e com outros CARs, e as áreas produtivas
 (lavoura e pastagem) vetorizadas do mapeamento de uso do solo.
 
@@ -24,9 +25,9 @@ isso na implementação. As regras gerais:
 
 - Itens com `origem: "SICAR"` vêm sempre com `codigo_imovel`, `cafir` e
   `numero_certificado_snci` nulos (não há vínculo fundiário).
-- `geometry` (do CAR, da APP e das áreas produtivas) é `null` quando o
-  polígono não existe ou a área da classe é zero.
-- Blocos de enriquecimento (`app`, `areas_produtivas`, `embargos.ibama`,
+- `geometry` (do CAR, da APP, da Reserva Legal e das áreas produtivas) é
+  `null` quando o polígono não existe ou a área da classe é zero.
+- Blocos de enriquecimento (`app`, `reserva_legal`, `areas_produtivas`, `embargos.ibama`,
   `embargos.icmbio`, itens de `sobreposicoes_restritas`,
   `area_elegivel_financiamento_ha`, `area_uso_consolidado_ha`) viram `null`
   individualmente se a fonte daquele bloco estiver indisponível no momento.
@@ -108,6 +109,13 @@ dois contadores.
         <Expandable title="app">
           <ResponseField name="area_ha" type="number">`0.0` quando não há APP declarada</ResponseField>
           <ResponseField name="geometry" type="object | null">União dos polígonos de APP em GeoJSON. `null` quando `area_ha` é `0.0`</ResponseField>
+        </Expandable>
+      </ResponseField>
+      <ResponseField name="reserva_legal" type="object | null">
+        Reserva Legal declarada no CAR (união dos polígonos da camada). `null` se a camada estiver indisponível
+        <Expandable title="reserva_legal">
+          <ResponseField name="area_ha" type="number">`0.0` quando não há Reserva Legal declarada</ResponseField>
+          <ResponseField name="geometry" type="object | null">União dos polígonos de Reserva Legal em GeoJSON. `null` quando `area_ha` é `0.0`</ResponseField>
         </Expandable>
       </ResponseField>
       <ResponseField name="embargos" type="object">
@@ -251,6 +259,23 @@ curl "https://data.dadosfazenda.com.br/v2/cpf-car/12345678909/completa" \
             "area_ha": 0.0,
             "geometry": null
           },
+          "reserva_legal": {
+            "area_ha": 268.9483,
+            "geometry": {
+              "type": "MultiPolygon",
+              "coordinates": [
+                [
+                  [
+                    [-50.088, -17.452],
+                    [-50.082, -17.452],
+                    [-50.082, -17.457],
+                    [-50.088, -17.457],
+                    [-50.088, -17.452]
+                  ]
+                ]
+              ]
+            }
+          },
           "area_elegivel_financiamento_ha": 298.4102,
           "area_uso_consolidado_ha": 296.7315,
           "embargos": {
@@ -358,6 +383,10 @@ curl "https://data.dadosfazenda.com.br/v2/cpf-car/12345678909/completa" \
                 ]
               ]
             }
+          },
+          "reserva_legal": {
+            "area_ha": 0.0,
+            "geometry": null
           },
           "area_elegivel_financiamento_ha": 0.0,
           "area_uso_consolidado_ha": 0.0,

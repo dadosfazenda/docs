@@ -37,8 +37,7 @@
                   "api-reference/car/busca-coordenadas",
                   "api-reference/car/info",
                   "api-reference/car/demonstrativo",
-                  "api-reference/car/proprietarios",
-                  "api-reference/car/proprietarios-local"
+                  "api-reference/car/proprietarios"
                 ]
               },
               {
@@ -182,8 +181,7 @@
                   "api-reference/v2/consultas/car/busca-coordenadas",
                   "api-reference/v2/consultas/car/info",
                   "api-reference/v2/consultas/car/demonstrativo",
-                  "api-reference/v2/consultas/car/proprietarios",
-                  "api-reference/v2/consultas/car/proprietarios-local"
+                  "api-reference/v2/consultas/car/proprietarios"
                 ]
               },
               {
