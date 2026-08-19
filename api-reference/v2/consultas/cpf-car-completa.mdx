@@ -27,11 +27,6 @@ isso na implementação. As regras gerais:
   `numero_certificado_snci` nulos (não há vínculo fundiário).
 - `geometry` (do CAR, da APP, da Reserva Legal e das áreas produtivas) é
   `null` quando o polígono não existe ou a área da classe é zero.
-- Blocos de enriquecimento (`app`, `reserva_legal`, `areas_produtivas`, `embargos.ibama`,
-  `embargos.icmbio`, itens de `sobreposicoes_restritas`,
-  `area_elegivel_financiamento_ha`, `area_uso_consolidado_ha`) viram `null`
-  individualmente se a fonte daquele bloco estiver indisponível no momento.
-  A consulta não falha por causa de um bloco.
 - Em itens `SICAR` cujo CAR ainda não está na base geográfica local, campos
   cadastrais como `modulos_fiscais`, `status`, `tipo_imovel`, `condicao`,
   `data_cadastro`, `data_atualizacao`, `latitude` e `longitude` podem vir
@@ -54,7 +49,7 @@ dois contadores.
 <ResponseField name="cpf_cnpj" type="string">Documento consultado, só dígitos</ResponseField>
 <ResponseField name="total_imoveis" type="integer">Imóveis do cadastro fundiário (INCRA) vinculados ao documento. Não inclui os achados de origem `SICAR`</ResponseField>
 <ResponseField name="cars_encontrados" type="integer">Quantos desses imóveis têm CAR localizado. Não inclui os achados de origem `SICAR`</ResponseField>
-<ResponseField name="cars_sem_vinculo_fundiario" type="integer | null">CARs do titular localizados só no SICAR (sem imóvel no INCRA). `null` quando a consulta de titularidade estiver indisponível</ResponseField>
+<ResponseField name="cars_sem_vinculo_fundiario" type="integer | null">CARs do titular localizados só no SICAR (sem imóvel no INCRA). Pode vir `null`</ResponseField>
 <ResponseField name="propriedades" type="array">
   Imóveis do titular
   <Expandable title="item">
@@ -102,17 +97,17 @@ dois contadores.
       <ResponseField name="longitude" type="number | null">Centroide do imóvel</ResponseField>
 
       <ResponseField name="geometry" type="object | null">Perímetro do CAR em GeoJSON (EPSG:4326). `null` quando o polígono não está disponível na base</ResponseField>
-      <ResponseField name="area_elegivel_financiamento_ha" type="number | null">Uso consolidado SEM deduplicação: soma crua dos polígonos declarados, ainda que sobrepostos entre si. `0.0` quando o CAR não declara uso consolidado; `null` se a camada estiver indisponível</ResponseField>
-      <ResponseField name="area_uso_consolidado_ha" type="number | null">Uso consolidado deduplicado (união dos polígonos antes do cálculo). `0.0` quando não declarado; `null` se a camada estiver indisponível</ResponseField>
+      <ResponseField name="area_elegivel_financiamento_ha" type="number | null">Uso consolidado SEM deduplicação: soma crua dos polígonos declarados, ainda que sobrepostos entre si. `0.0` quando o CAR não declara uso consolidado; pode vir `null`</ResponseField>
+      <ResponseField name="area_uso_consolidado_ha" type="number | null">Uso consolidado deduplicado (união dos polígonos antes do cálculo). `0.0` quando não declarado; pode vir `null`</ResponseField>
       <ResponseField name="app" type="object | null">
-        Área de Preservação Permanente declarada no CAR. `null` se a camada estiver indisponível
+        Área de Preservação Permanente declarada no CAR. Pode vir `null`
         <Expandable title="app">
           <ResponseField name="area_ha" type="number">`0.0` quando não há APP declarada</ResponseField>
           <ResponseField name="geometry" type="object | null">União dos polígonos de APP em GeoJSON. `null` quando `area_ha` é `0.0`</ResponseField>
         </Expandable>
       </ResponseField>
       <ResponseField name="reserva_legal" type="object | null">
-        Reserva Legal declarada no CAR (união dos polígonos da camada). `null` se a camada estiver indisponível
+        Reserva Legal declarada no CAR (união dos polígonos da camada). Pode vir `null`
         <Expandable title="reserva_legal">
           <ResponseField name="area_ha" type="number">`0.0` quando não há Reserva Legal declarada</ResponseField>
           <ResponseField name="geometry" type="object | null">União dos polígonos de Reserva Legal em GeoJSON. `null` quando `area_ha` é `0.0`</ResponseField>
@@ -122,14 +117,14 @@ dois contadores.
         Embargos que intersectam o imóvel, por órgão
         <Expandable title="embargos">
           <ResponseField name="ibama" type="object | null">
-            `null` se a fonte estiver indisponível
+            Pode vir `null`
             <Expandable title="ibama">
               <ResponseField name="count" type="integer"></ResponseField>
               <ResponseField name="area_ha" type="number">Área da interseção com o imóvel</ResponseField>
             </Expandable>
           </ResponseField>
           <ResponseField name="icmbio" type="object | null">
-            `null` se a fonte estiver indisponível
+            Pode vir `null`
             <Expandable title="icmbio">
               <ResponseField name="count" type="integer"></ResponseField>
               <ResponseField name="area_ha" type="number">Área da interseção com o imóvel</ResponseField>
@@ -138,7 +133,7 @@ dois contadores.
         </Expandable>
       </ResponseField>
       <ResponseField name="sobreposicoes_restritas" type="object">
-        Sobreposição com áreas restritas, cada categoria com `count` e `area_ha` de interseção. Uma categoria individual pode vir `null` se a fonte dela estiver indisponível
+        Sobreposição com áreas restritas, cada categoria com `count` e `area_ha` de interseção. Cada categoria pode vir `null`
         <Expandable title="categorias">
           <ResponseField name="terras_indigenas" type="object | null"></ResponseField>
           <ResponseField name="quilombolas" type="object | null"></ResponseField>
@@ -157,7 +152,7 @@ dois contadores.
         </Expandable>
       </ResponseField>
       <ResponseField name="areas_produtivas" type="object | null">
-        Uso produtivo do solo no ano mais recente do mapeamento (resolução 30 m). O mosaico de usos fica fora das duas classes. `null` quando o raster estiver indisponível
+        Uso produtivo do solo no ano mais recente do mapeamento (resolução 30 m). O mosaico de usos fica fora das duas classes. Pode vir `null`
         <Expandable title="areas_produtivas">
           <ResponseField name="ano" type="integer"></ResponseField>
           <ResponseField name="fonte_resolucao_m" type="integer"></ResponseField>
