@@ -1,13 +1,35 @@
 ---
 title: "DadosFazenda Data API"
-description: "API de dados rurais do Brasil - propriedades, clima, solo, vegetacao e dados ambientais"
+description: "API de dados rurais do Brasil: propriedades, titularidade, ambiental, clima, solo e crédito em um único lugar"
 ---
 
 # DadosFazenda Data API
 
-A DadosFazenda Data API permite consultar dados de propriedades rurais brasileiras de forma unificada, cruzando informacoes de diversas fontes oficiais.
+Consulte dados de qualquer propriedade rural do Brasil de forma unificada:
+cadastro e titularidade, situação ambiental, clima, solo, uso da terra e
+crédito, com os cruzamentos já resolvidos.
 
 As consultas ficam na aba **API Reference**, organizadas por grupos.
+
+## Base URL
+
+```
+https://data.dadosfazenda.com.br
+```
+
+Todas as rotas documentadas usam o prefixo `/v2`.
+
+## Autenticação
+
+Envie sua API key no header de toda requisição:
+
+```bash
+curl "https://data.dadosfazenda.com.br/v2/cpf-car/12345678909" \
+  -H "Authorization: Bearer SUA_API_KEY"
+```
+
+Cada chamada bem-sucedida consome 1 unidade da cota mensal da sua chave.
+Em caso de erro na consulta, a cota é estornada.
 
 ## Formato de resposta
 

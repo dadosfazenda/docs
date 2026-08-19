@@ -1,14 +1,14 @@
 ---
 title: "NDVI por CAR"
 api: "GET /v2/ndvi/car/{codigo_car}/timeseries"
-description: "Serie temporal do indice de vegetacao NDVI para um CAR via Sentinel-2"
+description: "Serie temporal do indice de vegetacao NDVI para um CAR por imagem de satelite"
 ---
 
 ## Descricao
 
 Retorna a serie temporal do indice de vegetacao **NDVI** (Normalized Difference Vegetation Index) para uma propriedade rural a partir do codigo CAR.
 
-O NDVI e calculado a partir de imagens do satelite **Sentinel-2** com resolucao de **10 metros**, usando as bandas NIR (B08) e Red (B04).
+O NDVI e calculado a partir de imagens de satelite com resolucao de **10 metros**, usando as bandas NIR e Red.
 
 **Periodo maximo permitido: 90 dias.**
 
@@ -54,7 +54,7 @@ O NDVI e calculado a partir de imagens do satelite **Sentinel-2** com resolucao 
 
       <Expandable title="datapoint">
         <ResponseField name="scene_id" type="string">
-          Identificador da cena Sentinel-2.
+          Identificador da cena de satelite.
         </ResponseField>
 
         <ResponseField name="scene_date" type="string">
