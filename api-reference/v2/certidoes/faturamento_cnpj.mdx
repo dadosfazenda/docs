@@ -1,0 +1,231 @@
+---
+title: "Faixa de Faturamento por CNPJ"
+api: "POST /v2/certidoes/faturamento_cnpj"
+description: "Cadastro completo do CNPJ com faixa de faturamento, faturamento presumido, porte, CNAEs, quadro societário, filiais e contatos."
+---
+
+## Descrição
+
+Cadastro completo do CNPJ com estimativa de faturamento: faixa de
+faturamento, faturamento presumido, faturamento médio do CNAE, porte,
+natureza jurídica, CNAEs principal e secundários, regime tributário,
+quadro societário, filiais, endereços, telefones e e-mails.
+
+A consulta é **síncrona**: a API processa e retorna os dados estruturados.
+
+## Autenticação
+
+Envie sua API key no header `Authorization: Bearer SEU_TOKEN`. Cada chamada
+bem-sucedida consome **1 unidade** da cota mensal. Em erro de consulta a cota
+é estornada.
+
+## Parâmetros
+
+<ParamField body="cnpj" type="string" required>
+  CNPJ do titular (com ou sem formatação).
+</ParamField>
+
+## Resposta
+
+<ResponseField name="certidao" type="string">
+  Identificador da certidão consultada (`faturamento_cnpj`).
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="retorno" type="object">
+      <Expandable title="retorno">
+        <ResponseField name="cnpj" type="string"></ResponseField>
+        <ResponseField name="razaoSocial" type="string"></ResponseField>
+        <ResponseField name="nomeFantasia" type="string | null"></ResponseField>
+        <ResponseField name="dataFundacao" type="string | null"></ResponseField>
+        <ResponseField name="cnaeCodigo" type="integer">CNAE principal</ResponseField>
+        <ResponseField name="cnaeDescricao" type="string"></ResponseField>
+        <ResponseField name="cnaEsSecundarios" type="array">
+          CNAEs secundários
+          <Expandable title="item">
+            <ResponseField name="cnaeCodigoSecundario" type="integer"></ResponseField>
+            <ResponseField name="cnaeDescricaoSecundario" type="string"></ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="situacaoCadastral" type="string">Situação na Receita Federal (ATIVA, BAIXADA, SUSPENSA...)</ResponseField>
+        <ResponseField name="situacaoEspecial" type="string | null"></ResponseField>
+        <ResponseField name="naturezaJuridicaCodigo" type="integer"></ResponseField>
+        <ResponseField name="naturezaJuridicaDescricao" type="string"></ResponseField>
+        <ResponseField name="naturezaJuridicaTipo" type="string | null"></ResponseField>
+        <ResponseField name="porte" type="string">MICRO EMPRESA, PEQUENA, MEDIA, GRANDE</ResponseField>
+        <ResponseField name="faixaFuncionarios" type="string | null"></ResponseField>
+        <ResponseField name="quantidadeFuncionarios" type="integer"></ResponseField>
+        <ResponseField name="faixaFaturamento" type="string | null">Faixa de faturamento anual estimada</ResponseField>
+        <ResponseField name="faturamentoMedioCNAE" type="string | null">Faturamento médio das empresas do mesmo CNAE</ResponseField>
+        <ResponseField name="faturamentoPresumido" type="string | null">Faturamento anual presumido</ResponseField>
+        <ResponseField name="matriz" type="boolean">`true` quando o CNPJ é a matriz</ResponseField>
+        <ResponseField name="orgaoPublico" type="string | null"></ResponseField>
+        <ResponseField name="ramo" type="string | null"></ResponseField>
+        <ResponseField name="tipoEmpresa" type="string | null"></ResponseField>
+        <ResponseField name="tributacao" type="string | null">Regime tributário</ResponseField>
+        <ResponseField name="opcaoMEI" type="string | null"></ResponseField>
+        <ResponseField name="opcaoSimples" type="string | null"></ResponseField>
+        <ResponseField name="quantidadeFiliais" type="string | null"></ResponseField>
+        <ResponseField name="filiais" type="array">
+          Filiais do CNPJ. Array vazio quando não há
+          <Expandable title="item">
+            <ResponseField name="cnpj" type="string"></ResponseField>
+            <ResponseField name="razaoSocial" type="string"></ResponseField>
+            <ResponseField name="uf" type="string"></ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="telefones" type="array">
+          <Expandable title="item">
+            <ResponseField name="telefoneComDDD" type="string"></ResponseField>
+            <ResponseField name="telemarketingBloqueado" type="boolean"></ResponseField>
+            <ResponseField name="operadora" type="string | null"></ResponseField>
+            <ResponseField name="tipoTelefone" type="string | null"></ResponseField>
+            <ResponseField name="whatsApp" type="boolean"></ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="enderecos" type="array">
+          <Expandable title="item">
+            <ResponseField name="logradouro" type="string"></ResponseField>
+            <ResponseField name="numero" type="string | null"></ResponseField>
+            <ResponseField name="complemento" type="string | null"></ResponseField>
+            <ResponseField name="bairro" type="string | null"></ResponseField>
+            <ResponseField name="cidade" type="string"></ResponseField>
+            <ResponseField name="uf" type="string"></ResponseField>
+            <ResponseField name="cep" type="string | null"></ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="emails" type="array">
+          <Expandable title="item">
+            <ResponseField name="enderecoEmail" type="string"></ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="ultimaAtualizacaoPJ" type="string | null"></ResponseField>
+        <ResponseField name="socios" type="array">
+          Quadro societário
+          <Expandable title="item">
+            <ResponseField name="documento" type="string">CPF/CNPJ do sócio</ResponseField>
+            <ResponseField name="nome" type="string"></ResponseField>
+            <ResponseField name="dataEntrada" type="string | null"></ResponseField>
+            <ResponseField name="cargo" type="string | null"></ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="arquivos" type="array">
+  Lista de arquivos oficiais, quando houver. Esta consulta normalmente não
+  emite comprovante e retorna array vazio.
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST "https://data.dadosfazenda.com.br/v2/certidoes/faturamento_cnpj" \
+  -H "Authorization: Bearer SEU_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "cnpj": "12345678000190"
+  }'
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200 OK
+{
+  "success": true,
+  "message": "Success",
+  "data": {
+    "certidao": "faturamento_cnpj",
+    "data": {
+      "retorno": {
+        "cnpj": "12.345.678/0001-90",
+        "razaoSocial": "EMPRESA EXEMPLO AGRONEGOCIO LTDA",
+        "nomeFantasia": "FAZENDA EXEMPLO",
+        "dataFundacao": "12/05/2014",
+        "cnaeCodigo": 111301,
+        "cnaeDescricao": "Cultivo de milho",
+        "cnaEsSecundarios": [
+          {
+            "cnaeCodigoSecundario": 115600,
+            "cnaeDescricaoSecundario": "Cultivo de soja"
+          }
+        ],
+        "situacaoCadastral": "ATIVA",
+        "situacaoEspecial": null,
+        "naturezaJuridicaCodigo": 2062,
+        "naturezaJuridicaDescricao": "Sociedade Empresária Limitada",
+        "naturezaJuridicaTipo": "Privada",
+        "porte": "PEQUENA EMPRESA",
+        "faixaFuncionarios": "10 a 49",
+        "quantidadeFuncionarios": 18,
+        "faixaFaturamento": "R$ 4.800.000 até R$ 12.000.000",
+        "faturamentoMedioCNAE": "R$ 6.214.500,00",
+        "faturamentoPresumido": "R$ 7.850.320,45",
+        "matriz": true,
+        "orgaoPublico": "NAO",
+        "ramo": "AGRONEGOCIO",
+        "tipoEmpresa": "LTDA",
+        "tributacao": "LUCRO PRESUMIDO",
+        "opcaoMEI": "NAO",
+        "opcaoSimples": "NAO",
+        "quantidadeFiliais": "1",
+        "filiais": [
+          {
+            "cnpj": "12.345.678/0002-71",
+            "razaoSocial": "EMPRESA EXEMPLO AGRONEGOCIO LTDA",
+            "uf": "GO"
+          }
+        ],
+        "telefones": [
+          {
+            "telefoneComDDD": "62999990001",
+            "telemarketingBloqueado": false,
+            "operadora": "OPERADORA",
+            "tipoTelefone": "CELULAR",
+            "whatsApp": true
+          }
+        ],
+        "enderecos": [
+          {
+            "logradouro": "RODOVIA GO-000",
+            "numero": "KM 12",
+            "complemento": null,
+            "bairro": "ZONA RURAL",
+            "cidade": "RIO VERDE",
+            "uf": "GO",
+            "cep": "75900000"
+          }
+        ],
+        "emails": [
+          { "enderecoEmail": "CONTATO@EXEMPLO.COM.BR" }
+        ],
+        "ultimaAtualizacaoPJ": "01/08/2026",
+        "socios": [
+          {
+            "documento": "123.456.789-09",
+            "nome": "TITULAR EXEMPLO",
+            "dataEntrada": "12/05/2014",
+            "cargo": "SOCIO-ADMINISTRADOR"
+          }
+        ]
+      }
+    },
+    "arquivos": []
+  }
+}
+```
+
+```json 401 - API key inválida
+{ "detail": "API key invalida." }
+```
+
+```json 429 - cota mensal atingida
+{ "detail": "Limite mensal atingido. Reseta no proximo mes." }
+```
+
+</ResponseExample>

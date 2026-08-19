@@ -255,6 +255,52 @@
                   "api-reference/v2/sobreposicoes/terras-indigenas",
                   "api-reference/v2/sobreposicoes/unidades-conservacao"
                 ]
+              },
+              {
+                "group": "Certidões",
+                "pages": [
+                  "api-reference/v2/certidoes/apf_rural",
+                  "api-reference/v2/certidoes/autos_infracao_por_titular",
+                  "api-reference/v2/certidoes/boa_vista_credito",
+                  "api-reference/v2/certidoes/caf_pf",
+                  "api-reference/v2/certidoes/caf_pj",
+                  "api-reference/v2/certidoes/ccd_pf",
+                  "api-reference/v2/certidoes/ccd_pj",
+                  "api-reference/v2/certidoes/ccir_consulta",
+                  "api-reference/v2/certidoes/cnd",
+                  "api-reference/v2/certidoes/cndir",
+                  "api-reference/v2/certidoes/cndm",
+                  "api-reference/v2/certidoes/cnh",
+                  "api-reference/v2/certidoes/cnj_improbidade",
+                  "api-reference/v2/certidoes/dap",
+                  "api-reference/v2/certidoes/ibama_debitos",
+                  "api-reference/v2/certidoes/ibama_embargos",
+                  "api-reference/v2/certidoes/imoveis_por_titular",
+                  "api-reference/v2/certidoes/lista_suja_trabalho_escravo",
+                  "api-reference/v2/certidoes/mpf",
+                  "api-reference/v2/certidoes/pf_antecedentes",
+                  "api-reference/v2/certidoes/processos_por_titular",
+                  "api-reference/v2/certidoes/protestos_nacional",
+                  "api-reference/v2/certidoes/recibo_car",
+                  "api-reference/v2/certidoes/faturamento_cnpj",
+                  "api-reference/v2/certidoes/scr_bacen",
+                  "api-reference/v2/certidoes/scr_bacen_detalhada",
+                  "api-reference/v2/certidoes/sicor_creditos_car",
+                  "api-reference/v2/certidoes/sintegra",
+                  "api-reference/v2/certidoes/tcu",
+                  "api-reference/v2/certidoes/tcu_consolidada_pj",
+                  "api-reference/v2/certidoes/titularidade_car",
+                  "api-reference/v2/certidoes/tj_certidao",
+                  "api-reference/v2/certidoes/tj_processos",
+                  "api-reference/v2/certidoes/trf",
+                  "api-reference/v2/certidoes/trt",
+                  "api-reference/v2/certidoes/tse",
+                  "api-reference/v2/certidoes/tse_situacao",
+                  "api-reference/v2/certidoes/tst",
+                  "api-reference/v2/certidoes/veicular",
+                  "api-reference/v2/certidoes/veicular_frotas",
+                  "api-reference/v2/certidoes/vinculos_societarios"
+                ]
               }
             ]
           }

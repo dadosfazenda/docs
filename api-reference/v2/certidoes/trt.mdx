@@ -1,0 +1,90 @@
+---
+title: "TRT - Certidão Trabalhista"
+api: "POST /v2/certidoes/trt"
+description: "Certidão no Tribunal Regional do Trabalho da região informada."
+---
+
+## Descrição
+
+Certidão no Tribunal Regional do Trabalho da região informada.
+
+A consulta é **síncrona**: a API processa e retorna os dados estruturados e,
+quando houver, os arquivos oficiais (PDF) com **URL de download assinada
+(validade de 30 minutos)**.
+
+## Autenticação
+
+Envie sua API key no header `Authorization: Bearer SEU_TOKEN`. Cada chamada
+bem-sucedida consome **1 unidade** da cota mensal. Em erro de consulta a cota
+é estornada.
+
+## Parâmetros
+
+<ParamField body="cpf_cnpj" type="string" required>
+  CPF ou CNPJ do titular (apenas dígitos).
+</ParamField>
+
+<ParamField body="regiao_trt" type="string" required>
+  Número da região do TRT (1 a 24).
+</ParamField>
+
+## Resposta
+
+<ResponseField name="certidao" type="string">
+  Identificador da certidão consultada (`trt`).
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Payload estruturado do resultado (varia conforme a certidão).
+</ResponseField>
+
+<ResponseField name="arquivos" type="array">
+  Lista de arquivos oficiais. Cada item traz `filename`, `content_type`,
+  `kind`, `url` (assinada) e `expires_in` (segundos até expirar - 1800 = 30 min).
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST "https://data.dadosfazenda.com.br/v2/certidoes/trt" \
+  -H "Authorization: Bearer SEU_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "cpf_cnpj": "12345678000190",
+    "regiao_trt": "3"
+  }'
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200 OK
+{
+  "success": true,
+  "message": "Success",
+  "data": {
+    "certidao": "trt",
+    "data": { },
+    "arquivos": [
+      {
+        "filename": "trt.pdf",
+        "content_type": "application/pdf",
+        "kind": "official_pdf",
+        "url": "https://data.dadosfazenda.com.br/storage/v1/object/sign/certidoes/...",
+        "expires_in": 1800
+      }
+    ]
+  }
+}
+```
+
+```json 401 - API key inválida
+{ "detail": "API key invalida." }
+```
+
+```json 429 - cota mensal atingida
+{ "detail": "Limite mensal atingido. Reseta no proximo mes." }
+```
+
+</ResponseExample>

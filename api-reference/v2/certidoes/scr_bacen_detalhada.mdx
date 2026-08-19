@@ -1,0 +1,235 @@
+---
+title: "SCR Detalhada - Resumo BACEN"
+api: "POST /v2/certidoes/scr_bacen_detalhada"
+description: "Posição detalhada do SCR do Banco Central por CPF ou CNPJ: responsabilidade total, score, faixa de risco, carteira (limite, a vencer, vencido, prejuízo) e operações por modalidade, com comprovante oficial em PDF."
+---
+
+## Descrição
+
+Posição detalhada do SCR (Sistema de Informações de Créditos) do Banco
+Central por CPF ou CNPJ: responsabilidade total, score e faixa de risco,
+carteira de crédito (limite, a vencer, vencido, prejuízo) e a abertura das
+operações por modalidade, com aging de vencimentos. O SCR consolida as
+operações de crédito reportadas mensalmente pelas instituições financeiras.
+
+A consulta é **síncrona**: a API processa e retorna os dados estruturados e,
+quando houver, os arquivos oficiais (PDF) com **URL de download assinada
+(validade de 30 minutos)**.
+
+## Autenticação
+
+Envie sua API key no header `Authorization: Bearer SEU_TOKEN`. Cada chamada
+bem-sucedida consome **1 unidade** da cota mensal. Em erro de consulta a cota
+é estornada.
+
+## Parâmetros
+
+<ParamField body="cpf_cnpj" type="string" required>
+  CPF ou CNPJ do titular (apenas dígitos).
+</ParamField>
+
+<ParamField body="mesano" type="string">
+  Competência (MMyyyy, ex.: `062026`). Informada, retorna o SCR daquele mês;
+  omitida, retorna a competência mais recente disponível.
+</ParamField>
+
+## Resposta
+
+<ResponseField name="certidao" type="string">
+  Identificador da certidão consultada (`scr_bacen_detalhada`).
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data">
+    <ResponseField name="retorno" type="object">
+      <Expandable title="retorno">
+        <ResponseField name="documentoConsultado" type="string">CPF/CNPJ consultado, formatado</ResponseField>
+        <ResponseField name="dataInicioRelacionamento" type="string | null">Data de início de relacionamento com o sistema financeiro</ResponseField>
+        <ResponseField name="numeroHistorico" type="integer">Número de histórico do registro</ResponseField>
+        <ResponseField name="quantidadeInstituicoes" type="integer">Instituições com operações do titular</ResponseField>
+        <ResponseField name="quantidadeOperacoes" type="integer">Total de operações</ResponseField>
+        <ResponseField name="quantidadeOperacoesDiscordancia" type="integer">Operações em discordância</ResponseField>
+        <ResponseField name="quantidadeOperacoesSubjudice" type="integer">Operações sub judice (sob julgamento)</ResponseField>
+        <ResponseField name="obrigacaoAssumida" type="string | null">Percentual de obrigação assumida</ResponseField>
+        <ResponseField name="percentualDocumentoProcessado" type="string | null">Percentual do documento processado</ResponseField>
+        <ResponseField name="percentualVolumeProcessado" type="string | null">Percentual do volume processado</ResponseField>
+        <ResponseField name="responsabilidadeTotal" type="string | null">Valor de responsabilidade total</ResponseField>
+        <ResponseField name="responsabilidadeTotalSubJudice" type="string | null">Responsabilidade total sub judice</ResponseField>
+        <ResponseField name="responsabilidadeTotalDiscordancia" type="string | null">Responsabilidade total em discordância</ResponseField>
+        <ResponseField name="score" type="string">Pontuação do titular</ResponseField>
+        <ResponseField name="scoreObservacao" type="string | null">Observação do score</ResponseField>
+        <ResponseField name="faixaRisco" type="string">Faixa de risco de crédito</ResponseField>
+        <ResponseField name="riscoIndiretoVendor" type="string | null">Risco indireto vendor</ResponseField>
+        <ResponseField name="riscoTotal" type="string | null">Valor do risco total</ResponseField>
+        <ResponseField name="carteiraCredito" type="object | null">
+          Totais da carteira de crédito
+          <Expandable title="carteiraCredito">
+            <ResponseField name="total" type="string">Total da carteira</ResponseField>
+            <ResponseField name="limite" type="string">Limite</ResponseField>
+            <ResponseField name="prejuizo" type="string">Valor em prejuízo</ResponseField>
+            <ResponseField name="vencer" type="string">Valor a vencer</ResponseField>
+            <ResponseField name="vencido" type="string">Valor vencido</ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="modalidades" type="array">
+          Abertura por modalidade de crédito. Array vazio quando não há operações
+          <Expandable title="item">
+            <ResponseField name="codigoModalidade" type="string">Código da modalidade</ResponseField>
+            <ResponseField name="descricaoModalidade" type="string">Descrição da modalidade</ResponseField>
+            <ResponseField name="limiteCredito" type="string | null">Limite de crédito na modalidade</ResponseField>
+            <ResponseField name="variacaoCambial" type="string | null">Indica se há variação cambial</ResponseField>
+            <ResponseField name="aVencer" type="object">
+              Valores a vencer, por faixa de prazo
+              <Expandable title="aVencer">
+                <ResponseField name="total" type="string"></ResponseField>
+                <ResponseField name="de1a30Dias" type="string"></ResponseField>
+                <ResponseField name="de31a60Dias" type="string"></ResponseField>
+                <ResponseField name="de61a90Dias" type="string"></ResponseField>
+                <ResponseField name="de91a180Dias" type="string"></ResponseField>
+                <ResponseField name="de181a360Dias" type="string"></ResponseField>
+                <ResponseField name="acimaDe361Dias" type="string"></ResponseField>
+              </Expandable>
+            </ResponseField>
+            <ResponseField name="vencido" type="object">
+              Valores vencidos, por faixa de atraso
+              <Expandable title="vencido">
+                <ResponseField name="total" type="string"></ResponseField>
+                <ResponseField name="de1a30Dias" type="string"></ResponseField>
+                <ResponseField name="de31a60Dias" type="string"></ResponseField>
+                <ResponseField name="de61a90Dias" type="string"></ResponseField>
+                <ResponseField name="de91a180Dias" type="string"></ResponseField>
+                <ResponseField name="de181a360Dias" type="string"></ResponseField>
+                <ResponseField name="acimaDe361Dias" type="string"></ResponseField>
+              </Expandable>
+            </ResponseField>
+            <ResponseField name="prejuizo" type="object">
+              Valores em prejuízo, por antiguidade
+              <Expandable title="prejuizo">
+                <ResponseField name="total" type="string"></ResponseField>
+                <ResponseField name="prejuizo12Meses" type="string"></ResponseField>
+                <ResponseField name="prejuizo24Meses" type="string"></ResponseField>
+                <ResponseField name="prejuizo36Meses" type="string"></ResponseField>
+                <ResponseField name="prejuizo48Meses" type="string"></ResponseField>
+                <ResponseField name="acimaDe48Meses" type="string"></ResponseField>
+              </Expandable>
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="arquivos" type="array">
+  Lista de arquivos oficiais, quando houver. Cada item traz `filename`,
+  `content_type`, `kind`, `url` (assinada) e `expires_in` (segundos até
+  expirar - 1800 = 30 min).
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST "https://data.dadosfazenda.com.br/v2/certidoes/scr_bacen_detalhada" \
+  -H "Authorization: Bearer SEU_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "cpf_cnpj": "12345678000190",
+    "mesano": "062026"
+  }'
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200 OK
+{
+  "success": true,
+  "message": "Success",
+  "data": {
+    "certidao": "scr_bacen_detalhada",
+    "data": {
+      "retorno": {
+        "documentoConsultado": "12.345.678/0001-90",
+        "dataInicioRelacionamento": "10/03/2011",
+        "numeroHistorico": 1,
+        "quantidadeInstituicoes": 3,
+        "quantidadeOperacoes": 7,
+        "quantidadeOperacoesDiscordancia": 0,
+        "quantidadeOperacoesSubjudice": 0,
+        "obrigacaoAssumida": "0,00%",
+        "percentualDocumentoProcessado": "100%",
+        "percentualVolumeProcessado": "100%",
+        "responsabilidadeTotal": "R$ 1.482.350,12",
+        "responsabilidadeTotalSubJudice": "R$ 0,00",
+        "responsabilidadeTotalDiscordancia": "R$ 0,00",
+        "score": "712",
+        "scoreObservacao": "Bom pagador",
+        "faixaRisco": "Risco Baixo",
+        "riscoIndiretoVendor": "R$ 0,00",
+        "riscoTotal": "R$ 1.482.350,12",
+        "carteiraCredito": {
+          "total": "R$ 1.482.350,12",
+          "limite": "R$ 250.000,00",
+          "prejuizo": "R$ 0,00",
+          "vencer": "R$ 1.482.350,12",
+          "vencido": "R$ 0,00"
+        },
+        "modalidades": [
+          {
+            "codigoModalidade": "0401",
+            "descricaoModalidade": "Empréstimos - capital de giro",
+            "limiteCredito": "R$ 0,00",
+            "variacaoCambial": "Não",
+            "aVencer": {
+              "total": "R$ 982.350,12",
+              "de1a30Dias": "R$ 45.000,00",
+              "de31a60Dias": "R$ 45.000,00",
+              "de61a90Dias": "R$ 45.000,00",
+              "de91a180Dias": "R$ 135.000,00",
+              "de181a360Dias": "R$ 270.000,00",
+              "acimaDe361Dias": "R$ 442.350,12"
+            },
+            "vencido": {
+              "total": "R$ 0,00",
+              "de1a30Dias": "R$ 0,00",
+              "de31a60Dias": "R$ 0,00",
+              "de61a90Dias": "R$ 0,00",
+              "de91a180Dias": "R$ 0,00",
+              "de181a360Dias": "R$ 0,00",
+              "acimaDe361Dias": "R$ 0,00"
+            },
+            "prejuizo": {
+              "total": "R$ 0,00",
+              "prejuizo12Meses": "R$ 0,00",
+              "prejuizo24Meses": "R$ 0,00",
+              "prejuizo36Meses": "R$ 0,00",
+              "prejuizo48Meses": "R$ 0,00",
+              "acimaDe48Meses": "R$ 0,00"
+            }
+          }
+        ]
+      }
+    },
+    "arquivos": [
+      {
+        "filename": "scr_bacen_detalhada.pdf",
+        "content_type": "application/pdf",
+        "kind": "official_pdf",
+        "url": "https://data.dadosfazenda.com.br/storage/v1/object/sign/certidoes/...",
+        "expires_in": 1800
+      }
+    ]
+  }
+}
+```
+
+```json 401 - API key inválida
+{ "detail": "API key invalida." }
+```
+
+```json 429 - cota mensal atingida
+{ "detail": "Limite mensal atingido. Reseta no proximo mes." }
+```
+
+</ResponseExample>
