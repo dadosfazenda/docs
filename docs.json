@@ -35,14 +35,6 @@
                 ]
               },
               {
-                "group": "Imóvel",
-                "pages": [
-                  "api-reference/v2/camadas",
-                  "api-reference/v2/cadastro",
-                  "api-reference/v2/sobreposicoes-resumo"
-                ]
-              },
-              {
                 "group": "Propriedade Rural",
                 "pages": [
                   "api-reference/v2/consultas/busca-por-cpf",
@@ -51,6 +43,14 @@
                   "api-reference/v2/consultas/car/busca-coordenadas",
                   "api-reference/v2/consultas/car/demonstrativo",
                   "api-reference/v2/consultas/car/proprietarios"
+                ]
+              },
+              {
+                "group": "Imóvel",
+                "pages": [
+                  "api-reference/v2/camadas",
+                  "api-reference/v2/cadastro",
+                  "api-reference/v2/sobreposicoes-resumo"
                 ]
               },
               {
