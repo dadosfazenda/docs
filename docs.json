@@ -69,7 +69,9 @@
                 "pages": [
                   "api-reference/car/area-financiavel",
                   "api-reference/sicor/creditos-por-car",
-                  "api-reference/sicor/creditos-por-cpf"
+                  "api-reference/sicor/creditos-por-cpf",
+                  "api-reference/scr/consulta-scr",
+                  "api-reference/pj/consulta-completa-pj"
                 ]
               },
               {
@@ -213,7 +215,9 @@
                 "pages": [
                   "api-reference/v2/consultas/car/area-financiavel",
                   "api-reference/v2/consultas/sicor/creditos-por-car",
-                  "api-reference/v2/consultas/sicor/creditos-por-cpf"
+                  "api-reference/v2/consultas/sicor/creditos-por-cpf",
+                  "api-reference/v2/consultas/scr/consulta-scr",
+                  "api-reference/v2/consultas/pj/consulta-completa-pj"
                 ]
               },
               {
