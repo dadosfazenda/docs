@@ -11,7 +11,10 @@ cadastro, quadros de área (reserva legal, APP, vegetação nativa, uso restrito
 servidões e sobreposições) e restrições apontadas na análise.
 
 A consulta é feita na base oficial no momento da chamada, então reflete o
-estado atual do cadastro, inclusive cancelamentos e retificações.
+estado atual do cadastro, inclusive cancelamentos e retificações. Junto do
+demonstrativo, a resposta traz `dados_car`, o cadastro do CAR na nossa base
+geográfica (área, status, condição e centroide), sem consulta externa
+adicional.
 
 <ParamField path="codigo_car" type="string" required>
   Código do CAR. Exemplo: `GO-5211909-18293A4B5C6D7E8F90A1B2C3D4E5F607`
@@ -19,6 +22,23 @@ estado atual do cadastro, inclusive cancelamentos e retificações.
 
 ## Resposta
 
+<ResponseField name="dados_car" type="object | null">
+  Cadastro do CAR na base local. `null` quando o CAR ainda não está na nossa base
+  <Expandable title="dados_car">
+    <ResponseField name="codigo_car" type="string"></ResponseField>
+    <ResponseField name="municipio" type="string | null"></ResponseField>
+    <ResponseField name="uf" type="string | null"></ResponseField>
+    <ResponseField name="area_ha" type="number | null"></ResponseField>
+    <ResponseField name="modulos_fiscais" type="number | null"></ResponseField>
+    <ResponseField name="status" type="string | null">Sigla do SICAR: `AT`, `PE`, `CA`, `SU`</ResponseField>
+    <ResponseField name="tipo_imovel" type="string | null">`IRU`, `AST` ou `PCT`</ResponseField>
+    <ResponseField name="condicao" type="string | null">Condição da análise</ResponseField>
+    <ResponseField name="data_cadastro" type="string | null"></ResponseField>
+    <ResponseField name="data_atualizacao" type="string | null"></ResponseField>
+    <ResponseField name="latitude" type="number | null">Centroide do imóvel</ResponseField>
+    <ResponseField name="longitude" type="number | null">Centroide do imóvel</ResponseField>
+  </Expandable>
+</ResponseField>
 <ResponseField name="demonstrativo" type="object">
   <Expandable title="demonstrativo">
     <ResponseField name="cabecalho" type="object">
@@ -127,6 +147,20 @@ curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-18293A4B5C6D7E8F90A1B2C
   "success": true,
   "message": null,
   "data": {
+    "dados_car": {
+      "codigo_car": "GO-5211909-18293A4B5C6D7E8F90A1B2C3D4E5F607",
+      "municipio": "Jataí",
+      "uf": "GO",
+      "area_ha": 19.524,
+      "modulos_fiscais": 0.4881,
+      "status": "CA",
+      "tipo_imovel": "IRU",
+      "condicao": "Cancelado por decisão administrativa",
+      "data_cadastro": "2016-10-18",
+      "data_atualizacao": "2026-08-05",
+      "latitude": -17.4043253615804,
+      "longitude": -51.9005202281792
+    },
     "demonstrativo": {
       "cabecalho": {
         "codigo": "GO-5211909-18293A4B5C6D7E8F90A1B2C3D4E5F607",

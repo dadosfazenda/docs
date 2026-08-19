@@ -35,7 +35,6 @@
                   "api-reference/cpf-car-completo",
                   "api-reference/detalhes-imovel",
                   "api-reference/car/busca-coordenadas",
-                  "api-reference/car/info",
                   "api-reference/car/demonstrativo",
                   "api-reference/car/proprietarios"
                 ]
@@ -179,7 +178,6 @@
                   "api-reference/v2/consultas/cpf-car-completa",
                   "api-reference/v2/consultas/detalhes-imovel",
                   "api-reference/v2/consultas/car/busca-coordenadas",
-                  "api-reference/v2/consultas/car/info",
                   "api-reference/v2/consultas/car/demonstrativo",
                   "api-reference/v2/consultas/car/proprietarios"
                 ]
