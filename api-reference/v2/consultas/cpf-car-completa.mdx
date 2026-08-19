@@ -12,8 +12,11 @@ elegível para financiamento, embargos IBAMA e ICMBio, APP com polígono,
 sobreposição com áreas restritas e com outros CARs, e as áreas produtivas
 (lavoura e pastagem) vetorizadas do mapeamento de uso do solo.
 
-Mesma chamada externa da busca simples (uma consulta, cache de 7 dias); todo o
-enriquecimento é processado localmente.
+Diferente da busca simples, a Completa também localiza CARs que NÃO têm
+imóvel registrado no INCRA (posse, ocupação, regularização em curso): eles
+entram com `origem: "SICAR"` via cascata de titularidade e passam pelo mesmo
+enriquecimento. Isso custa uma consulta de titularidade adicional por chamada;
+o restante do enriquecimento é processado localmente.
 
 <ParamField path="cpf_cnpj" type="string" required>
   CPF (11 dígitos) ou CNPJ (14), com ou sem formatação
@@ -24,9 +27,11 @@ enriquecimento é processado localmente.
 <ResponseField name="cpf_cnpj" type="string">Documento consultado, só dígitos</ResponseField>
 <ResponseField name="total_imoveis" type="integer">Imóveis vinculados ao documento</ResponseField>
 <ResponseField name="cars_encontrados" type="integer">Imóveis com CAR localizado</ResponseField>
+<ResponseField name="cars_sem_vinculo_fundiario" type="integer">CARs do titular localizados só no SICAR (sem imóvel no INCRA). Nulo quando a consulta de titularidade estiver indisponível</ResponseField>
 <ResponseField name="propriedades" type="array">
   Imóveis do titular
   <Expandable title="item">
+    <ResponseField name="origem" type="string">Cadastro que ancorou o achado: `INCRA` quando o imóvel veio do cadastro fundiário (CCIR/SNCR); `SICAR` quando o CAR foi localizado pela cascata de titularidade, sem imóvel no INCRA (`codigo_imovel` e `cafir` vêm nulos)</ResponseField>
     <ResponseField name="codigo_imovel" type="string">Código do imóvel no INCRA (SNCR)</ResponseField>
     <ResponseField name="denominacao" type="string">Nome do imóvel</ResponseField>
     <ResponseField name="municipio" type="string"></ResponseField>
@@ -157,6 +162,7 @@ curl "https://data.dadosfazenda.com.br/v2/cpf-car/36595946874/completa" \
     "cars_encontrados": 1,
     "propriedades": [
       {
+        "origem": "INCRA",
         "codigo_imovel": "9301720070807",
         "denominacao": "Fazenda Santo Antonio",
         "municipio": "FIRMINÓPOLIS",
@@ -339,8 +345,27 @@ curl "https://data.dadosfazenda.com.br/v2/cpf-car/36595946874/completa" \
             }
           }
         }
+      },
+      {
+        "origem": "SICAR",
+        "codigo_imovel": null,
+        "denominacao": "POSSE SANTA LUZIA",
+        "municipio": "Jataí",
+        "uf": "GO",
+        "area_total_ha": 19.524,
+        "cafir": null,
+        "matricula": null,
+        "numero_certificado_snci": null,
+        "car": {
+          "codigo_car": "GO-5211909-F784E857816C42E1BD7EB130ADFE0CFC",
+          "area_ha": 19.524,
+          "status": "CA",
+          "municipio": "Jatai",
+          "uf": "GO"
+        }
       }
-    ]
+    ],
+    "cars_sem_vinculo_fundiario": 1
   }
 }
 ```
