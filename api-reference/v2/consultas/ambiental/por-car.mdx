@@ -11,7 +11,7 @@ Retorna dados ambientais completos de um imovel rural. Inclui alertas de desmata
 As imagens de satelite dos alertas sao cacheadas em nosso servidor e entregues via URLs assinadas com validade de **1 hora**.
 
 <ParamField path="codigo_car" type="string" required>
-  Codigo do CAR. Exemplo: `MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17`
+  Codigo do CAR. Exemplo: `MT-5106505-B2C3D4E5F60718293A4B5C6D7E8F90A1`
 </ParamField>
 
 ## Response
@@ -115,7 +115,7 @@ As imagens de satelite dos alertas sao cacheadas em nosso servidor e entregues v
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://data.dadosfazenda.com.br/ambiental/car/MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17" \
+curl -X GET "https://data.dadosfazenda.com.br/ambiental/car/MT-5106505-B2C3D4E5F60718293A4B5C6D7E8F90A1" \
   -H "Authorization: Bearer SEU_TOKEN_API"
 ```
 
@@ -123,7 +123,7 @@ curl -X GET "https://data.dadosfazenda.com.br/ambiental/car/MT-5106505-EC68A6B4C
 import httpx
 
 response = httpx.get(
-    "https://data.dadosfazenda.com.br/ambiental/car/MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17",
+    "https://data.dadosfazenda.com.br/ambiental/car/MT-5106505-B2C3D4E5F60718293A4B5C6D7E8F90A1",
     headers={"Authorization": "Bearer SEU_TOKEN"}
 )
 data = response.json()["data"]

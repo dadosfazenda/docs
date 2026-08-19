@@ -11,7 +11,7 @@ Consulta os proprietários vinculados a um CAR com enriquecimento de dados pesso
 Quando disponíveis, os dados do imóvel (denominação, matrícula, cartório) são retornados dentro de `dados_car`.
 
 <ParamField path="codigo_car" type="string" required>
-  Código do CAR. Exemplo: `GO-5211909-8D9398BED77F4EC88CB75EED7FB0FC42`
+  Código do CAR. Exemplo: `GO-5211909-F60718293A4B5C6D7E8F90A1B2C3D4E5`
 </ParamField>
 
 
@@ -44,8 +44,8 @@ Quando disponíveis, os dados do imóvel (denominação, matrícula, cartório) 
 
       <Expandable title="dados_titulares[]">
         <ResponseField name="nome" type="string">Nome do proprietário conforme fonte original.</ResponseField>
-        <ResponseField name="cpf_cnpj" type="string">CPF ou CNPJ formatado (ex: `841.897.381-15`).</ResponseField>
-        <ResponseField name="cpf" type="string">CPF sem formatação (ex: `84189738115`).</ResponseField>
+        <ResponseField name="cpf_cnpj" type="string">CPF ou CNPJ formatado (ex: `123.456.789-09`).</ResponseField>
+        <ResponseField name="cpf" type="string">CPF sem formatação (ex: `12345678909`).</ResponseField>
         <ResponseField name="cpf_formato" type="string">CPF formatado.</ResponseField>
         <ResponseField name="sexo" type="string">`MASCULINO` ou `FEMININO`.</ResponseField>
         <ResponseField name="data_nascimento" type="string">Data de nascimento.</ResponseField>
@@ -84,7 +84,7 @@ Quando disponíveis, os dados do imóvel (denominação, matrícula, cartório) 
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://data.dadosfazenda.com.br/car/GO-5211909-8D9398BED77F4EC88CB75EED7FB0FC42/proprietarios" \
+curl -X GET "https://data.dadosfazenda.com.br/car/GO-5211909-F60718293A4B5C6D7E8F90A1B2C3D4E5/proprietarios" \
   -H "Authorization: Bearer SEU_TOKEN_API"
 ```
 
@@ -92,7 +92,7 @@ curl -X GET "https://data.dadosfazenda.com.br/car/GO-5211909-8D9398BED77F4EC88CB
 import httpx
 
 response = httpx.get(
-    "https://data.dadosfazenda.com.br/car/GO-5211909-8D9398BED77F4EC88CB75EED7FB0FC42/proprietarios",
+    "https://data.dadosfazenda.com.br/car/GO-5211909-F60718293A4B5C6D7E8F90A1B2C3D4E5/proprietarios",
     headers={"Authorization": "Bearer SEU_TOKEN_API"}
 )
 data = response.json()["data"]
@@ -115,45 +115,45 @@ for t in data["dados_titulares"]:
   "data": {
     "dados_car": {
       "tipo": "IRU",
-      "codigo": "GO-5211909-8D9398BED77F4EC88CB75EED7FB0FC42",
+      "codigo": "GO-5211909-F60718293A4B5C6D7E8F90A1B2C3D4E5",
       "estado": "GO",
       "status": "AT",
       "area_ha": 146.4525,
       "municipio": "Jataí",
-      "denominacao": "FAZENDA LEÃO, LUGAR DENOMINADO RAMALHUDA",
+      "denominacao": "FAZENDA EXEMPLO",
       "matricula": "165",
       "data_matricula": "21/08/1978",
       "cartorio": "Jataí/GO",
       "tipo_imovel": "Imóvel Rural",
       "uf": "GOIÁS",
-      "codigo_protocolo": "GO-5211909-6C67.1755.2B29.BE26.0F1D.AAA6.F80E.3153"
+      "codigo_protocolo": "GO-5211909-AAAA.1111.BBBB.2222.CCCC.3333.DDDD.4444"
     },
     "dados_titulares": [
       {
-        "nome": "ANIRCIO GOUEIA DE MORES JUNIOR",
-        "cpf_cnpj": "841.897.381-15",
-        "cpf": "84189738115",
-        "cpf_formato": "841.897.381-15",
+        "nome": "TITULAR EXEMPLO JUNIOR",
+        "cpf_cnpj": "123.456.789-09",
+        "cpf": "12345678909",
+        "cpf_formato": "123.456.789-09",
         "sexo": "MASCULINO",
-        "data_nascimento": "07/03/1975",
+        "data_nascimento": "05/05/1975",
         "idade": 51,
-        "emails": ["ANIRCIOGOUVEIA@HOTMAIL.COM"],
+        "emails": ["EMAIL@EXEMPLO.COM"],
         "telefones": [
-          { "ddd": "64", "telefone": "999067186", "tipo": "TELEFONE MÓVEL", "operadora": "" },
-          { "ddd": "64", "telefone": "999272854", "tipo": "TELEFONE MÓVEL", "operadora": "" }
+          { "ddd": "64", "telefone": "999990001", "tipo": "TELEFONE MÓVEL", "operadora": "" },
+          { "ddd": "64", "telefone": "999990002", "tipo": "TELEFONE MÓVEL", "operadora": "" }
         ]
       },
       {
-        "nome": "ANIRCIO GOUEIA DE MORES",
-        "cpf_cnpj": "020.772.301-00",
-        "cpf": "02077230100",
-        "cpf_formato": "020.772.301-00",
+        "nome": "TITULAR EXEMPLO",
+        "cpf_cnpj": "987.654.321-00",
+        "cpf": "98765432100",
+        "cpf_formato": "987.654.321-00",
         "sexo": "MASCULINO",
-        "data_nascimento": "02/11/1946",
+        "data_nascimento": "05/05/1946",
         "idade": 79,
-        "emails": ["ANIRCIOGOUVEIA@HOTMAIL.COM"],
+        "emails": ["EMAIL@EXEMPLO.COM"],
         "telefones": [
-          { "ddd": "64", "telefone": "996264596", "tipo": "TELEFONE MÓVEL", "operadora": "" }
+          { "ddd": "64", "telefone": "999990003", "tipo": "TELEFONE MÓVEL", "operadora": "" }
         ]
       }
     ],

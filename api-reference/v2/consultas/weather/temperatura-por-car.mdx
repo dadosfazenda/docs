@@ -12,7 +12,7 @@ a partir do codigo CAR.
 **Periodo maximo permitido: 12 meses (366 dias).**
 
 <ParamField path="codigo_car" type="string" required>
-  Codigo do CAR. Exemplo: `GO-5205513-DAF91DDC4B054D37919111EA3E7322D3`
+  Codigo do CAR. Exemplo: `GO-5205513-D4E5F60718293A4B5C6D7E8F90A1B2C3`
 </ParamField>
 
 <ParamField query="start_date" type="string" required>
@@ -60,7 +60,7 @@ a partir do codigo CAR.
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://data.dadosfazenda.com.br/weather/temperature/car/GO-5205513-DAF91DDC4B054D37919111EA3E7322D3?start_date=2025-01-01&end_date=2025-03-01" \
+curl -X GET "https://data.dadosfazenda.com.br/weather/temperature/car/GO-5205513-D4E5F60718293A4B5C6D7E8F90A1B2C3?start_date=2025-01-01&end_date=2025-03-01" \
   -H "Authorization: Bearer SEU_TOKEN_API"
 ```
 
@@ -68,7 +68,7 @@ curl -X GET "https://data.dadosfazenda.com.br/weather/temperature/car/GO-5205513
 import httpx
 
 response = httpx.get(
-    "https://data.dadosfazenda.com.br/weather/temperature/car/GO-5205513-DAF91DDC4B054D37919111EA3E7322D3",
+    "https://data.dadosfazenda.com.br/weather/temperature/car/GO-5205513-D4E5F60718293A4B5C6D7E8F90A1B2C3",
     params={"start_date": "2025-01-01", "end_date": "2025-03-01"},
     headers={"Authorization": "Bearer SEU_TOKEN"}
 )
@@ -87,7 +87,7 @@ for i, dt in enumerate(data["dates"]):
     "temperature_max": [32.5, 33.1, 31.8],
     "temperature_min": [21.3, 22.0, 20.5],
     "car": {
-      "codigo": "GO-5205513-DAF91DDC4B054D37919111EA3E7322D3",
+      "codigo": "GO-5205513-D4E5F60718293A4B5C6D7E8F90A1B2C3",
       "municipio": "Jussara",
       "estado": "GO",
       "area_ha": 1234.56,

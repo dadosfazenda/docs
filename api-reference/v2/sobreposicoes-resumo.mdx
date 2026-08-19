@@ -11,7 +11,7 @@ intersectam o imóvel. Use o detalhe por camada para obter atributos e polígono
 apenas das camadas com ocorrência.
 
 <ParamField path="codigo_car" type="string" required>
-  Código do CAR. Exemplo: `GO-5211909-40A31261C76845DCBE6C47797F9B7B57`
+  Código do CAR. Exemplo: `GO-5211909-A1B2C3D4E5F60718293A4B5C6D7E8F90`
 </ParamField>
 
 ## Resposta
@@ -22,7 +22,7 @@ apenas das camadas com ocorrência.
 
 <RequestExample>
 ```bash cURL
-curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C47797F9B7B57/sobreposicoes" \
+curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-A1B2C3D4E5F60718293A4B5C6D7E8F90/sobreposicoes" \
   -H "Authorization: Bearer $API_KEY"
 ```
 </RequestExample>
@@ -33,7 +33,7 @@ curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C477
   "success": true,
   "message": null,
   "data": {
-    "codigo_car": "GO-5211909-40A31261C76845DCBE6C47797F9B7B57",
+    "codigo_car": "GO-5211909-A1B2C3D4E5F60718293A4B5C6D7E8F90",
     "sobreposicoes": {
       "mineracao": 1, "outorgas-superficiais": 1, "outorgas-subterraneas": 0,
       "terras-indigenas": 0, "quilombolas": 0, "assentamentos": 0,

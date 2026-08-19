@@ -18,6 +18,32 @@ entram com `origem: "SICAR"` via cascata de titularidade e passam pelo mesmo
 enriquecimento. Isso custa uma consulta de titularidade adicional por chamada;
 o restante do enriquecimento é processado localmente.
 
+<Info>
+**Campos anuláveis.** Vários campos podem vir `null` e o cliente deve tratar
+isso na implementação. As regras gerais:
+
+- Itens com `origem: "SICAR"` vêm sempre com `codigo_imovel`, `cafir` e
+  `numero_certificado_snci` nulos (não há vínculo fundiário).
+- `geometry` (do CAR, da APP e das áreas produtivas) é `null` quando o
+  polígono não existe ou a área da classe é zero.
+- Blocos de enriquecimento (`app`, `areas_produtivas`, `embargos.ibama`,
+  `embargos.icmbio`, itens de `sobreposicoes_restritas`,
+  `area_elegivel_financiamento_ha`, `area_uso_consolidado_ha`) viram `null`
+  individualmente se a fonte daquele bloco estiver indisponível no momento.
+  A consulta não falha por causa de um bloco.
+- Em itens `SICAR` cujo CAR ainda não está na base geográfica local, campos
+  cadastrais como `modulos_fiscais`, `status`, `tipo_imovel`, `condicao`,
+  `data_cadastro`, `data_atualizacao`, `latitude` e `longitude` podem vir
+  nulos ou ausentes.
+</Info>
+
+<Note>
+`total_imoveis` e `cars_encontrados` contam apenas os imóveis do cadastro
+fundiário (INCRA). Os CARs localizados só pela titularidade entram em
+`cars_sem_vinculo_fundiario` e no array `propriedades`, mas não somam nos
+dois contadores.
+</Note>
+
 <ParamField path="cpf_cnpj" type="string" required>
   CPF (11 dígitos) ou CNPJ (14), com ou sem formatação
 </ParamField>
@@ -25,75 +51,77 @@ o restante do enriquecimento é processado localmente.
 ## Resposta
 
 <ResponseField name="cpf_cnpj" type="string">Documento consultado, só dígitos</ResponseField>
-<ResponseField name="total_imoveis" type="integer">Imóveis vinculados ao documento</ResponseField>
-<ResponseField name="cars_encontrados" type="integer">Imóveis com CAR localizado</ResponseField>
-<ResponseField name="cars_sem_vinculo_fundiario" type="integer">CARs do titular localizados só no SICAR (sem imóvel no INCRA). Nulo quando a consulta de titularidade estiver indisponível</ResponseField>
+<ResponseField name="total_imoveis" type="integer">Imóveis do cadastro fundiário (INCRA) vinculados ao documento. Não inclui os achados de origem `SICAR`</ResponseField>
+<ResponseField name="cars_encontrados" type="integer">Quantos desses imóveis têm CAR localizado. Não inclui os achados de origem `SICAR`</ResponseField>
+<ResponseField name="cars_sem_vinculo_fundiario" type="integer | null">CARs do titular localizados só no SICAR (sem imóvel no INCRA). `null` quando a consulta de titularidade estiver indisponível</ResponseField>
 <ResponseField name="propriedades" type="array">
   Imóveis do titular
   <Expandable title="item">
-    <ResponseField name="origem" type="string">Cadastro que ancorou o achado: `INCRA` quando o imóvel veio do cadastro fundiário (CCIR/SNCR); `SICAR` quando o CAR foi localizado pela cascata de titularidade, sem imóvel no INCRA (`codigo_imovel` e `cafir` vêm nulos)</ResponseField>
-    <ResponseField name="codigo_imovel" type="string">Código do imóvel no INCRA (SNCR)</ResponseField>
-    <ResponseField name="denominacao" type="string">Nome do imóvel</ResponseField>
-    <ResponseField name="municipio" type="string"></ResponseField>
-    <ResponseField name="uf" type="string"></ResponseField>
-    <ResponseField name="area_total_ha" type="number"></ResponseField>
-    <ResponseField name="cafir" type="object">
-      Cadastro do imóvel na Receita Federal
+    <ResponseField name="origem" type="string">Cadastro que ancorou o achado: `INCRA` quando o imóvel veio do cadastro fundiário (CCIR/SNCR); `SICAR` quando o CAR foi localizado pela cascata de titularidade, sem imóvel no INCRA</ResponseField>
+    <ResponseField name="codigo_imovel" type="string | null">Código do imóvel no INCRA (SNCR). Sempre `null` quando `origem` é `SICAR`</ResponseField>
+    <ResponseField name="denominacao" type="string | null">Nome do imóvel. Pode vir `null` quando a fonte não informa</ResponseField>
+    <ResponseField name="municipio" type="string | null"></ResponseField>
+    <ResponseField name="uf" type="string | null">Sigla (`GO`) nos itens `INCRA`; nos itens `SICAR` pode vir por extenso (`GOIÁS`)</ResponseField>
+    <ResponseField name="area_total_ha" type="number | null"></ResponseField>
+    <ResponseField name="cafir" type="object | null">
+      Cadastro do imóvel na Receita Federal. Sempre `null` quando `origem` é `SICAR`; pode ser `null` em itens `INCRA` sem NIRF vinculado
       <Expandable title="cafir">
       <ResponseField name="nirf" type="string">NIRF do imóvel na Receita Federal</ResponseField>
       <ResponseField name="area_ha" type="number"></ResponseField>
-      <ResponseField name="nome" type="string"></ResponseField>
+      <ResponseField name="nome" type="string | null"></ResponseField>
       <ResponseField name="situacao_codigo" type="integer"></ResponseField>
       <ResponseField name="situacao" type="string">`ativo`, `cancelado_*` ou `pendencia_*`</ResponseField>
       <ResponseField name="uf" type="string"></ResponseField>
       <ResponseField name="municipio" type="string"></ResponseField>
-      <ResponseField name="cep" type="string"></ResponseField>
+      <ResponseField name="cep" type="string | null"></ResponseField>
       <ResponseField name="imune_isento" type="boolean"></ResponseField>
-      <ResponseField name="sncr_codigo" type="integer"></ResponseField>
-      <ResponseField name="sncr_status" type="string">Status da vinculação com o INCRA</ResponseField>
-      <ResponseField name="data_atualizacao" type="string"></ResponseField>
+      <ResponseField name="sncr_codigo" type="integer | null"></ResponseField>
+      <ResponseField name="sncr_status" type="string | null">Status da vinculação com o INCRA</ResponseField>
+      <ResponseField name="data_atualizacao" type="string | null"></ResponseField>
       <ResponseField name="data_snapshot" type="string"></ResponseField>
       </Expandable>
     </ResponseField>
-    <ResponseField name="matricula" type="string">Matrícula no cartório de registro</ResponseField>
-    <ResponseField name="numero_certificado_snci" type="string">Certificação SNCI, quando houver</ResponseField>
-    <ResponseField name="car" type="object">
-      Cadastro Ambiental Rural do imóvel
+    <ResponseField name="matricula" type="string | null">Matrícula no cartório de registro, quando informada</ResponseField>
+    <ResponseField name="numero_certificado_snci" type="string | null">Certificação SNCI, quando houver. Sempre `null` quando `origem` é `SICAR`</ResponseField>
+    <ResponseField name="car" type="object | null">
+      Cadastro Ambiental Rural do imóvel. `null` quando o imóvel do INCRA não tem CAR localizado (nesse caso `cars_encontrados` fica menor que `total_imoveis`)
       <Expandable title="car">
       <ResponseField name="codigo_car" type="string"></ResponseField>
-      <ResponseField name="nome_imovel" type="string"></ResponseField>
-      <ResponseField name="area_ha" type="number"></ResponseField>
-      <ResponseField name="modulos_fiscais" type="number"></ResponseField>
-      <ResponseField name="municipio" type="string"></ResponseField>
-      <ResponseField name="uf" type="string"></ResponseField>
-      <ResponseField name="status" type="string">Situação do cadastro (Ativo, Pendente, Cancelado, Suspenso)</ResponseField>
-      <ResponseField name="tipo_imovel" type="string"></ResponseField>
-      <ResponseField name="condicao" type="string">Condição da análise</ResponseField>
-      <ResponseField name="data_cadastro" type="string"></ResponseField>
-      <ResponseField name="data_atualizacao" type="string"></ResponseField>
-      <ResponseField name="latitude" type="number">Centroide do imóvel</ResponseField>
-      <ResponseField name="longitude" type="number">Centroide do imóvel</ResponseField>
+      <ResponseField name="nome_imovel" type="string | null">Pode vir `null` quando a fonte não informa</ResponseField>
+      <ResponseField name="area_ha" type="number | null"></ResponseField>
+      <ResponseField name="modulos_fiscais" type="number | null"></ResponseField>
+      <ResponseField name="municipio" type="string | null"></ResponseField>
+      <ResponseField name="uf" type="string | null">Sigla nos itens `INCRA`; por extenso nos itens `SICAR`</ResponseField>
+      <ResponseField name="status" type="string | null">Situação do cadastro. Por extenso nos itens `INCRA` (`Ativo`, `Pendente`, `Cancelado`, `Suspenso`); como sigla do SICAR nos itens `SICAR` (`AT`, `PE`, `CA`, `SU`)</ResponseField>
+      <ResponseField name="tipo_imovel" type="string | null">`Imovel Rural` nos itens `INCRA`; sigla do SICAR (`IRU`, `AST`, `PCT`) nos itens `SICAR`</ResponseField>
+      <ResponseField name="condicao" type="string | null">Condição da análise</ResponseField>
+      <ResponseField name="data_cadastro" type="string | null"></ResponseField>
+      <ResponseField name="data_atualizacao" type="string | null"></ResponseField>
+      <ResponseField name="latitude" type="number | null">Centroide do imóvel</ResponseField>
+      <ResponseField name="longitude" type="number | null">Centroide do imóvel</ResponseField>
 
-      <ResponseField name="geometry" type="object">Perímetro do CAR em GeoJSON (EPSG:4326)</ResponseField>
-      <ResponseField name="area_elegivel_financiamento_ha" type="number">Uso consolidado SEM deduplicação: soma crua dos polígonos declarados, ainda que sobrepostos entre si</ResponseField>
-      <ResponseField name="area_uso_consolidado_ha" type="number">Uso consolidado deduplicado (união dos polígonos antes do cálculo)</ResponseField>
-      <ResponseField name="app" type="object">
-        Área de Preservação Permanente declarada no CAR
+      <ResponseField name="geometry" type="object | null">Perímetro do CAR em GeoJSON (EPSG:4326). `null` quando o polígono não está disponível na base</ResponseField>
+      <ResponseField name="area_elegivel_financiamento_ha" type="number | null">Uso consolidado SEM deduplicação: soma crua dos polígonos declarados, ainda que sobrepostos entre si. `0.0` quando o CAR não declara uso consolidado; `null` se a camada estiver indisponível</ResponseField>
+      <ResponseField name="area_uso_consolidado_ha" type="number | null">Uso consolidado deduplicado (união dos polígonos antes do cálculo). `0.0` quando não declarado; `null` se a camada estiver indisponível</ResponseField>
+      <ResponseField name="app" type="object | null">
+        Área de Preservação Permanente declarada no CAR. `null` se a camada estiver indisponível
         <Expandable title="app">
-          <ResponseField name="area_ha" type="number"></ResponseField>
-          <ResponseField name="geometry" type="object">União dos polígonos de APP em GeoJSON</ResponseField>
+          <ResponseField name="area_ha" type="number">`0.0` quando não há APP declarada</ResponseField>
+          <ResponseField name="geometry" type="object | null">União dos polígonos de APP em GeoJSON. `null` quando `area_ha` é `0.0`</ResponseField>
         </Expandable>
       </ResponseField>
       <ResponseField name="embargos" type="object">
         Embargos que intersectam o imóvel, por órgão
         <Expandable title="embargos">
-          <ResponseField name="ibama" type="object">
+          <ResponseField name="ibama" type="object | null">
+            `null` se a fonte estiver indisponível
             <Expandable title="ibama">
               <ResponseField name="count" type="integer"></ResponseField>
               <ResponseField name="area_ha" type="number">Área da interseção com o imóvel</ResponseField>
             </Expandable>
           </ResponseField>
-          <ResponseField name="icmbio" type="object">
+          <ResponseField name="icmbio" type="object | null">
+            `null` se a fonte estiver indisponível
             <Expandable title="icmbio">
               <ResponseField name="count" type="integer"></ResponseField>
               <ResponseField name="area_ha" type="number">Área da interseção com o imóvel</ResponseField>
@@ -102,39 +130,39 @@ o restante do enriquecimento é processado localmente.
         </Expandable>
       </ResponseField>
       <ResponseField name="sobreposicoes_restritas" type="object">
-        Sobreposição com áreas restritas, cada uma com `count` e `area_ha` de interseção
+        Sobreposição com áreas restritas, cada categoria com `count` e `area_ha` de interseção. Uma categoria individual pode vir `null` se a fonte dela estiver indisponível
         <Expandable title="categorias">
-          <ResponseField name="terras_indigenas" type="object"></ResponseField>
-          <ResponseField name="quilombolas" type="object"></ResponseField>
-          <ResponseField name="ucs_icmbio_federal" type="object"></ResponseField>
-          <ResponseField name="ucs_estaduais" type="object"></ResponseField>
-          <ResponseField name="ucs_municipais" type="object"></ResponseField>
-          <ResponseField name="florestas_publicas" type="object"></ResponseField>
-          <ResponseField name="sitios_arqueologicos" type="object"></ResponseField>
+          <ResponseField name="terras_indigenas" type="object | null"></ResponseField>
+          <ResponseField name="quilombolas" type="object | null"></ResponseField>
+          <ResponseField name="ucs_icmbio_federal" type="object | null"></ResponseField>
+          <ResponseField name="ucs_estaduais" type="object | null"></ResponseField>
+          <ResponseField name="ucs_municipais" type="object | null"></ResponseField>
+          <ResponseField name="florestas_publicas" type="object | null"></ResponseField>
+          <ResponseField name="sitios_arqueologicos" type="object | null"></ResponseField>
         </Expandable>
       </ResponseField>
       <ResponseField name="sobreposicoes_cars" type="array">
-        Outros CARs que se sobrepõem ao imóvel
+        Outros CARs que se sobrepõem ao imóvel, em ordem decrescente de área. Array vazio quando não há sobreposição
         <Expandable title="item">
           <ResponseField name="codigo_car" type="string"></ResponseField>
           <ResponseField name="area_sobreposta_ha" type="number"></ResponseField>
         </Expandable>
       </ResponseField>
-      <ResponseField name="areas_produtivas" type="object">
-        Uso produtivo do solo no ano mais recente do mapeamento (resolução 30 m). O mosaico de usos fica fora das duas classes.
+      <ResponseField name="areas_produtivas" type="object | null">
+        Uso produtivo do solo no ano mais recente do mapeamento (resolução 30 m). O mosaico de usos fica fora das duas classes. `null` quando o raster estiver indisponível
         <Expandable title="areas_produtivas">
           <ResponseField name="ano" type="integer"></ResponseField>
           <ResponseField name="fonte_resolucao_m" type="integer"></ResponseField>
           <ResponseField name="lavoura" type="object">
             <Expandable title="lavoura">
-              <ResponseField name="area_ha" type="number"></ResponseField>
-              <ResponseField name="geometry" type="object">MultiPolygon vetorizado das áreas de lavoura</ResponseField>
+              <ResponseField name="area_ha" type="number">`0.0` quando a classe não ocorre no imóvel</ResponseField>
+              <ResponseField name="geometry" type="object | null">`Polygon` ou `MultiPolygon` vetorizado das áreas de lavoura. `null` quando `area_ha` é `0.0`</ResponseField>
             </Expandable>
           </ResponseField>
           <ResponseField name="pastagem" type="object">
             <Expandable title="pastagem">
-              <ResponseField name="area_ha" type="number"></ResponseField>
-              <ResponseField name="geometry" type="object">MultiPolygon vetorizado das áreas de pasto</ResponseField>
+              <ResponseField name="area_ha" type="number">`0.0` quando a classe não ocorre no imóvel</ResponseField>
+              <ResponseField name="geometry" type="object | null">`Polygon` ou `MultiPolygon` vetorizado das áreas de pasto. `null` quando `area_ha` é `0.0`</ResponseField>
             </Expandable>
           </ResponseField>
         </Expandable>
@@ -146,7 +174,7 @@ o restante do enriquecimento é processado localmente.
 
 <RequestExample>
 ```bash cURL
-curl "https://data.dadosfazenda.com.br/v2/cpf-car/36595946874/completa" \
+curl "https://data.dadosfazenda.com.br/v2/cpf-car/12345678909/completa" \
   -H "Authorization: Bearer $API_KEY"
 ```
 </RequestExample>
@@ -157,211 +185,226 @@ curl "https://data.dadosfazenda.com.br/v2/cpf-car/36595946874/completa" \
   "success": true,
   "message": "Encontrados 1 CAR(s) para o documento",
   "data": {
-    "cpf_cnpj": "36595946874",
+    "cpf_cnpj": "12345678909",
     "total_imoveis": 1,
     "cars_encontrados": 1,
     "propriedades": [
       {
         "origem": "INCRA",
-        "codigo_imovel": "9301720070807",
-        "denominacao": "Fazenda Santo Antonio",
-        "municipio": "FIRMINÓPOLIS",
+        "codigo_imovel": "9300000000001",
+        "denominacao": "FAZENDA EXEMPLO",
+        "municipio": "ACREÚNA",
         "uf": "GO",
-        "area_total_ha": 115.1988,
+        "area_total_ha": 321.9295,
         "cafir": {
-          "nirf": "24238600",
-          "area_ha": 115.2,
+          "nirf": "01234567",
+          "area_ha": 321.9,
+          "nome": "FAZENDA EXEMPLO",
+          "situacao_codigo": 2,
           "situacao": "ativo",
-          "sncr_status": "vinculacao_provisoria"
+          "uf": "GO",
+          "municipio": "ACREUNA",
+          "cep": "75900000",
+          "imune_isento": false,
+          "sncr_codigo": 1,
+          "sncr_status": "vinculacao_provisoria",
+          "data_atualizacao": "2025-03-01",
+          "data_snapshot": "2026-05-01"
         },
-        "matricula": "6076",
+        "matricula": null,
         "numero_certificado_snci": null,
         "car": {
-          "codigo_car": "GO-5207808-D1C4FCD1952442BC8B7AA6B82B16D70E",
-          "area_ha": 115.1764,
-          "modulos_fiscais": 3.8367,
-          "municipio": "Firminópolis",
+          "codigo_car": "GO-5200134-0123456789ABCDEF0123456789ABCDEF",
+          "nome_imovel": null,
+          "area_ha": 321.9295,
+          "modulos_fiscais": 10.7309,
+          "municipio": "Acreúna",
           "uf": "GO",
           "status": "Ativo",
+          "tipo_imovel": "Imovel Rural",
+          "condicao": "Aguardando análise",
+          "data_cadastro": "2021-12-15",
+          "data_atualizacao": "2026-08-05",
+          "latitude": -17.455,
+          "longitude": -50.085,
           "geometry": {
             "type": "MultiPolygon",
             "coordinates": [
               [
                 [
-                  [
-                    -50.27,
-                    -16.61
-                  ],
-                  [
-                    -50.26,
-                    -16.61
-                  ],
-                  [
-                    -50.26,
-                    -16.62
-                  ],
-                  [
-                    -50.27,
-                    -16.61
-                  ]
+                  [-50.09, -17.45],
+                  [-50.08, -17.45],
+                  [-50.08, -17.46],
+                  [-50.09, -17.46],
+                  [-50.09, -17.45]
                 ]
               ]
             ]
           },
-          "area_elegivel_financiamento_ha": 106.8118,
-          "area_uso_consolidado_ha": 106.8118,
-          "app": {
-            "area_ha": 4.21,
-            "geometry": {
-              "type": "MultiPolygon",
-              "coordinates": [
-                [
-                  [
-                    [
-                      -50.268,
-                      -16.615
-                    ],
-                    [
-                      -50.267,
-                      -16.615
-                    ],
-                    [
-                      -50.267,
-                      -16.616
-                    ],
-                    [
-                      -50.268,
-                      -16.615
-                    ]
-                  ]
-                ]
-              ]
-            }
-          },
-          "embargos": {
-            "ibama": {
-              "count": 0,
-              "area_ha": 0.0
-            },
-            "icmbio": {
-              "count": 0,
-              "area_ha": 0.0
-            }
-          },
-          "sobreposicoes_restritas": {
-            "terras_indigenas": {
-              "count": 0,
-              "area_ha": 0.0
-            },
-            "quilombolas": {
-              "count": 0,
-              "area_ha": 0.0
-            },
-            "ucs_icmbio_federal": {
-              "count": 0,
-              "area_ha": 0.0
-            },
-            "ucs_estaduais": {
-              "count": 0,
-              "area_ha": 0.0
-            },
-            "ucs_municipais": {
-              "count": 0,
-              "area_ha": 0.0
-            },
-            "florestas_publicas": {
-              "count": 0,
-              "area_ha": 0.0
-            },
-            "sitios_arqueologicos": {
-              "count": 0,
-              "area_ha": 0.0
-            }
-          },
           "sobreposicoes_cars": [
             {
-              "codigo_car": "GO-5207808-8E11...",
-              "area_sobreposta_ha": 0.42
+              "codigo_car": "GO-5200134-FEDCBA9876543210FEDCBA9876543210",
+              "area_sobreposta_ha": 0.1493
             }
           ],
+          "app": {
+            "area_ha": 0.0,
+            "geometry": null
+          },
+          "area_elegivel_financiamento_ha": 298.4102,
+          "area_uso_consolidado_ha": 296.7315,
+          "embargos": {
+            "ibama": { "count": 0, "area_ha": 0.0 },
+            "icmbio": { "count": 0, "area_ha": 0.0 }
+          },
+          "sobreposicoes_restritas": {
+            "terras_indigenas": { "count": 0, "area_ha": 0.0 },
+            "quilombolas": { "count": 0, "area_ha": 0.0 },
+            "ucs_icmbio_federal": { "count": 0, "area_ha": 0.0 },
+            "ucs_estaduais": { "count": 0, "area_ha": 0.0 },
+            "ucs_municipais": { "count": 0, "area_ha": 0.0 },
+            "florestas_publicas": { "count": 0, "area_ha": 0.0 },
+            "sitios_arqueologicos": { "count": 0, "area_ha": 0.0 }
+          },
           "areas_produtivas": {
             "ano": 2024,
             "fonte_resolucao_m": 30,
             "lavoura": {
-              "area_ha": 98.2283,
+              "area_ha": 263.4144,
               "geometry": {
                 "type": "MultiPolygon",
                 "coordinates": [
                   [
                     [
-                      [
-                        -50.27,
-                        -16.61
-                      ],
-                      [
-                        -50.265,
-                        -16.61
-                      ],
-                      [
-                        -50.265,
-                        -16.615
-                      ],
-                      [
-                        -50.27,
-                        -16.61
-                      ]
+                      [-50.089, -17.451],
+                      [-50.082, -17.451],
+                      [-50.082, -17.458],
+                      [-50.089, -17.458],
+                      [-50.089, -17.451]
                     ]
                   ]
                 ]
               }
             },
-            "pastagem": {
-              "area_ha": 1.4559,
-              "geometry": {
-                "type": "MultiPolygon",
-                "coordinates": [
-                  [
-                    [
-                      [
-                        -50.262,
-                        -16.618
-                      ],
-                      [
-                        -50.261,
-                        -16.618
-                      ],
-                      [
-                        -50.261,
-                        -16.619
-                      ],
-                      [
-                        -50.262,
-                        -16.618
-                      ]
-                    ]
-                  ]
-                ]
-              }
-            }
+            "pastagem": { "area_ha": 0.0, "geometry": null }
           }
         }
       },
       {
         "origem": "SICAR",
         "codigo_imovel": null,
-        "denominacao": "POSSE SANTA LUZIA",
-        "municipio": "Jataí",
-        "uf": "GO",
-        "area_total_ha": 19.524,
+        "denominacao": "POSSE EXEMPLO",
+        "municipio": "Santa Rita do Araguaia",
+        "uf": "GOIÁS",
+        "area_total_ha": 483.5509,
         "cafir": null,
         "matricula": null,
         "numero_certificado_snci": null,
         "car": {
-          "codigo_car": "GO-5211909-F784E857816C42E1BD7EB130ADFE0CFC",
-          "area_ha": 19.524,
-          "status": "CA",
-          "municipio": "Jatai",
-          "uf": "GO"
+          "codigo_car": "GO-5219407-00000000000000000000000000000001",
+          "nome_imovel": "POSSE EXEMPLO",
+          "area_ha": 483.5509,
+          "modulos_fiscais": 8.0592,
+          "municipio": "Santa Rita do Araguaia",
+          "uf": "GOIÁS",
+          "status": "PE",
+          "tipo_imovel": "IRU",
+          "condicao": "Analisado, aguardando atendimento a notificação",
+          "data_cadastro": "2014-09-24",
+          "data_atualizacao": "2026-08-05",
+          "latitude": -17.569,
+          "longitude": -53.202,
+          "geometry": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [-53.21, -17.58],
+                  [-53.19, -17.58],
+                  [-53.19, -17.56],
+                  [-53.21, -17.56],
+                  [-53.21, -17.58]
+                ]
+              ]
+            ]
+          },
+          "sobreposicoes_cars": [
+            {
+              "codigo_car": "GO-5219407-00000000000000000000000000000002",
+              "area_sobreposta_ha": 319.3133
+            },
+            {
+              "codigo_car": "GO-5219407-00000000000000000000000000000003",
+              "area_sobreposta_ha": 271.475
+            },
+            {
+              "codigo_car": "GO-5219407-00000000000000000000000000000004",
+              "area_sobreposta_ha": 27.9165
+            }
+          ],
+          "app": {
+            "area_ha": 12.4108,
+            "geometry": {
+              "type": "MultiPolygon",
+              "coordinates": [
+                [
+                  [
+                    [-53.201, -17.571],
+                    [-53.199, -17.571],
+                    [-53.199, -17.573],
+                    [-53.201, -17.573],
+                    [-53.201, -17.571]
+                  ]
+                ]
+              ]
+            }
+          },
+          "area_elegivel_financiamento_ha": 0.0,
+          "area_uso_consolidado_ha": 0.0,
+          "embargos": {
+            "ibama": { "count": 1, "area_ha": 3.0412 },
+            "icmbio": { "count": 0, "area_ha": 0.0 }
+          },
+          "sobreposicoes_restritas": {
+            "terras_indigenas": { "count": 0, "area_ha": 0.0 },
+            "quilombolas": { "count": 0, "area_ha": 0.0 },
+            "ucs_icmbio_federal": { "count": 0, "area_ha": 0.0 },
+            "ucs_estaduais": { "count": 0, "area_ha": 0.0 },
+            "ucs_municipais": { "count": 0, "area_ha": 0.0 },
+            "florestas_publicas": { "count": 0, "area_ha": 0.0 },
+            "sitios_arqueologicos": { "count": 0, "area_ha": 0.0 }
+          },
+          "areas_produtivas": {
+            "ano": 2024,
+            "fonte_resolucao_m": 30,
+            "lavoura": { "area_ha": 0.0, "geometry": null },
+            "pastagem": {
+              "area_ha": 0.9372,
+              "geometry": {
+                "type": "MultiPolygon",
+                "coordinates": [
+                  [
+                    [
+                      [-53.198, -17.5716],
+                      [-53.1982, -17.5716],
+                      [-53.1982, -17.5713],
+                      [-53.198, -17.5713],
+                      [-53.198, -17.5716]
+                    ]
+                  ],
+                  [
+                    [
+                      [-53.2028, -17.5592],
+                      [-53.2025, -17.5592],
+                      [-53.2025, -17.5597],
+                      [-53.2028, -17.5597],
+                      [-53.2028, -17.5592]
+                    ]
+                  ]
+                ]
+              }
+            }
+          }
         }
       }
     ],

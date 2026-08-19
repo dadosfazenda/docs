@@ -11,7 +11,7 @@ Sítios arqueológicos (IPHAN) que intersectam o imóvel. Informe o código do C
 Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobreposições](/api-reference/v2/sobreposicoes-resumo), que responde todas as camadas de uma vez.
 
 <ParamField path="codigo_car" type="string" required>
-  Código do CAR. Exemplo: `GO-5211909-40A31261C76845DCBE6C47797F9B7B57`
+  Código do CAR. Exemplo: `GO-5211909-A1B2C3D4E5F60718293A4B5C6D7E8F90`
 </ParamField>
 
 <ParamField query="geometria" type="boolean" default="true">
@@ -59,7 +59,7 @@ Para saber apenas SE existe ocorrência (sem os detalhes), use o [resumo de sobr
 
 <RequestExample>
 ```bash cURL
-curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C47797F9B7B57/sobreposicoes/sitios-arqueologicos" \
+curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-A1B2C3D4E5F60718293A4B5C6D7E8F90/sobreposicoes/sitios-arqueologicos" \
   -H "Authorization: Bearer $API_KEY"
 ```
 </RequestExample>
@@ -70,7 +70,7 @@ curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-40A31261C76845DCBE6C477
   "success": true,
   "message": null,
   "data": {
-    "codigo_car": "GO-5211909-40A31261C76845DCBE6C47797F9B7B57",
+    "codigo_car": "GO-5211909-A1B2C3D4E5F60718293A4B5C6D7E8F90",
     "camada": "sitios-arqueologicos",
     "descricao": "Sítios arqueológicos (IPHAN) que intersectam o imóvel",
     "total": 1,

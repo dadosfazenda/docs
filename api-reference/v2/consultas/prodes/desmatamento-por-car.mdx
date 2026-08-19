@@ -13,7 +13,7 @@ Para cada area de desmatamento, retorna a classificacao, ano de deteccao, sateli
 Os resultados sao ordenados por ano (mais recente primeiro) e area de intersecao.
 
 <ParamField path="codigo_car" type="string" required>
-  Codigo do CAR. Exemplo: `MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17`
+  Codigo do CAR. Exemplo: `MT-5106505-B2C3D4E5F60718293A4B5C6D7E8F90A1`
 </ParamField>
 
 <ParamField query="year_min" type="integer">
@@ -69,7 +69,7 @@ Os resultados sao ordenados por ano (mais recente primeiro) e area de intersecao
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://data.dadosfazenda.com.br/prodes/car/MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17?year_min=2020" \
+curl -X GET "https://data.dadosfazenda.com.br/prodes/car/MT-5106505-B2C3D4E5F60718293A4B5C6D7E8F90A1?year_min=2020" \
   -H "Authorization: Bearer SEU_TOKEN_API"
 ```
 
@@ -77,7 +77,7 @@ curl -X GET "https://data.dadosfazenda.com.br/prodes/car/MT-5106505-EC68A6B4C2AF
 import httpx
 
 response = httpx.get(
-    "https://data.dadosfazenda.com.br/prodes/car/MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17",
+    "https://data.dadosfazenda.com.br/prodes/car/MT-5106505-B2C3D4E5F60718293A4B5C6D7E8F90A1",
     params={"year_min": 2020},
     headers={"Authorization": "Bearer SEU_TOKEN_API"}
 )
@@ -94,7 +94,7 @@ for d in data["desmatamentos"]:
 {
   "success": true,
   "data": {
-    "codigo_car": "MT-5106505-EC68A6B4C2AF4EB283BCE84BF6D56A17",
+    "codigo_car": "MT-5106505-B2C3D4E5F60718293A4B5C6D7E8F90A1",
     "total": 2,
     "desmatamentos": [
       {
@@ -138,7 +138,7 @@ for d in data["desmatamentos"]:
 {
   "success": true,
   "data": {
-    "codigo_car": "GO-5211909-8D9398BED77F4EC88CB75EED7FB0FC42",
+    "codigo_car": "GO-5211909-F60718293A4B5C6D7E8F90A1B2C3D4E5",
     "total": 0,
     "desmatamentos": []
   }

@@ -38,7 +38,7 @@ Validacoes que falham (telefone invalido, CAR inexistente) **nao consomem cota**
 </ParamField>
 
 <ParamField query="codigo_car" type="string">
-  Codigo SICAR do imovel (ex: `MG-3111507-DBEB9FF072D2402FA066E8AF2F60CF71`).
+  Codigo SICAR do imovel (ex: `MG-3111507-0718293A4B5C6D7E8F90A1B2C3D4E5F6`).
   Alternativa a lat/lng.
 </ParamField>
 
@@ -87,7 +87,7 @@ curl -X POST "https://data.dadosfazenda.com.br/internal/partners/farm-scan?lat=-
 ```
 
 ```bash cURL - por CAR
-curl -X POST "https://data.dadosfazenda.com.br/internal/partners/farm-scan?codigo_car=MG-3111507-DBEB9FF072D2402FA066E8AF2F60CF71" \
+curl -X POST "https://data.dadosfazenda.com.br/internal/partners/farm-scan?codigo_car=MG-3111507-0718293A4B5C6D7E8F90A1B2C3D4E5F6" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -H "Content-Type: application/json" \
   -d '{
@@ -107,7 +107,7 @@ curl -X POST "https://data.dadosfazenda.com.br/internal/partners/farm-scan?codig
   "message": "Success",
   "data": {
     "status": "processing",
-    "codigo_car": "MG-3111507-DBEB9FF072D2402FA066E8AF2F60CF71",
+    "codigo_car": "MG-3111507-0718293A4B5C6D7E8F90A1B2C3D4E5F6",
     "recipient_phone": "5511999999999",
     "delivery": "whatsapp_template"
   }

@@ -11,6 +11,14 @@ cadastro fundiário (INCRA/SNCR), inscrição na Receita Federal (CAFIR),
 matrícula e o CAR de cada imóvel. Uma chamada externa por consulta, com cache
 de 7 dias; o vínculo com o CAR é resolvido na base local.
 
+<Info>
+**Campos anuláveis.** `matricula`, `numero_certificado_snci`, `cafir` e o
+próprio bloco `car` podem vir `null` (imóvel sem matrícula informada, sem
+NIRF vinculado ou sem CAR localizado). Dentro de `car`, campos cadastrais
+como `nome_imovel`, `modulos_fiscais`, `condicao`, datas e centroide também
+podem vir nulos quando a fonte não informa. Trate isso na implementação.
+</Info>
+
 <ParamField path="cpf_cnpj" type="string" required>
   CPF (11 dígitos) ou CNPJ (14), com ou sem formatação
 </ParamField>
@@ -24,46 +32,46 @@ de 7 dias; o vínculo com o CAR é resolvido na base local.
   Imóveis do titular
   <Expandable title="item">
     <ResponseField name="codigo_imovel" type="string">Código do imóvel no INCRA (SNCR)</ResponseField>
-    <ResponseField name="denominacao" type="string">Nome do imóvel</ResponseField>
-    <ResponseField name="municipio" type="string"></ResponseField>
-    <ResponseField name="uf" type="string"></ResponseField>
-    <ResponseField name="area_total_ha" type="number"></ResponseField>
-    <ResponseField name="cafir" type="object">
-      Cadastro do imóvel na Receita Federal
+    <ResponseField name="denominacao" type="string | null">Nome do imóvel. Pode vir `null` quando a fonte não informa</ResponseField>
+    <ResponseField name="municipio" type="string | null"></ResponseField>
+    <ResponseField name="uf" type="string | null"></ResponseField>
+    <ResponseField name="area_total_ha" type="number | null"></ResponseField>
+    <ResponseField name="cafir" type="object | null">
+      Cadastro do imóvel na Receita Federal. `null` quando o imóvel não tem NIRF vinculado
       <Expandable title="cafir">
       <ResponseField name="nirf" type="string">NIRF do imóvel na Receita Federal</ResponseField>
       <ResponseField name="area_ha" type="number"></ResponseField>
-      <ResponseField name="nome" type="string"></ResponseField>
+      <ResponseField name="nome" type="string | null"></ResponseField>
       <ResponseField name="situacao_codigo" type="integer"></ResponseField>
       <ResponseField name="situacao" type="string">`ativo`, `cancelado_*` ou `pendencia_*`</ResponseField>
       <ResponseField name="uf" type="string"></ResponseField>
       <ResponseField name="municipio" type="string"></ResponseField>
-      <ResponseField name="cep" type="string"></ResponseField>
+      <ResponseField name="cep" type="string | null"></ResponseField>
       <ResponseField name="imune_isento" type="boolean"></ResponseField>
-      <ResponseField name="sncr_codigo" type="integer"></ResponseField>
-      <ResponseField name="sncr_status" type="string">Status da vinculação com o INCRA</ResponseField>
-      <ResponseField name="data_atualizacao" type="string"></ResponseField>
+      <ResponseField name="sncr_codigo" type="integer | null"></ResponseField>
+      <ResponseField name="sncr_status" type="string | null">Status da vinculação com o INCRA</ResponseField>
+      <ResponseField name="data_atualizacao" type="string | null"></ResponseField>
       <ResponseField name="data_snapshot" type="string"></ResponseField>
       </Expandable>
     </ResponseField>
-    <ResponseField name="matricula" type="string">Matrícula no cartório de registro</ResponseField>
-    <ResponseField name="numero_certificado_snci" type="string">Certificação SNCI, quando houver</ResponseField>
-    <ResponseField name="car" type="object">
-      Cadastro Ambiental Rural do imóvel
+    <ResponseField name="matricula" type="string | null">Matrícula no cartório de registro, quando informada</ResponseField>
+    <ResponseField name="numero_certificado_snci" type="string | null">Certificação SNCI, quando houver</ResponseField>
+    <ResponseField name="car" type="object | null">
+      Cadastro Ambiental Rural do imóvel. `null` quando o imóvel não tem CAR localizado (nesse caso `cars_encontrados` fica menor que `total_imoveis`)
       <Expandable title="car">
       <ResponseField name="codigo_car" type="string"></ResponseField>
-      <ResponseField name="nome_imovel" type="string"></ResponseField>
-      <ResponseField name="area_ha" type="number"></ResponseField>
-      <ResponseField name="modulos_fiscais" type="number"></ResponseField>
-      <ResponseField name="municipio" type="string"></ResponseField>
-      <ResponseField name="uf" type="string"></ResponseField>
-      <ResponseField name="status" type="string">Situação do cadastro (Ativo, Pendente, Cancelado, Suspenso)</ResponseField>
-      <ResponseField name="tipo_imovel" type="string"></ResponseField>
-      <ResponseField name="condicao" type="string">Condição da análise</ResponseField>
-      <ResponseField name="data_cadastro" type="string"></ResponseField>
-      <ResponseField name="data_atualizacao" type="string"></ResponseField>
-      <ResponseField name="latitude" type="number">Centroide do imóvel</ResponseField>
-      <ResponseField name="longitude" type="number">Centroide do imóvel</ResponseField>
+      <ResponseField name="nome_imovel" type="string | null">Pode vir `null` quando a fonte não informa</ResponseField>
+      <ResponseField name="area_ha" type="number | null"></ResponseField>
+      <ResponseField name="modulos_fiscais" type="number | null"></ResponseField>
+      <ResponseField name="municipio" type="string | null"></ResponseField>
+      <ResponseField name="uf" type="string | null"></ResponseField>
+      <ResponseField name="status" type="string | null">Situação do cadastro (Ativo, Pendente, Cancelado, Suspenso)</ResponseField>
+      <ResponseField name="tipo_imovel" type="string | null"></ResponseField>
+      <ResponseField name="condicao" type="string | null">Condição da análise</ResponseField>
+      <ResponseField name="data_cadastro" type="string | null"></ResponseField>
+      <ResponseField name="data_atualizacao" type="string | null"></ResponseField>
+      <ResponseField name="latitude" type="number | null">Centroide do imóvel</ResponseField>
+      <ResponseField name="longitude" type="number | null">Centroide do imóvel</ResponseField>
       </Expandable>
     </ResponseField>
   </Expandable>
@@ -71,7 +79,7 @@ de 7 dias; o vínculo com o CAR é resolvido na base local.
 
 <RequestExample>
 ```bash cURL
-curl "https://data.dadosfazenda.com.br/cpf-car/36595946874" \
+curl "https://data.dadosfazenda.com.br/cpf-car/12345678909" \
   -H "Authorization: Bearer $API_KEY"
 ```
 </RequestExample>
@@ -82,35 +90,35 @@ curl "https://data.dadosfazenda.com.br/cpf-car/36595946874" \
   "success": true,
   "message": "Encontrados 1 CAR(s) para o documento",
   "data": {
-    "cpf_cnpj": "36595946874",
+    "cpf_cnpj": "12345678909",
     "total_imoveis": 1,
     "cars_encontrados": 1,
     "propriedades": [
       {
-        "codigo_imovel": "9301720070807",
-        "denominacao": "Fazenda Santo Antonio",
+        "codigo_imovel": "9300000000001",
+        "denominacao": "Fazenda Exemplo",
         "municipio": "FIRMINÓPOLIS",
         "uf": "GO",
         "area_total_ha": 115.1988,
         "cafir": {
-          "nirf": "24238600",
+          "nirf": "01234567",
           "area_ha": 115.2,
-          "nome": "FAZENDA SANTO ANTONIO",
+          "nome": "FAZENDA EXEMPLO",
           "situacao_codigo": 2,
           "situacao": "ativo",
           "uf": "GO",
           "municipio": "FIRMINOPOLIS",
-          "cep": "76105000",
+          "cep": "76100000",
           "imune_isento": false,
           "sncr_codigo": 1,
           "sncr_status": "vinculacao_provisoria",
           "data_atualizacao": "2024-09-13",
           "data_snapshot": "2026-05-01"
         },
-        "matricula": "6076",
+        "matricula": "12345",
         "numero_certificado_snci": null,
         "car": {
-          "codigo_car": "GO-5207808-D1C4FCD1952442BC8B7AA6B82B16D70E",
+          "codigo_car": "GO-5207808-0123456789ABCDEF0123456789ABCDEF",
           "nome_imovel": null,
           "area_ha": 115.1764,
           "modulos_fiscais": 3.8367,
@@ -121,8 +129,8 @@ curl "https://data.dadosfazenda.com.br/cpf-car/36595946874" \
           "condicao": "Aguardando análise",
           "data_cadastro": "2019-02-14",
           "data_atualizacao": "2026-08-05",
-          "latitude": -16.613866,
-          "longitude": -50.268692
+          "latitude": -16.61,
+          "longitude": -50.27
         }
       }
     ]

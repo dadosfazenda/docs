@@ -12,7 +12,7 @@ O demonstrativo contem informacoes detalhadas sobre reserva legal, APP, vegetaca
 Quando existe correspondencia no SIGEF (parcela certificada pelo INCRA que intersecta o CAR), retorna tambem os dados do imovel em `dados_imovel`. Dados sensiveis do proprietario sao anonimizados.
 
 <ParamField path="codigo_car" type="string" required>
-  Codigo do CAR. Exemplo: `GO-5203401-617CD0C0367A49CD809862F382945511`
+  Codigo do CAR. Exemplo: `GO-5203401-C3D4E5F60718293A4B5C6D7E8F90A1B2`
 </ParamField>
 
 <ParamField query="min_sobreposicao" type="number" default={10.0}>
@@ -201,7 +201,7 @@ Quando existe correspondencia no SIGEF (parcela certificada pelo INCRA que inter
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://data.dadosfazenda.com.br/car/GO-5203401-617CD0C0367A49CD809862F382945511/info" \
+curl -X GET "https://data.dadosfazenda.com.br/car/GO-5203401-C3D4E5F60718293A4B5C6D7E8F90A1B2/info" \
   -H "Authorization: Bearer SEU_TOKEN_API"
 ```
 
@@ -209,7 +209,7 @@ curl -X GET "https://data.dadosfazenda.com.br/car/GO-5203401-617CD0C0367A49CD809
 import httpx
 
 response = httpx.get(
-    "https://data.dadosfazenda.com.br/car/GO-5203401-617CD0C0367A49CD809862F382945511/info",
+    "https://data.dadosfazenda.com.br/car/GO-5203401-C3D4E5F60718293A4B5C6D7E8F90A1B2/info",
     headers={"Authorization": "Bearer SEU_TOKEN"}
 )
 data = response.json()["data"]
@@ -235,7 +235,7 @@ if imovel:
   "message": "CAR encontrado",
   "data": {
     "dados_car": {
-      "codigo": "GO-5203401-617CD0C0367A49CD809862F382945511",
+      "codigo": "GO-5203401-C3D4E5F60718293A4B5C6D7E8F90A1B2",
       "municipio": "Bom Jardim de Goias",
       "estado": "GO",
       "codigo_municipio": "5203401",
@@ -289,7 +289,7 @@ if imovel:
     },
     "demonstrativo": {
       "cabecalho": {
-        "codigo": "GO-5203401-617CD0C0367A49CD809862F382945511",
+        "codigo": "GO-5203401-C3D4E5F60718293A4B5C6D7E8F90A1B2",
         "municipio": "Bom Jardim de Goias",
         "estado": "GO",
         "area_ha": 877.93,

@@ -11,7 +11,7 @@ Retorna dados de precipitacao diaria acumulada (em milimetros) para o centroide 
 **Periodo maximo permitido: 12 meses (366 dias).**
 
 <ParamField path="codigo_car" type="string" required>
-  Codigo do CAR. Exemplo: `GO-5205513-DAF91DDC4B054D37919111EA3E7322D3`
+  Codigo do CAR. Exemplo: `GO-5205513-D4E5F60718293A4B5C6D7E8F90A1B2C3`
 </ParamField>
 
 <ParamField query="start_date" type="string" required>
@@ -55,7 +55,7 @@ Retorna dados de precipitacao diaria acumulada (em milimetros) para o centroide 
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://data.dadosfazenda.com.br/weather/precipitation/car/GO-5205513-DAF91DDC4B054D37919111EA3E7322D3?start_date=2025-01-01&end_date=2025-03-01" \
+curl -X GET "https://data.dadosfazenda.com.br/weather/precipitation/car/GO-5205513-D4E5F60718293A4B5C6D7E8F90A1B2C3?start_date=2025-01-01&end_date=2025-03-01" \
   -H "Authorization: Bearer SEU_TOKEN_API"
 ```
 
@@ -63,7 +63,7 @@ curl -X GET "https://data.dadosfazenda.com.br/weather/precipitation/car/GO-52055
 import httpx
 
 response = httpx.get(
-    "https://data.dadosfazenda.com.br/weather/precipitation/car/GO-5205513-DAF91DDC4B054D37919111EA3E7322D3",
+    "https://data.dadosfazenda.com.br/weather/precipitation/car/GO-5205513-D4E5F60718293A4B5C6D7E8F90A1B2C3",
     params={"start_date": "2025-01-01", "end_date": "2025-03-01"},
     headers={"Authorization": "Bearer SEU_TOKEN"}
 )
@@ -81,7 +81,7 @@ print(f"Precipitacao total: {total:.1f} mm")
     "dates": ["2025-01-01", "2025-01-02", "2025-01-03"],
     "precipitation": [12.5, 0.0, 8.3],
     "car": {
-      "codigo": "GO-5205513-DAF91DDC4B054D37919111EA3E7322D3",
+      "codigo": "GO-5205513-D4E5F60718293A4B5C6D7E8F90A1B2C3",
       "municipio": "Jussara",
       "estado": "GO",
       "area_ha": 1234.56,

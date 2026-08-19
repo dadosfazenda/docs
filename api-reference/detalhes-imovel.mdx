@@ -14,7 +14,7 @@ Os dados sao cacheados por 7 dias para evitar consultas repetidas.
 <ParamField path="codigo_imovel" type="string" required>
   Codigo do imovel (retornado como `codigo_imovel` na rota de listagem).
 
-  Exemplo: `433133781`
+  Exemplo: `123456789`
 </ParamField>
 
 ## Response
@@ -30,7 +30,7 @@ Os dados sao cacheados por 7 dias para evitar consultas repetidas.
     </ResponseField>
 
     <ResponseField name="denominacao" type="string">
-      Nome do imovel (ex: `Fazenda Esperanca`).
+      Nome do imovel (ex: `Fazenda Exemplo`).
     </ResponseField>
 
     <ResponseField name="municipio" type="string">
@@ -164,7 +164,7 @@ Os dados sao cacheados por 7 dias para evitar consultas repetidas.
 
       <Expandable title="car">
         <ResponseField name="codigo" type="string">
-          Codigo do CAR (ex: `GO-5203401-617CD0C0367A49CD809862F382945511`).
+          Codigo do CAR (ex: `GO-5203401-C3D4E5F60718293A4B5C6D7E8F90A1B2`).
         </ResponseField>
 
         <ResponseField name="municipio" type="string">
@@ -201,7 +201,7 @@ Os dados sao cacheados por 7 dias para evitar consultas repetidas.
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://data.dadosfazenda.com.br/imovel/433133781" \
+curl -X GET "https://data.dadosfazenda.com.br/imovel/123456789" \
   -H "Authorization: Bearer SEU_TOKEN_API"
 ```
 
@@ -209,7 +209,7 @@ curl -X GET "https://data.dadosfazenda.com.br/imovel/433133781" \
 import httpx
 
 response = httpx.get(
-    "https://data.dadosfazenda.com.br/imovel/433133781",
+    "https://data.dadosfazenda.com.br/imovel/123456789",
     headers={"Authorization": "Bearer SEU_TOKEN"}
 )
 data = response.json()
@@ -224,10 +224,10 @@ for t in data["data"]["titulares"]:
 <ResponseExample>
 ```json 200 - Sucesso
 {
-  "message": "Dados do imovel 433133781",
+  "message": "Dados do imovel 123456789",
   "data": {
-    "codigo_imovel": "433133781",
-    "denominacao": "Fazenda Esperanca",
+    "codigo_imovel": "123456789",
+    "denominacao": "Fazenda Exemplo",
     "municipio": "BOM JARDIM DE GOIAS",
     "uf": "GO",
     "area_total_ha": 877.4,
@@ -239,8 +239,8 @@ for t in data["data"]["titulares"]:
     "modulos_fiscais": 19.4977,
     "titulares": [
       {
-        "nome": "Doacir Silveira De Freitas",
-        "cpf_cnpj": "09139648168",
+        "nome": "Titular Exemplo",
+        "cpf_cnpj": "12345678909",
         "condicao": "Proprietario Ou Posseiro Individual",
         "percentual": 100
       }
@@ -257,13 +257,13 @@ for t in data["data"]["titulares"]:
         "uf_cartorio": "GO"
       }
     ],
-    "ccir": "72142419254",
+    "ccir": "12345678900",
     "situacao_ccir": "CCIR Quitado",
     "data_vencimento_ccir": "2025-06-16",
     "valor_ccir": 0,
     "debitos_anteriores_ccir": 0,
     "car": {
-      "codigo": "GO-5203401-617CD0C0367A49CD809862F382945511",
+      "codigo": "GO-5203401-C3D4E5F60718293A4B5C6D7E8F90A1B2",
       "municipio": "Bom Jardim de Goias",
       "estado": "GO",
       "area_ha": 877.9331,

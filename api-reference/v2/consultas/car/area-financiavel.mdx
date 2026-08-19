@@ -55,7 +55,7 @@ A `base` é escolhida em cascata, da mais precisa para a mais grosseira:
 ## Parâmetros
 
 <ParamField path="codigo_car" type="string" required>
-  Código do CAR. Exemplo: `GO-5218805-52A8321D5912439C9E814F21BAA4058A`
+  Código do CAR. Exemplo: `GO-5218805-E5F60718293A4B5C6D7E8F90A1B2C3D4`
 </ParamField>
 
 <ParamField query="include_geometry" type="boolean" default={false}>
@@ -235,12 +235,12 @@ A `base` é escolhida em cascata, da mais precisa para a mais grosseira:
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://data.dadosfazenda.com.br/car/GO-5218805-52A8321D5912439C9E814F21BAA4058A/area-financiavel" \
+curl -X GET "https://data.dadosfazenda.com.br/car/GO-5218805-E5F60718293A4B5C6D7E8F90A1B2C3D4/area-financiavel" \
   -H "Authorization: Bearer SEU_TOKEN_API"
 ```
 
 ```bash cURL com geometria
-curl -X GET "https://data.dadosfazenda.com.br/car/GO-5218805-52A8321D5912439C9E814F21BAA4058A/area-financiavel?include_geometry=true" \
+curl -X GET "https://data.dadosfazenda.com.br/car/GO-5218805-E5F60718293A4B5C6D7E8F90A1B2C3D4/area-financiavel?include_geometry=true" \
   -H "Authorization: Bearer SEU_TOKEN_API"
 ```
 
@@ -248,7 +248,7 @@ curl -X GET "https://data.dadosfazenda.com.br/car/GO-5218805-52A8321D5912439C9E8
 import httpx
 
 response = httpx.get(
-    "https://data.dadosfazenda.com.br/car/GO-5218805-52A8321D5912439C9E814F21BAA4058A/area-financiavel",
+    "https://data.dadosfazenda.com.br/car/GO-5218805-E5F60718293A4B5C6D7E8F90A1B2C3D4/area-financiavel",
     headers={"Authorization": "Bearer SEU_TOKEN"},
 )
 data = response.json()["data"]
@@ -277,7 +277,7 @@ elif data["resumo_restricoes"]["total"] > 0:
 {
   "success": true,
   "data": {
-    "codigo_car": "AC-1200013-001F0594BF9D428F8E9D280171D6C6C8",
+    "codigo_car": "AC-1200013-4B5C6D7E8F90A1B2C3D4E5F60718293A",
     "area_total_ha": 56.21,
     "area_financiavel_ha": 47.1561,
     "status_credito": "livre",
@@ -387,7 +387,7 @@ elif data["resumo_restricoes"]["total"] > 0:
 {
   "success": true,
   "data": {
-    "codigo_car": "GO-5218805-52A8321D5912439C9E814F21BAA4058A",
+    "codigo_car": "GO-5218805-E5F60718293A4B5C6D7E8F90A1B2C3D4",
     "area_total_ha": 1043.6057,
     "area_financiavel_ha": 893.4394,
     "status_credito": "bloqueado",
@@ -440,7 +440,7 @@ elif data["resumo_restricoes"]["total"] > 0:
 {
   "success": true,
   "data": {
-    "codigo_car": "MG-3120904-A733B814F0064F99BA07AA336D752BFB",
+    "codigo_car": "MG-3120904-3A4B5C6D7E8F90A1B2C3D4E5F6071829",
     "area_total_ha": 282.15,
     "area_financiavel_ha": 272.92,
     "status_credito": "livre",

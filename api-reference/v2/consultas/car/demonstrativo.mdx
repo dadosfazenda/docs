@@ -14,7 +14,7 @@ A consulta é feita na base oficial no momento da chamada, então reflete o
 estado atual do cadastro, inclusive cancelamentos e retificações.
 
 <ParamField path="codigo_car" type="string" required>
-  Código do CAR. Exemplo: `GO-5211909-F784E857816C42E1BD7EB130ADFE0CFC`
+  Código do CAR. Exemplo: `GO-5211909-18293A4B5C6D7E8F90A1B2C3D4E5F607`
 </ParamField>
 
 ## Resposta
@@ -116,7 +116,7 @@ estado atual do cadastro, inclusive cancelamentos e retificações.
 
 <RequestExample>
 ```bash cURL
-curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-F784E857816C42E1BD7EB130ADFE0CFC/demonstrativo" \
+curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-18293A4B5C6D7E8F90A1B2C3D4E5F607/demonstrativo" \
   -H "Authorization: Bearer $API_KEY"
 ```
 </RequestExample>
@@ -129,7 +129,7 @@ curl "https://data.dadosfazenda.com.br/v2/car/GO-5211909-F784E857816C42E1BD7EB13
   "data": {
     "demonstrativo": {
       "cabecalho": {
-        "codigo": "GO-5211909-F784E857816C42E1BD7EB130ADFE0CFC",
+        "codigo": "GO-5211909-18293A4B5C6D7E8F90A1B2C3D4E5F607",
         "municipio": "Jataí",
         "estado": "GO",
         "area_ha": 19.524,
