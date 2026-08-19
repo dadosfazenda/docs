@@ -177,7 +177,7 @@
                 "group": "Propriedade Rural",
                 "pages": [
                   "api-reference/v2/consultas/busca-por-cpf",
-                  "api-reference/v2/consultas/cpf-car-completo",
+                  "api-reference/v2/consultas/cpf-car-completa",
                   "api-reference/v2/consultas/detalhes-imovel",
                   "api-reference/v2/consultas/car/busca-coordenadas",
                   "api-reference/v2/consultas/car/info",

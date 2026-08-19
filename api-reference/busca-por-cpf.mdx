@@ -1,148 +1,69 @@
 ---
 title: "Busca por CPF/CNPJ"
 api: "GET /cpf-car/{cpf_cnpj}"
-description: "Busca propriedades rurais (CAR) vinculadas a um CPF ou CNPJ"
+description: "Todas as propriedades rurais vinculadas a um CPF ou CNPJ, com cadastro fundiário, CAFIR e CAR"
 ---
 
-## Descricao
+## Descrição
 
-A partir de um CPF ou CNPJ, esta rota identifica todos os imoveis rurais vinculados ao documento e tenta vincular cada um ao respectivo CAR (Cadastro Ambiental Rural).
-
-A resposta retorna dados basicos de cada imovel, o CAR vinculado quando encontrado, e o **registro CAFIR** (Receita Federal) com NIRF, situacao fiscal e flag de imune/isento. Para dados detalhados de um imovel (titulares, cartorio, CCIR), utilize a rota [Detalhes do imovel](/api-reference/detalhes-imovel).
+Informe um CPF ou CNPJ e receba os imóveis rurais vinculados ao documento:
+cadastro fundiário (INCRA/SNCR), inscrição na Receita Federal (CAFIR),
+matrícula e o CAR de cada imóvel. Uma chamada externa por consulta, com cache
+de 7 dias; o vínculo com o CAR é resolvido na base local.
 
 <ParamField path="cpf_cnpj" type="string" required>
-  CPF (11 digitos) ou CNPJ (14 digitos). Aceita com ou sem formatacao (pontos, tracos, barras).
-
-  Exemplos: `12345678901`, `123.456.789-01`, `12345678000199`
+  CPF (11 dígitos) ou CNPJ (14), com ou sem formatação
 </ParamField>
 
-## Response
+## Resposta
 
-<ResponseField name="message" type="string">
-  Mensagem descritiva do resultado.
-</ResponseField>
-
-<ResponseField name="data" type="object">
-  <Expandable title="data">
-    <ResponseField name="cpf_cnpj" type="string">
-      Documento consultado (somente digitos).
+<ResponseField name="cpf_cnpj" type="string">Documento consultado, só dígitos</ResponseField>
+<ResponseField name="total_imoveis" type="integer">Imóveis vinculados ao documento</ResponseField>
+<ResponseField name="cars_encontrados" type="integer">Imóveis com CAR localizado</ResponseField>
+<ResponseField name="propriedades" type="array">
+  Imóveis do titular
+  <Expandable title="item">
+    <ResponseField name="codigo_imovel" type="string">Código do imóvel no INCRA (SNCR)</ResponseField>
+    <ResponseField name="denominacao" type="string">Nome do imóvel</ResponseField>
+    <ResponseField name="municipio" type="string"></ResponseField>
+    <ResponseField name="uf" type="string"></ResponseField>
+    <ResponseField name="area_total_ha" type="number"></ResponseField>
+    <ResponseField name="cafir" type="object">
+      Cadastro do imóvel na Receita Federal
+      <Expandable title="cafir">
+      <ResponseField name="nirf" type="string">NIRF do imóvel na Receita Federal</ResponseField>
+      <ResponseField name="area_ha" type="number"></ResponseField>
+      <ResponseField name="nome" type="string"></ResponseField>
+      <ResponseField name="situacao_codigo" type="integer"></ResponseField>
+      <ResponseField name="situacao" type="string">`ativo`, `cancelado_*` ou `pendencia_*`</ResponseField>
+      <ResponseField name="uf" type="string"></ResponseField>
+      <ResponseField name="municipio" type="string"></ResponseField>
+      <ResponseField name="cep" type="string"></ResponseField>
+      <ResponseField name="imune_isento" type="boolean"></ResponseField>
+      <ResponseField name="sncr_codigo" type="integer"></ResponseField>
+      <ResponseField name="sncr_status" type="string">Status da vinculação com o INCRA</ResponseField>
+      <ResponseField name="data_atualizacao" type="string"></ResponseField>
+      <ResponseField name="data_snapshot" type="string"></ResponseField>
+      </Expandable>
     </ResponseField>
-
-    <ResponseField name="total_imoveis" type="integer">
-      Total de imoveis rurais encontrados para este documento.
-    </ResponseField>
-
-    <ResponseField name="cars_encontrados" type="integer">
-      Total de CARs que foram vinculados com sucesso.
-    </ResponseField>
-
-    <ResponseField name="propriedades" type="array">
-      Lista de propriedades encontradas.
-
-      <Expandable title="propriedade">
-        <ResponseField name="codigo_imovel" type="string">
-          Codigo do imovel (ex: `433133781`).
-        </ResponseField>
-
-        <ResponseField name="denominacao" type="string">
-          Nome do imovel (ex: `Fazenda Esperanca`).
-        </ResponseField>
-
-        <ResponseField name="municipio" type="string">
-          Municipio do imovel.
-        </ResponseField>
-
-        <ResponseField name="uf" type="string">
-          UF do imovel (ex: `GO`).
-        </ResponseField>
-
-        <ResponseField name="area_total_ha" type="number">
-          Area total do imovel em hectares.
-        </ResponseField>
-
-        <ResponseField name="cafir" type="object">
-          Dados do registro CAFIR (Cadastro de Imoveis Rurais da Receita Federal). `null` se nao houver vinculacao do imovel ao CAFIR.
-
-          <Expandable title="cafir">
-            <ResponseField name="nirf" type="string">
-              NIRF - Numero do imovel na Receita Federal (8 caracteres alfanumericos).
-            </ResponseField>
-            <ResponseField name="nome" type="string">
-              Nome do imovel registrado na RF.
-            </ResponseField>
-            <ResponseField name="area_ha" type="number">
-              Area do imovel declarada na RF, em hectares.
-            </ResponseField>
-            <ResponseField name="uf" type="string">
-              UF do imovel.
-            </ResponseField>
-            <ResponseField name="municipio" type="string">
-              Municipio do imovel.
-            </ResponseField>
-            <ResponseField name="cep" type="string">
-              CEP do imovel.
-            </ResponseField>
-            <ResponseField name="situacao" type="string">
-              Situacao fiscal do imovel - valores possiveis: `ativo`, `cancelado_*` (12 motivos), `pendencia_*` (7 motivos).
-            </ResponseField>
-            <ResponseField name="situacao_codigo" type="integer">
-              Codigo numerico da situacao (2=ativo, 46-59=cancelamentos, 83-98=pendencias). Ver [docs/CAFIR.md](https://github.com/dadosfazenda/dadosfazenda-data-api/blob/main/docs/CAFIR.md).
-            </ResponseField>
-            <ResponseField name="imune_isento" type="boolean">
-              `true` se o imovel e imune ou isento de ITR (igrejas, escolas, fundacoes sem fins lucrativos).
-            </ResponseField>
-            <ResponseField name="sncr_status" type="string">
-              Status da vinculacao com o INCRA - valores possiveis: `vinculacao_provisoria`, `vinculacao_confirmada`, `desvinculado`, `descaracterizacao_rural`.
-            </ResponseField>
-            <ResponseField name="sncr_codigo" type="integer">
-              Codigo numerico do status SNCR (1-4).
-            </ResponseField>
-            <ResponseField name="data_atualizacao" type="string">
-              Data da ultima atualizacao do registro na RF (ISO 8601, AAAA-MM-DD).
-            </ResponseField>
-            <ResponseField name="data_snapshot" type="string">
-              Data da extracao oficial da RF de onde este registro veio (ISO 8601, AAAA-MM-DD).
-            </ResponseField>
-          </Expandable>
-        </ResponseField>
-
-        <ResponseField name="car" type="object">
-          Dados do CAR vinculado. `null` se nenhum CAR foi encontrado.
-
-          <Expandable title="car">
-            <ResponseField name="codigo" type="string">
-              Codigo do CAR (ex: `GO-5203401-617CD0C0367A49CD809862F382945511`).
-            </ResponseField>
-
-            <ResponseField name="municipio" type="string">
-              Municipio do CAR.
-            </ResponseField>
-
-            <ResponseField name="estado" type="string">
-              UF do CAR (ex: `GO`).
-            </ResponseField>
-
-            <ResponseField name="area_ha" type="number">
-              Area do CAR em hectares.
-            </ResponseField>
-
-            <ResponseField name="modulos_fiscais" type="number">
-              Quantidade de modulos fiscais.
-            </ResponseField>
-
-            <ResponseField name="status" type="string">
-              Status do CAR: `AT` (Ativo), `PE` (Pendente), `CA` (Cancelado), `SU` (Suspenso).
-            </ResponseField>
-
-            <ResponseField name="tipo" type="string">
-              Tipo do imovel: `IRU` (Imovel Rural), `AST` (Assentamento), `PCT` (Territorio Tradicional).
-            </ResponseField>
-
-            <ResponseField name="condicao" type="string">
-              Condicao de analise (ex: `Aguardando analise`, `Analisado`).
-            </ResponseField>
-          </Expandable>
-        </ResponseField>
+    <ResponseField name="matricula" type="string">Matrícula no cartório de registro</ResponseField>
+    <ResponseField name="numero_certificado_snci" type="string">Certificação SNCI, quando houver</ResponseField>
+    <ResponseField name="car" type="object">
+      Cadastro Ambiental Rural do imóvel
+      <Expandable title="car">
+      <ResponseField name="codigo_car" type="string"></ResponseField>
+      <ResponseField name="nome_imovel" type="string"></ResponseField>
+      <ResponseField name="area_ha" type="number"></ResponseField>
+      <ResponseField name="modulos_fiscais" type="number"></ResponseField>
+      <ResponseField name="municipio" type="string"></ResponseField>
+      <ResponseField name="uf" type="string"></ResponseField>
+      <ResponseField name="status" type="string">Situação do cadastro (Ativo, Pendente, Cancelado, Suspenso)</ResponseField>
+      <ResponseField name="tipo_imovel" type="string"></ResponseField>
+      <ResponseField name="condicao" type="string">Condição da análise</ResponseField>
+      <ResponseField name="data_cadastro" type="string"></ResponseField>
+      <ResponseField name="data_atualizacao" type="string"></ResponseField>
+      <ResponseField name="latitude" type="number">Centroide do imóvel</ResponseField>
+      <ResponseField name="longitude" type="number">Centroide do imóvel</ResponseField>
       </Expandable>
     </ResponseField>
   </Expandable>
@@ -150,99 +71,74 @@ A resposta retorna dados basicos de cada imovel, o CAR vinculado quando encontra
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://data.dadosfazenda.com.br/cpf-car/12345678901" \
-  -H "Authorization: Bearer SEU_TOKEN_API"
-```
-
-```python Python
-import httpx
-
-response = httpx.get(
-    "https://data.dadosfazenda.com.br/cpf-car/12345678901",
-    headers={"Authorization": "Bearer SEU_TOKEN"}
-)
-data = response.json()
-
-for prop in data["data"]["propriedades"]:
-    print(f"{prop['denominacao']} - {prop['municipio']}/{prop['uf']}")
-    if prop["car"]:
-        print(f"  CAR: {prop['car']['codigo']}")
+curl "https://data.dadosfazenda.com.br/cpf-car/36595946874" \
+  -H "Authorization: Bearer $API_KEY"
 ```
 </RequestExample>
 
 <ResponseExample>
-```json 200 - Sucesso
+```json 200 - sucesso
 {
-  "message": "Encontrados 2 CAR(s) para o documento",
+  "success": true,
+  "message": "Encontrados 1 CAR(s) para o documento",
   "data": {
-    "cpf_cnpj": "12345678901",
-    "total_imoveis": 3,
-    "cars_encontrados": 2,
+    "cpf_cnpj": "36595946874",
+    "total_imoveis": 1,
+    "cars_encontrados": 1,
     "propriedades": [
       {
-        "codigo_imovel": "433133781",
-        "denominacao": "Fazenda Esperanca",
-        "municipio": "BOM JARDIM DE GOIAS",
+        "codigo_imovel": "9301720070807",
+        "denominacao": "Fazenda Santo Antonio",
+        "municipio": "FIRMINÓPOLIS",
         "uf": "GO",
-        "area_total_ha": 877.4,
+        "area_total_ha": 115.1988,
         "cafir": {
-          "nirf": "82332010",
-          "nome": "FAZENDA ESPERANCA",
-          "area_ha": 877.4,
-          "uf": "GO",
-          "municipio": "BOM JARDIM DE GOIAS",
-          "cep": "76050000",
-          "situacao": "ativo",
+          "nirf": "24238600",
+          "area_ha": 115.2,
+          "nome": "FAZENDA SANTO ANTONIO",
           "situacao_codigo": 2,
-          "imune_isento": false,
-          "sncr_status": "vinculacao_confirmada",
-          "sncr_codigo": 2,
-          "data_atualizacao": "2023-08-15",
-          "data_snapshot": "2026-05-01"
-        },
-        "car": {
-          "codigo": "GO-5203401-617CD0C0367A49CD809862F382945511",
-          "municipio": "Bom Jardim de Goias",
-          "estado": "GO",
-          "area_ha": 877.9331,
-          "modulos_fiscais": 19.5096,
-          "status": "AT",
-          "tipo": "IRU",
-          "condicao": "Aguardando analise"
-        }
-      },
-      {
-        "codigo_imovel": "433298102",
-        "denominacao": "Sitio Boa Vista",
-        "municipio": "JUSSARA",
-        "uf": "GO",
-        "area_total_ha": 48.2,
-        "cafir": {
-          "nirf": "60776986",
-          "nome": "SITIO BOA VISTA",
-          "area_ha": 48.2,
-          "uf": "GO",
-          "municipio": "JUSSARA",
-          "cep": "76270000",
           "situacao": "ativo",
-          "situacao_codigo": 2,
+          "uf": "GO",
+          "municipio": "FIRMINOPOLIS",
+          "cep": "76105000",
           "imune_isento": false,
-          "sncr_status": "vinculacao_provisoria",
           "sncr_codigo": 1,
-          "data_atualizacao": "2021-03-31",
+          "sncr_status": "vinculacao_provisoria",
+          "data_atualizacao": "2024-09-13",
           "data_snapshot": "2026-05-01"
         },
-        "car": null
+        "matricula": "6076",
+        "numero_certificado_snci": null,
+        "car": {
+          "codigo_car": "GO-5207808-D1C4FCD1952442BC8B7AA6B82B16D70E",
+          "nome_imovel": null,
+          "area_ha": 115.1764,
+          "modulos_fiscais": 3.8367,
+          "municipio": "Firminópolis",
+          "uf": "GO",
+          "status": "Ativo",
+          "tipo_imovel": "Imovel Rural",
+          "condicao": "Aguardando análise",
+          "data_cadastro": "2019-02-14",
+          "data_atualizacao": "2026-08-05",
+          "latitude": -16.613866,
+          "longitude": -50.268692
+        }
       }
     ]
   }
 }
 ```
 
-```json 502 - Erro
-{
-  "message": "Falha ao consultar bases externas",
-  "status_code": 502
-}
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 422 - documento inválido
+{ "success": false, "message": "Documento inválido", "data": null }
+```
+
+```json 502 - falha na consulta externa
+{ "success": false, "message": "Falha na consulta ao bureau", "data": null }
 ```
 </ResponseExample>

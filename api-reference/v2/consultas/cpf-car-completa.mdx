@@ -1,0 +1,359 @@
+---
+title: "Busca por CPF/CNPJ (Completa)"
+api: "GET /v2/cpf-car/{cpf_cnpj}/completa"
+description: "As propriedades do titular com geometria, embargos, APP, sobreposições e áreas produtivas vetorizadas"
+---
+
+## Descrição
+
+Tudo da [busca simples](/api-reference/v2/consultas/busca-por-cpf) e, para cada
+CAR do titular, o pacote completo de análise: geometria do perímetro, área
+elegível para financiamento, embargos IBAMA e ICMBio, APP com polígono,
+sobreposição com áreas restritas e com outros CARs, e as áreas produtivas
+(lavoura e pastagem) vetorizadas do mapeamento de uso do solo.
+
+Mesma chamada externa da busca simples (uma consulta, cache de 7 dias); todo o
+enriquecimento é processado localmente.
+
+<ParamField path="cpf_cnpj" type="string" required>
+  CPF (11 dígitos) ou CNPJ (14), com ou sem formatação
+</ParamField>
+
+## Resposta
+
+<ResponseField name="cpf_cnpj" type="string">Documento consultado, só dígitos</ResponseField>
+<ResponseField name="total_imoveis" type="integer">Imóveis vinculados ao documento</ResponseField>
+<ResponseField name="cars_encontrados" type="integer">Imóveis com CAR localizado</ResponseField>
+<ResponseField name="propriedades" type="array">
+  Imóveis do titular
+  <Expandable title="item">
+    <ResponseField name="codigo_imovel" type="string">Código do imóvel no INCRA (SNCR)</ResponseField>
+    <ResponseField name="denominacao" type="string">Nome do imóvel</ResponseField>
+    <ResponseField name="municipio" type="string"></ResponseField>
+    <ResponseField name="uf" type="string"></ResponseField>
+    <ResponseField name="area_total_ha" type="number"></ResponseField>
+    <ResponseField name="cafir" type="object">
+      Cadastro do imóvel na Receita Federal
+      <Expandable title="cafir">
+      <ResponseField name="nirf" type="string">NIRF do imóvel na Receita Federal</ResponseField>
+      <ResponseField name="area_ha" type="number"></ResponseField>
+      <ResponseField name="nome" type="string"></ResponseField>
+      <ResponseField name="situacao_codigo" type="integer"></ResponseField>
+      <ResponseField name="situacao" type="string">`ativo`, `cancelado_*` ou `pendencia_*`</ResponseField>
+      <ResponseField name="uf" type="string"></ResponseField>
+      <ResponseField name="municipio" type="string"></ResponseField>
+      <ResponseField name="cep" type="string"></ResponseField>
+      <ResponseField name="imune_isento" type="boolean"></ResponseField>
+      <ResponseField name="sncr_codigo" type="integer"></ResponseField>
+      <ResponseField name="sncr_status" type="string">Status da vinculação com o INCRA</ResponseField>
+      <ResponseField name="data_atualizacao" type="string"></ResponseField>
+      <ResponseField name="data_snapshot" type="string"></ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="matricula" type="string">Matrícula no cartório de registro</ResponseField>
+    <ResponseField name="numero_certificado_snci" type="string">Certificação SNCI, quando houver</ResponseField>
+    <ResponseField name="car" type="object">
+      Cadastro Ambiental Rural do imóvel
+      <Expandable title="car">
+      <ResponseField name="codigo_car" type="string"></ResponseField>
+      <ResponseField name="nome_imovel" type="string"></ResponseField>
+      <ResponseField name="area_ha" type="number"></ResponseField>
+      <ResponseField name="modulos_fiscais" type="number"></ResponseField>
+      <ResponseField name="municipio" type="string"></ResponseField>
+      <ResponseField name="uf" type="string"></ResponseField>
+      <ResponseField name="status" type="string">Situação do cadastro (Ativo, Pendente, Cancelado, Suspenso)</ResponseField>
+      <ResponseField name="tipo_imovel" type="string"></ResponseField>
+      <ResponseField name="condicao" type="string">Condição da análise</ResponseField>
+      <ResponseField name="data_cadastro" type="string"></ResponseField>
+      <ResponseField name="data_atualizacao" type="string"></ResponseField>
+      <ResponseField name="latitude" type="number">Centroide do imóvel</ResponseField>
+      <ResponseField name="longitude" type="number">Centroide do imóvel</ResponseField>
+
+      <ResponseField name="geometry" type="object">Perímetro do CAR em GeoJSON (EPSG:4326)</ResponseField>
+      <ResponseField name="area_elegivel_financiamento_ha" type="number">Uso consolidado SEM deduplicação: soma crua dos polígonos declarados, ainda que sobrepostos entre si</ResponseField>
+      <ResponseField name="area_uso_consolidado_ha" type="number">Uso consolidado deduplicado (união dos polígonos antes do cálculo)</ResponseField>
+      <ResponseField name="app" type="object">
+        Área de Preservação Permanente declarada no CAR
+        <Expandable title="app">
+          <ResponseField name="area_ha" type="number"></ResponseField>
+          <ResponseField name="geometry" type="object">União dos polígonos de APP em GeoJSON</ResponseField>
+        </Expandable>
+      </ResponseField>
+      <ResponseField name="embargos" type="object">
+        Embargos que intersectam o imóvel, por órgão
+        <Expandable title="embargos">
+          <ResponseField name="ibama" type="object">
+            <Expandable title="ibama">
+              <ResponseField name="count" type="integer"></ResponseField>
+              <ResponseField name="area_ha" type="number">Área da interseção com o imóvel</ResponseField>
+            </Expandable>
+          </ResponseField>
+          <ResponseField name="icmbio" type="object">
+            <Expandable title="icmbio">
+              <ResponseField name="count" type="integer"></ResponseField>
+              <ResponseField name="area_ha" type="number">Área da interseção com o imóvel</ResponseField>
+            </Expandable>
+          </ResponseField>
+        </Expandable>
+      </ResponseField>
+      <ResponseField name="sobreposicoes_restritas" type="object">
+        Sobreposição com áreas restritas, cada uma com `count` e `area_ha` de interseção
+        <Expandable title="categorias">
+          <ResponseField name="terras_indigenas" type="object"></ResponseField>
+          <ResponseField name="quilombolas" type="object"></ResponseField>
+          <ResponseField name="ucs_icmbio_federal" type="object"></ResponseField>
+          <ResponseField name="ucs_estaduais" type="object"></ResponseField>
+          <ResponseField name="ucs_municipais" type="object"></ResponseField>
+          <ResponseField name="florestas_publicas" type="object"></ResponseField>
+          <ResponseField name="sitios_arqueologicos" type="object"></ResponseField>
+        </Expandable>
+      </ResponseField>
+      <ResponseField name="sobreposicoes_cars" type="array">
+        Outros CARs que se sobrepõem ao imóvel
+        <Expandable title="item">
+          <ResponseField name="codigo_car" type="string"></ResponseField>
+          <ResponseField name="area_sobreposta_ha" type="number"></ResponseField>
+        </Expandable>
+      </ResponseField>
+      <ResponseField name="areas_produtivas" type="object">
+        Uso produtivo do solo no ano mais recente do mapeamento (resolução 30 m). O mosaico de usos fica fora das duas classes.
+        <Expandable title="areas_produtivas">
+          <ResponseField name="ano" type="integer"></ResponseField>
+          <ResponseField name="fonte_resolucao_m" type="integer"></ResponseField>
+          <ResponseField name="lavoura" type="object">
+            <Expandable title="lavoura">
+              <ResponseField name="area_ha" type="number"></ResponseField>
+              <ResponseField name="geometry" type="object">MultiPolygon vetorizado das áreas de lavoura</ResponseField>
+            </Expandable>
+          </ResponseField>
+          <ResponseField name="pastagem" type="object">
+            <Expandable title="pastagem">
+              <ResponseField name="area_ha" type="number"></ResponseField>
+              <ResponseField name="geometry" type="object">MultiPolygon vetorizado das áreas de pasto</ResponseField>
+            </Expandable>
+          </ResponseField>
+        </Expandable>
+      </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://data.dadosfazenda.com.br/v2/cpf-car/36595946874/completa" \
+  -H "Authorization: Bearer $API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 - sucesso
+{
+  "success": true,
+  "message": "Encontrados 1 CAR(s) para o documento",
+  "data": {
+    "cpf_cnpj": "36595946874",
+    "total_imoveis": 1,
+    "cars_encontrados": 1,
+    "propriedades": [
+      {
+        "codigo_imovel": "9301720070807",
+        "denominacao": "Fazenda Santo Antonio",
+        "municipio": "FIRMINÓPOLIS",
+        "uf": "GO",
+        "area_total_ha": 115.1988,
+        "cafir": {
+          "nirf": "24238600",
+          "area_ha": 115.2,
+          "situacao": "ativo",
+          "sncr_status": "vinculacao_provisoria"
+        },
+        "matricula": "6076",
+        "numero_certificado_snci": null,
+        "car": {
+          "codigo_car": "GO-5207808-D1C4FCD1952442BC8B7AA6B82B16D70E",
+          "area_ha": 115.1764,
+          "modulos_fiscais": 3.8367,
+          "municipio": "Firminópolis",
+          "uf": "GO",
+          "status": "Ativo",
+          "geometry": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    -50.27,
+                    -16.61
+                  ],
+                  [
+                    -50.26,
+                    -16.61
+                  ],
+                  [
+                    -50.26,
+                    -16.62
+                  ],
+                  [
+                    -50.27,
+                    -16.61
+                  ]
+                ]
+              ]
+            ]
+          },
+          "area_elegivel_financiamento_ha": 106.8118,
+          "area_uso_consolidado_ha": 106.8118,
+          "app": {
+            "area_ha": 4.21,
+            "geometry": {
+              "type": "MultiPolygon",
+              "coordinates": [
+                [
+                  [
+                    [
+                      -50.268,
+                      -16.615
+                    ],
+                    [
+                      -50.267,
+                      -16.615
+                    ],
+                    [
+                      -50.267,
+                      -16.616
+                    ],
+                    [
+                      -50.268,
+                      -16.615
+                    ]
+                  ]
+                ]
+              ]
+            }
+          },
+          "embargos": {
+            "ibama": {
+              "count": 0,
+              "area_ha": 0.0
+            },
+            "icmbio": {
+              "count": 0,
+              "area_ha": 0.0
+            }
+          },
+          "sobreposicoes_restritas": {
+            "terras_indigenas": {
+              "count": 0,
+              "area_ha": 0.0
+            },
+            "quilombolas": {
+              "count": 0,
+              "area_ha": 0.0
+            },
+            "ucs_icmbio_federal": {
+              "count": 0,
+              "area_ha": 0.0
+            },
+            "ucs_estaduais": {
+              "count": 0,
+              "area_ha": 0.0
+            },
+            "ucs_municipais": {
+              "count": 0,
+              "area_ha": 0.0
+            },
+            "florestas_publicas": {
+              "count": 0,
+              "area_ha": 0.0
+            },
+            "sitios_arqueologicos": {
+              "count": 0,
+              "area_ha": 0.0
+            }
+          },
+          "sobreposicoes_cars": [
+            {
+              "codigo_car": "GO-5207808-8E11...",
+              "area_sobreposta_ha": 0.42
+            }
+          ],
+          "areas_produtivas": {
+            "ano": 2024,
+            "fonte_resolucao_m": 30,
+            "lavoura": {
+              "area_ha": 98.2283,
+              "geometry": {
+                "type": "MultiPolygon",
+                "coordinates": [
+                  [
+                    [
+                      [
+                        -50.27,
+                        -16.61
+                      ],
+                      [
+                        -50.265,
+                        -16.61
+                      ],
+                      [
+                        -50.265,
+                        -16.615
+                      ],
+                      [
+                        -50.27,
+                        -16.61
+                      ]
+                    ]
+                  ]
+                ]
+              }
+            },
+            "pastagem": {
+              "area_ha": 1.4559,
+              "geometry": {
+                "type": "MultiPolygon",
+                "coordinates": [
+                  [
+                    [
+                      [
+                        -50.262,
+                        -16.618
+                      ],
+                      [
+                        -50.261,
+                        -16.618
+                      ],
+                      [
+                        -50.261,
+                        -16.619
+                      ],
+                      [
+                        -50.262,
+                        -16.618
+                      ]
+                    ]
+                  ]
+                ]
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}
+```
+
+```json 401 - sem chave de API
+{ "detail": "Não autenticado" }
+```
+
+```json 422 - documento inválido
+{ "success": false, "message": "Documento inválido", "data": null }
+```
+
+```json 502 - falha na consulta externa
+{ "success": false, "message": "Falha na consulta ao bureau", "data": null }
+```
+</ResponseExample>
