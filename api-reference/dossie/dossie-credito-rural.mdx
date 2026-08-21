@@ -1,7 +1,7 @@
 ---
 title: "Dossiê Jurídico do Produtor Rural"
 api: "GET /v2/dossie/{cpf_cnpj}"
-description: "Retrato completo de um titular rural a partir do CPF ou CNPJ: CARs, crédito SICOR, uso do solo, reserva legal, área financiável, restrições e SCR"
+description: "Retrato completo de um produtor rural a partir do CPF ou CNPJ: CARs, crédito SICOR, uso do solo, déficit de reserva legal, área financiável, sobreposições, embargos, outorgas e licenças"
 ---
 
 ## Descrição
@@ -14,40 +14,35 @@ por imóvel, cada base separadamente.
   Consulta sob contrato, habilitada caso a caso. Fale com o time comercial.
 </Note>
 
+Todos os dados vêm de bases próprias e públicas consolidadas: a consulta não
+aciona provedor externo por requisição.
+
+Para a posição de crédito no Banco Central, use `GET /v2/scr/{cpf_cnpj}`, que
+é cobrada à parte.
+
 ### O que a resposta reúne
 
 Por titular:
 
 1. **CARs vinculados** ao documento, com o cadastro de cada imóvel
 2. **Lista Suja do Trabalho Escravo** (Cadastro de Empregadores)
-3. **SCR detalhado** do Banco Central
 
 Por imóvel:
 
-4. **Crédito rural (SICOR/BCB)** com todas as operações e o detalhe completo
+3. **Crédito rural (SICOR/BCB)** com todas as operações e o detalhe completo
    de cada uma
-5. **Uso do solo** por classe de cobertura
-6. **Reserva Legal** com o déficit calculado de duas formas
-7. **Área financiável** pela regra do MCR
-8. **Sobreposições**: quilombolas, terras indígenas, unidades de conservação,
+4. **Uso do solo** por classe de cobertura
+5. **Reserva Legal** com o déficit calculado de duas formas
+6. **Área financiável** pela regra do MCR
+7. **Sobreposições**: quilombolas, terras indígenas, unidades de conservação,
    assentamentos e processos minerários
-9. **Embargos e autos de infração**
-10. **Outorgas de uso da água** e **licenças de exploração florestal**
+8. **Embargos e autos de infração**
+9. **Outorgas de uso da água** e **licenças de exploração florestal**
 
 ## Parâmetros
 
 <ParamField path="cpf_cnpj" type="string" required>
   CPF (11 dígitos) ou CNPJ (14 dígitos). Aceita com ou sem formatação.
-</ParamField>
-
-<ParamField query="incluir_scr" type="boolean" default={true}>
-  Inclui o SCR detalhado do BACEN. Desligue quando só interessar a parte de
-  crédito rural e imóveis: é a única seção que depende de consulta externa.
-</ParamField>
-
-<ParamField query="mesano" type="string">
-  Competência do SCR no formato `MMyyyy` (ex: `072026`). Omitida, usa a
-  competência mais recente disponível.
 </ParamField>
 
 <ParamField query="operacoes_por_car" type="integer">
@@ -171,19 +166,6 @@ Por imóvel:
   </Expandable>
 </ResponseField>
 
-<ResponseField name="scr" type="object">
-  <Expandable title="scr">
-    <ResponseField name="disponivel" type="boolean">
-      `false` quando `incluir_scr=false` ou quando a consulta não pôde ser
-      concluída. O restante do dossiê continua válido.
-    </ResponseField>
-    <ResponseField name="dados" type="object">
-      Posição detalhada: score, faixa de risco, responsabilidade total, carteira
-      de crédito e abertura por modalidade com aging de vencimentos.
-    </ResponseField>
-  </Expandable>
-</ResponseField>
-
 ## Degradação
 
 Nenhum bloco derruba a resposta. Quando uma base não responde, ela volta com
@@ -291,11 +273,7 @@ curl -X GET "https://api.dadosfazenda.com.br/v2/dossie/00000000000191" \
         "outorgas": { "total": 0 },
         "licencas": { "total": 0 }
       }
-    ],
-    "scr": {
-      "disponivel": true,
-      "dados": { "...": "posição detalhada do SCR" }
-    }
+    ]
   }
 }
 ```
