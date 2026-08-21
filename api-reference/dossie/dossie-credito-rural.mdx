@@ -1,0 +1,305 @@
+---
+title: "Dossiê de Crédito Rural"
+api: "GET /v2/dossie/{cpf_cnpj}"
+description: "Retrato completo de um titular rural a partir do CPF ou CNPJ: CARs, crédito SICOR, uso do solo, reserva legal, área financiável, restrições e SCR"
+---
+
+## Descrição
+
+Uma chamada devolve o retrato inteiro de um titular rural. Substitui a
+sequência manual de descobrir os CARs do documento e depois consultar, imóvel
+por imóvel, cada base separadamente.
+
+<Note>
+  Consulta sob contrato, habilitada caso a caso. Fale com o time comercial.
+</Note>
+
+### O que a resposta reúne
+
+Por titular:
+
+1. **CARs vinculados** ao documento, com o cadastro de cada imóvel
+2. **Lista Suja do Trabalho Escravo** (Cadastro de Empregadores)
+3. **SCR detalhado** do Banco Central
+
+Por imóvel:
+
+4. **Crédito rural (SICOR/BCB)** com todas as operações e o detalhe completo
+   de cada uma
+5. **Uso do solo** por classe de cobertura
+6. **Reserva Legal** com o déficit calculado de duas formas
+7. **Área financiável** pela regra do MCR
+8. **Sobreposições**: quilombolas, terras indígenas, unidades de conservação,
+   assentamentos e processos minerários
+9. **Embargos e autos de infração**
+10. **Outorgas de uso da água** e **licenças de exploração florestal**
+
+## Parâmetros
+
+<ParamField path="cpf_cnpj" type="string" required>
+  CPF (11 dígitos) ou CNPJ (14 dígitos). Aceita com ou sem formatação.
+</ParamField>
+
+<ParamField query="incluir_scr" type="boolean" default={true}>
+  Inclui o SCR detalhado do BACEN. Desligue quando só interessar a parte de
+  crédito rural e imóveis: é a única seção que depende de consulta externa.
+</ParamField>
+
+<ParamField query="mesano" type="string">
+  Competência do SCR no formato `MMyyyy` (ex: `072026`). Omitida, usa a
+  competência mais recente disponível.
+</ParamField>
+
+<ParamField query="operacoes_por_car" type="integer">
+  Teto de operações de crédito por imóvel. **Omitido, traz todas.** Use apenas
+  se precisar limitar o tamanho da resposta; `total_operacoes` sempre reporta o
+  número real, mesmo quando a lista vem cortada.
+</ParamField>
+
+## Response
+
+<ResponseField name="documento" type="string">
+  Documento consultado, apenas dígitos.
+</ResponseField>
+
+<ResponseField name="tipo_documento" type="string">
+  `CPF` ou `CNPJ`.
+</ResponseField>
+
+<ResponseField name="consultado_em" type="string">
+  Momento da consulta (ISO 8601, UTC).
+</ResponseField>
+
+<ResponseField name="cars_truncados" type="boolean">
+  `true` quando o titular tem mais de 100 imóveis e a lista foi cortada.
+</ResponseField>
+
+<ResponseField name="resumo" type="object">
+  Consolidado de todos os imóveis: quantidade de CARs, área somada, imóveis com
+  crédito, operações somadas, valor total financiado, área financiada e
+  operações vigentes e vencidas.
+</ResponseField>
+
+<ResponseField name="trabalho_escravo" type="object">
+  <Expandable title="trabalho_escravo">
+    <ResponseField name="consta_lista" type="boolean">
+      `true`, `false`, ou `null` quando a consulta não pôde ser concluída.
+      Trate `null` como indeterminado, nunca como ausência de registro.
+    </ResponseField>
+    <ResponseField name="total_registros" type="integer">Registros encontrados.</ResponseField>
+    <ResponseField name="total_trabalhadores_envolvidos" type="integer">Soma dos trabalhadores.</ResponseField>
+    <ResponseField name="registros" type="array">
+      Ano da ação fiscal, UF, empregador, estabelecimento, CNAE, decisão
+      administrativa e data de inclusão.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="imoveis" type="array">
+  Um item por CAR.
+  <Expandable title="imovel">
+    <ResponseField name="codigo_car" type="string">Código do CAR.</ResponseField>
+    <ResponseField name="municipio" type="string">Município do imóvel.</ResponseField>
+    <ResponseField name="uf" type="string">Unidade federativa.</ResponseField>
+    <ResponseField name="area_ha" type="number">Área declarada, em hectares.</ResponseField>
+    <ResponseField name="modulos_fiscais" type="number">Módulos fiscais.</ResponseField>
+    <ResponseField name="encontrado_na_base" type="boolean">
+      `false` quando o CAR está vinculado ao titular mas não há cadastro dele na
+      base. Os campos de cadastro vêm nulos nesse caso.
+    </ResponseField>
+
+    <ResponseField name="credito_rural" type="object">
+      <Expandable title="credito_rural">
+        <ResponseField name="total_operacoes" type="integer">
+          Número real de operações do imóvel.
+        </ResponseField>
+        <ResponseField name="resumo" type="object">
+          Valor total, área financiada, juros médio, primeira e última operação,
+          vigentes e vencidas.
+        </ResponseField>
+        <ResponseField name="operacoes" type="array">
+          Operações da mais recente para a mais antiga, com produto, finalidade,
+          modalidade, programa, subprograma, fonte de recurso, instrumento de
+          crédito, instituição financeira, valores financiados, juros, área
+          financiada, datas de plantio e colheita, situação, categoria do
+          emitente e tipo de beneficiário.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="ambiental" type="object">
+      <Expandable title="ambiental">
+        <ResponseField name="uso_do_solo" type="array">
+          Classes de cobertura com área e percentual.
+        </ResponseField>
+        <ResponseField name="reserva_legal" type="object">
+          Exigida, declarada no CAR, vegetação nativa por satélite, base legal e
+          dois déficits: `deficit_vs_car_ha` (contra o declarado) e
+          `deficit_vs_satelite_ha` (contra a vegetação medida). Costumam
+          divergir, e a divergência é a informação.
+        </ResponseField>
+        <ResponseField name="indicadores_ambientais" type="object">
+          Carbono orgânico do solo, biomassa acima e abaixo do solo e altura do
+          dossel, cada um com o ano da medição.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="area_financiavel" type="object">
+      Área passível de financiamento pela regra do MCR: desconta do uso
+      consolidado as sobreposições com unidade de conservação, terra indígena,
+      quilombola titulada e embargos vigentes.
+    </ResponseField>
+
+    <ResponseField name="sobreposicoes" type="object">
+      `quilombolas`, `terras_indigenas`, `unidades_conservacao`,
+      `assentamentos` e `mineracao`. Cada base traz apenas a parte recortada
+      pelo imóvel, ou seja, a área sobreposta de fato.
+    </ResponseField>
+
+    <ResponseField name="restricoes" type="object">
+      `embargos` e `autos_infracao`, com total e a lista de ocorrências.
+    </ResponseField>
+
+    <ResponseField name="outorgas" type="object">
+      Outorgas de uso da água que incidem sobre o imóvel.
+    </ResponseField>
+
+    <ResponseField name="licencas" type="object">
+      Autorizações de exploração e supressão florestal.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="scr" type="object">
+  <Expandable title="scr">
+    <ResponseField name="disponivel" type="boolean">
+      `false` quando `incluir_scr=false` ou quando a consulta não pôde ser
+      concluída. O restante do dossiê continua válido.
+    </ResponseField>
+    <ResponseField name="dados" type="object">
+      Posição detalhada: score, faixa de risco, responsabilidade total, carteira
+      de crédito e abertura por modalidade com aging de vencimentos.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Degradação
+
+Nenhum bloco derruba a resposta. Quando uma base não responde, ela volta com
+`indisponivel: true` e o resto do dossiê continua válido. Distinga sempre
+"ausência de registro" de "não foi possível consultar": o campo
+`consta_lista` do trabalho escravo usa `null` justamente para isso.
+
+## Tempo de resposta
+
+A consulta cresce com a quantidade de imóveis do titular. Ordem de grandeza
+medida: cerca de 6 segundos para 1 imóvel e 12 segundos para 6. Dimensione o
+timeout do cliente para pelo menos 120 segundos.
+
+## Exemplo
+
+```bash
+curl -X GET "https://api.dadosfazenda.com.br/v2/dossie/00000000000191" \
+  -H "Authorization: Bearer SUA_API_KEY"
+```
+
+```json
+{
+  "success": true,
+  "data": {
+    "documento": "00000000000191",
+    "tipo_documento": "CNPJ",
+    "consultado_em": "2026-08-21T18:40:12.114820+00:00",
+    "cars_truncados": false,
+    "resumo": {
+      "total_cars": 2,
+      "area_total_ha": 7008.65,
+      "cars_com_credito": 2,
+      "total_operacoes_credito": 12,
+      "valor_total_credito": 64003918.75,
+      "operacoes_vigentes": 4,
+      "operacoes_vencidas": 6
+    },
+    "trabalho_escravo": {
+      "consta_lista": false,
+      "total_registros": 0,
+      "registros": []
+    },
+    "imoveis": [
+      {
+        "codigo_car": "MG-3100000-A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "municipio": "Exemplo",
+        "uf": "MG",
+        "area_ha": 6963.29,
+        "modulos_fiscais": 139.16,
+        "encontrado_na_base": true,
+        "credito_rural": {
+          "total_operacoes": 7,
+          "resumo": { "valor_total_credito": 63000000.0, "operacoes_vigentes": 3 },
+          "operacoes": [
+            {
+              "ref_bacen": 500000000,
+              "nu_ordem": 1,
+              "dt_emissao": "2024-05-08",
+              "dt_vencimento": "2026-05-10",
+              "produto": "SOJA",
+              "finalidade": "CUSTEIO",
+              "programa": "PRONAMP",
+              "instituicao_financeira": "BCO EXEMPLO S.A.",
+              "vl_parc_credito": 9835280.0,
+              "vl_area_financ": 1200.0,
+              "vl_juros": 8.0,
+              "status_operacao": "vigente"
+            }
+          ]
+        },
+        "ambiental": {
+          "ano_referencia": 2025,
+          "bioma": "Cerrado",
+          "uso_do_solo": [
+            { "classe_id": 15, "nome": "Pastagem", "area_ha": 2211.2, "pct": 31.8 }
+          ],
+          "reserva_legal": {
+            "exigida_ha": 1387.34,
+            "declarada_car_ha": 1471.56,
+            "deficit_vs_car_ha": 416.8,
+            "deficit_vs_satelite_ha": 0.0
+          },
+          "indicadores_ambientais": {
+            "carbono_solo": { "ano": 2024, "media_t_ha": 48.3, "estoque_t": 336064 },
+            "biomassa_acima": { "ano": 2024, "media_t_ha": 14.5, "estoque_t": 101017 },
+            "dossel": { "ano": 2019, "media_m": 1.5, "maximo_m": 22.0 }
+          }
+        },
+        "area_financiavel": {
+          "area_total_ha": 6963.29,
+          "area_financiavel_ha": 5145.17,
+          "status_credito": "sem_restricao"
+        },
+        "sobreposicoes": {
+          "quilombolas": { "total": 0, "areas": [] },
+          "terras_indigenas": { "total": 0, "areas": [] },
+          "unidades_conservacao": { "total": 0, "areas": [] },
+          "assentamentos": { "total": 0, "areas": [] },
+          "mineracao": { "total": 0 }
+        },
+        "restricoes": {
+          "embargos": { "total": 0, "itens": [] },
+          "autos_infracao": { "total": 0, "itens": [] }
+        },
+        "outorgas": { "total": 0 },
+        "licencas": { "total": 0 }
+      }
+    ],
+    "scr": {
+      "disponivel": true,
+      "dados": { "...": "posição detalhada do SCR" }
+    }
+  }
+}
+```
+
+<Warning>
+  O documento e os códigos de CAR deste exemplo são fictícios.
+</Warning>
