@@ -31,7 +31,8 @@
               {
                 "group": "Comece Aqui",
                 "pages": [
-                  "api-reference/v2/visao-geral"
+                  "api-reference/v2/visao-geral",
+                  "api-reference/v2/consumo"
                 ]
               },
               {
