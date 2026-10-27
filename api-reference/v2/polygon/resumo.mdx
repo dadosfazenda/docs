@@ -17,6 +17,16 @@ incluindo os limites internos dos buracos, e retorna o mesmo catálogo de
   os demais, quando existirem, representam buracos.
 </ParamField>
 
+Os parâmetros abaixo também estão disponíveis nas outras quatro rotas por polígono.
+
+<ParamField query="incluir_cadastros" type="boolean" default="true">
+  Inclui CARs, SIGEF, SNCI e NIRFs vinculados. Use `false` para consultar
+  somente a análise principal, sem os cruzamentos cadastrais adicionais.
+</ParamField>
+<ParamField query="limite_cadastros" type="integer" default="100">
+  Limite por fonte cadastral, de 1 a 200.
+</ParamField>
+
 Salve este corpo como `area.json` para usar nos exemplos desta seção:
 
 ```json
@@ -62,6 +72,58 @@ Uma resposta de erro não gera débito na carteira. Falha da fonte retorna
 <ResponseField name="bounds" type="object">Limites `west`, `south`, `east` e `north`.</ResponseField>
 <ResponseField name="sobreposicoes" type="object">Quantidade de ocorrências por camada.</ResponseField>
 <ResponseField name="camadas_com_ocorrencia" type="array">Camadas cuja contagem é maior que zero.</ResponseField>
+<ResponseField name="cadastros" type="object">Cadastros com sobreposição positiva sobre a área enviada. Presente quando `incluir_cadastros=true`.</ResponseField>
+
+## Cadastros da área
+
+O bloco `cadastros` é incluído por padrão nas cinco rotas por polígono, sem
+cobrança adicional. A entrada continua sendo o polígono enviado: os vínculos
+não substituem a geometria da análise e não elegem um CAR principal.
+
+| Lista | Identificador | Informações do vínculo |
+| --- | --- | --- |
+| `cars` | `codigo_car` | Situação, área e percentuais de sobreposição. CARs cancelados não entram. |
+| `sigef` | `parcela_codigo` | Código INCRA, área, percentuais e NIRFs encontrados. |
+| `snci` | `numero_certificado` | Código INCRA, área, percentuais e NIRFs encontrados. |
+| `nirfs` | `nirf` | Origem `CAFIR`, códigos INCRA e vínculos com SIGEF/SNCI. |
+
+Cada cadastro espacial traz `area_sobreposta_ha`, `percentual_sobre_poligono`
+e `percentual_sobre_cadastro`. Contato apenas pela borda, sem área de
+interseção, é descartado. Cadastros diferentes podem se sobrepor entre si;
+seus percentuais não devem ser somados como cobertura exclusiva da área.
+
+O NIRF vem de correspondência **exata pelo código INCRA** no CAFIR. Para
+evitar atribuir o NIRF de um vizinho, a parcela ou certificado precisa cobrir
+pelo menos 1% da área enviada. Não há busca por nome ou proximidade. O vínculo
+é informado com sua origem e sobreposição, sem afirmar identidade cadastral.
+
+Exemplo da estrutura quando não há cadastros encontrados:
+
+```json
+{
+  "cadastros": {
+    "cars": [],
+    "sigef": [],
+    "snci": [],
+    "nirfs": [],
+    "indisponiveis": [],
+    "truncados": [],
+    "min_sobreposicao_nirf_pct": 1.0
+  }
+}
+```
+
+Lista vazia significa que a consulta foi executada sem encontrar vínculo.
+Se uma fonte falhar, sua lista será `null` e o nome aparecerá em
+`cadastros.indisponiveis`; a análise principal continua disponível. NIRFs
+parcialmente encontrados podem ser retornados com `nirfs` também indicado
+em `indisponiveis` se SIGEF ou SNCI estiver indisponível.
+
+`cadastros.truncados` identifica as fontes cujo limite foi excedido. Se SIGEF
+ou SNCI estiver truncado, `nirfs` também será marcado, pois há vínculos que
+podem não ter sido consultados. A busca no CAFIR tem teto de duas vezes o
+limite cadastral. A ausência de NIRF não significa que o imóvel não possua
+esse cadastro; pode não haver vínculo disponível na base consultada.
 
 Nenhum CAR é criado ou escolhido automaticamente. Informações cadastrais
 como titulares, demonstrativo e Reserva Legal declarada não são inferidas

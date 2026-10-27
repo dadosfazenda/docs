@@ -8,6 +8,14 @@ description: "Uso e cobertura do solo e bioma sobre a área exata enviada"
   Um Polygon GeoJSON WGS84. Veja o [corpo completo e os limites](/api-reference/v2/polygon/resumo).
 </ParamField>
 
+<ParamField query="incluir_cadastros" type="boolean" default="true">
+  Incluir CARs, SIGEF, SNCI e NIRFs vinculados à área.
+</ParamField>
+<ParamField query="limite_cadastros" type="integer" default="100">
+  Limite por fonte cadastral: de 1 a 200.
+</ParamField>
+
+
 Retorna a cobertura do solo e o bioma da área enviada, além de área, perímetro
 e bounds. Os dados de cobertura são calculados pelo recorte do raster, cuja
 resolução espacial pode limitar a precisão em áreas muito pequenas.
@@ -15,6 +23,12 @@ resolução espacial pode limitar a precisão em áreas muito pequenas.
 O resultado informa `sem_car: true` e `codigo_car: null`. Campos cadastrais
 como `reserva_legal` e `ambiental` permanecem `null`: a consulta não atribui
 à área o cadastro ou as obrigações legais de um CAR sobreposto.
+
+O bloco adicional `cadastros` lista CARs, SIGEF, SNCI e NIRFs vinculados,
+quando encontrados. `sem_car: true` identifica a entrada por geometria e não
+significa ausência de CARs sobrepostos. Veja os parâmetros opcionais
+`incluir_cadastros` e `limite_cadastros` nas
+[regras comuns](/api-reference/v2/polygon/resumo).
 
 Herda o preço da consulta de análise de área por CAR. Se a fonte estiver
 indisponível, retorna `503`; não registra uma análise zerada como sucesso.

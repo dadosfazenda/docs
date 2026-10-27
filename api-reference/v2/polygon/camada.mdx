@@ -7,6 +7,10 @@ description: "Atributos, geometrias e área de interseção das ocorrências sob
 Consulte uma das camadas disponíveis em [GET /v2/camadas](/api-reference/v2/camadas).
 A consulta usa o contorno enviado, sem substituí-lo por um CAR.
 
+A resposta inclui por padrão o bloco `cadastros`, com CARs, SIGEF, SNCI e
+NIRFs vinculados. Os parâmetros `incluir_cadastros` e `limite_cadastros` seguem
+as [regras comuns das consultas por polígono](/api-reference/v2/polygon/resumo).
+
 <ParamField path="camada" type="string" required>
   Identificador da camada. Exemplos: `prodes`, `embargos-ibama`,
   `embargos-icmbio`, `mineracao`, `terras-indigenas`.
@@ -19,6 +23,14 @@ A consulta usa o contorno enviado, sem substituí-lo por um CAR.
 </ParamField>
 <ParamField query="limite" type="integer" default="200">
   Máximo de ocorrências retornadas: de 1 a 1.000.
+</ParamField>
+
+
+<ParamField query="incluir_cadastros" type="boolean" default="true">
+  Incluir CARs, SIGEF, SNCI e NIRFs vinculados à área.
+</ParamField>
+<ParamField query="limite_cadastros" type="integer" default="100">
+  Limite por fonte cadastral: de 1 a 200.
 </ParamField>
 
 ## Resposta

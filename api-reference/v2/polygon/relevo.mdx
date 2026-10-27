@@ -8,6 +8,14 @@ description: "Estatísticas de altitude e declividade da área enviada"
   Um Polygon GeoJSON WGS84. Veja o [corpo completo e os limites](/api-reference/v2/polygon/resumo).
 </ParamField>
 
+<ParamField query="incluir_cadastros" type="boolean" default="true">
+  Incluir CARs, SIGEF, SNCI e NIRFs vinculados à área.
+</ParamField>
+<ParamField query="limite_cadastros" type="integer" default="100">
+  Limite por fonte cadastral: de 1 a 200.
+</ParamField>
+
+
 Retorna `altitude`, com `min_m`, `media_m` e `max_m`, e `declividade`.
 As estatísticas são calculadas sobre a área enviada, respeitando a resolução
 do modelo de elevação. Não representam apenas a altitude do centroide.
@@ -17,6 +25,11 @@ criado ou modificado. Campos sem cobertura da fonte permanecem `null`;
 indisponibilidade total retorna `503`.
 
 Herda o preço da consulta equivalente de relevo na análise de área por CAR.
+
+O bloco `cadastros` inclui CARs, SIGEF, SNCI e NIRFs vinculados, quando
+encontrados. Para desativá-lo ou limitar os resultados, veja os parâmetros
+`incluir_cadastros` e `limite_cadastros` nas
+[regras comuns](/api-reference/v2/polygon/resumo).
 
 <RequestExample>
 ```bash cURL
