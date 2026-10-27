@@ -1,0 +1,28 @@
+---
+title: "Solo por polígono"
+api: "POST /v2/polygon/analise-area/solo"
+description: "Pedologia, textura e condição da pastagem sobre o contorno enviado"
+---
+
+<ParamField body="geometry" type="object" required>
+  Um Polygon GeoJSON WGS84. Veja o [corpo completo e os limites](/api-reference/v2/polygon/resumo).
+</ParamField>
+
+Retorna `pedologia`, `textura` e `pastagem`, além da área, perímetro e bounds.
+A área é analisada diretamente: não há empréstimo do cache de indicadores
+de um CAR ou de outra geometria enviada anteriormente.
+
+`codigo_car` será `null`. Campos sem cobertura da fonte podem ser `null`;
+indisponibilidade total retorna `503`. As análises respeitam a resolução dos
+dados de origem e podem não representar áreas menores do que seus pixels.
+
+Herda o preço da consulta equivalente de solo na análise de área por CAR.
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://data.dadosfazenda.com.br/v2/polygon/analise-area/solo" \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  --data @area.json
+```
+</RequestExample>

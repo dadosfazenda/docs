@@ -1,0 +1,28 @@
+---
+title: "Relevo por polígono"
+api: "POST /v2/polygon/analise-area/relevo"
+description: "Estatísticas de altitude e declividade da área enviada"
+---
+
+<ParamField body="geometry" type="object" required>
+  Um Polygon GeoJSON WGS84. Veja o [corpo completo e os limites](/api-reference/v2/polygon/resumo).
+</ParamField>
+
+Retorna `altitude`, com `min_m`, `media_m` e `max_m`, e `declividade`.
+As estatísticas são calculadas sobre a área enviada, respeitando a resolução
+do modelo de elevação. Não representam apenas a altitude do centroide.
+
+A resposta também inclui área, perímetro e bounds. Nenhum cadastro de CAR é
+criado ou modificado. Campos sem cobertura da fonte permanecem `null`;
+indisponibilidade total retorna `503`.
+
+Herda o preço da consulta equivalente de relevo na análise de área por CAR.
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://data.dadosfazenda.com.br/v2/polygon/analise-area/relevo" \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  --data @area.json
+```
+</RequestExample>

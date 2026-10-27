@@ -1,0 +1,89 @@
+---
+title: "Sobreposições por polígono"
+api: "POST /v2/polygon/sobreposicoes"
+description: "Consulte as camadas territoriais usando uma área GeoJSON, sem precisar de um CAR"
+---
+
+Envie um único `Polygon` no corpo da chamada. A API consulta a área exata,
+incluindo os limites internos dos buracos, e retorna o mesmo catálogo de
+17 camadas da consulta por CAR. As rotas `GET /v2/car/...` continuam iguais.
+
+## Corpo da consulta
+
+<ParamField body="geometry" type="object" required>
+  Geometria GeoJSON com `type: "Polygon"` e `coordinates` no formato
+  `[[[longitude, latitude], ...]]`. Use WGS84, em graus decimais. Cada anel
+  deve repetir a primeira posição no final. O primeiro anel é o exterior;
+  os demais, quando existirem, representam buracos.
+</ParamField>
+
+Salve este corpo como `area.json` para usar nos exemplos desta seção:
+
+```json
+{
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [[
+      [-47.00, -23.00],
+      [-46.99, -23.00],
+      [-46.99, -22.99],
+      [-47.00, -22.99],
+      [-47.00, -23.00]
+    ]]
+  }
+}
+```
+
+## Limites e validação
+
+Até **10.000 vértices**, **500 KB de geometria** e **1.000.000 de hectares**
+por consulta. `MultiPolygon`, coleções, coordenadas 3D, contornos inválidos e
+áreas que cruzam o antimeridiano não são aceitos nesta versão.
+
+Uma geometria inválida retorna `422`. Um corpo de requisição acima de
+500.128 bytes retorna `413`, antes de executar a consulta espacial.
+
+## Autenticação e cobrança
+
+Use a mesma API key comercial no header `Authorization: Bearer ...`.
+A rota herda o preço do resumo por CAR, inclusive o preço negociado por
+contrato e faixa. Uma configuração explícita para esta nova rota prevalece
+na mesma faixa comercial. O histórico registra a URL real por polígono.
+
+Sem preço contratado, a consulta retorna `403`; saldo insuficiente, `402`.
+Uma resposta de erro não gera débito na carteira. Falha da fonte retorna
+`503`, em vez de ser apresentada como zero ocorrências.
+
+## Resposta
+
+<ResponseField name="origem" type="string">Sempre `polygon`.</ResponseField>
+<ResponseField name="area_ha" type="number">Área geodésica em hectares, descontando os buracos.</ResponseField>
+<ResponseField name="perimetro_m" type="number">Perímetro em metros, somando os contornos exterior e internos.</ResponseField>
+<ResponseField name="bounds" type="object">Limites `west`, `south`, `east` e `north`.</ResponseField>
+<ResponseField name="sobreposicoes" type="object">Quantidade de ocorrências por camada.</ResponseField>
+<ResponseField name="camadas_com_ocorrencia" type="array">Camadas cuja contagem é maior que zero.</ResponseField>
+
+Nenhum CAR é criado ou escolhido automaticamente. Informações cadastrais
+como titulares, demonstrativo e Reserva Legal declarada não são inferidas
+de imóveis sobrepostos.
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://data.dadosfazenda.com.br/v2/polygon/sobreposicoes" \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  --data @area.json
+```
+</RequestExample>
+
+## Outras consultas pela mesma área
+
+| Método | Rota | Resultado |
+| --- | --- | --- |
+| POST | `/v2/polygon/sobreposicoes/{camada}` | Atributos e geometrias das ocorrências de uma camada |
+| POST | `/v2/polygon/analise-area` | Cobertura do solo e bioma |
+| POST | `/v2/polygon/analise-area/solo` | Pedologia, textura e pastagem |
+| POST | `/v2/polygon/analise-area/relevo` | Altitude e declividade |
+
+Todas recebem o mesmo body `geometry`. Consulte os identificadores de camada
+em [GET /v2/camadas](/api-reference/v2/camadas).

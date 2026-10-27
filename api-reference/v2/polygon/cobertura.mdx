@@ -1,0 +1,29 @@
+---
+title: "Cobertura por polígono"
+api: "POST /v2/polygon/analise-area"
+description: "Uso e cobertura do solo e bioma sobre a área exata enviada"
+---
+
+<ParamField body="geometry" type="object" required>
+  Um Polygon GeoJSON WGS84. Veja o [corpo completo e os limites](/api-reference/v2/polygon/resumo).
+</ParamField>
+
+Retorna a cobertura do solo e o bioma da área enviada, além de área, perímetro
+e bounds. Os dados de cobertura são calculados pelo recorte do raster, cuja
+resolução espacial pode limitar a precisão em áreas muito pequenas.
+
+O resultado informa `sem_car: true` e `codigo_car: null`. Campos cadastrais
+como `reserva_legal` e `ambiental` permanecem `null`: a consulta não atribui
+à área o cadastro ou as obrigações legais de um CAR sobreposto.
+
+Herda o preço da consulta de análise de área por CAR. Se a fonte estiver
+indisponível, retorna `503`; não registra uma análise zerada como sucesso.
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://data.dadosfazenda.com.br/v2/polygon/analise-area" \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  --data @area.json
+```
+</RequestExample>

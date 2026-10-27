@@ -55,6 +55,16 @@
                 ]
               },
               {
+                "group": "Consultas por polígono",
+                "pages": [
+                  "api-reference/v2/polygon/resumo",
+                  "api-reference/v2/polygon/camada",
+                  "api-reference/v2/polygon/cobertura",
+                  "api-reference/v2/polygon/solo",
+                  "api-reference/v2/polygon/relevo"
+                ]
+              },
+              {
                 "group": "Embargos",
                 "pages": [
                   "api-reference/v2/consultas/ambiental/por-car"

@@ -1,0 +1,47 @@
+---
+title: "Camada por polígono"
+api: "POST /v2/polygon/sobreposicoes/{camada}"
+description: "Atributos, geometrias e área de interseção das ocorrências sobre a área enviada"
+---
+
+Consulte uma das camadas disponíveis em [GET /v2/camadas](/api-reference/v2/camadas).
+A consulta usa o contorno enviado, sem substituí-lo por um CAR.
+
+<ParamField path="camada" type="string" required>
+  Identificador da camada. Exemplos: `prodes`, `embargos-ibama`,
+  `embargos-icmbio`, `mineracao`, `terras-indigenas`.
+</ParamField>
+<ParamField body="geometry" type="object" required>
+  Um Polygon GeoJSON WGS84. Veja o [corpo completo e os limites](/api-reference/v2/polygon/resumo).
+</ParamField>
+<ParamField query="geometria" type="boolean" default="true">
+  Inclua a geometria de cada ocorrência em WGS84. Use `false` para uma resposta menor.
+</ParamField>
+<ParamField query="limite" type="integer" default="200">
+  Máximo de ocorrências retornadas: de 1 a 1.000.
+</ParamField>
+
+## Resposta
+
+Além da área, perímetro e bounds da consulta, retorna `camada`, `descricao`,
+`total` e `itens`. Cada item contém `atributos` e, quando solicitado, `geometry`.
+
+Para camadas de polígonos, `area_sobreposta_ha` representa a **interseção com
+a área enviada**, descontando seus buracos. Não é a área inteira do embargo,
+desmatamento ou outra ocorrência. Camadas de pontos não trazem esse campo.
+
+`truncado: true` indica que existem mais ocorrências do que o limite solicitado.
+Nesse caso, `total` e a soma de `area_sobreposta_ha` se referem apenas aos itens
+retornados. As áreas somadas são por ocorrência e podem se sobrepor entre si.
+
+A cobrança herda o produto correspondente por CAR; as regras de contrato,
+faixa e eventuais preços específicos continuam sendo respeitadas.
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://data.dadosfazenda.com.br/v2/polygon/sobreposicoes/prodes?limite=200&geometria=true" \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  --data @area.json
+```
+</RequestExample>
